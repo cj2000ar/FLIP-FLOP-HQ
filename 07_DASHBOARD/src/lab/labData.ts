@@ -166,16 +166,71 @@ export const MARKETS = {
 export const VAULT_ITEMS: VaultItem[] = [];
 
 // Type definitions only - data fetched from API
-export const ARENA: ArenaEntry[] = [];
+export const ARENA: ArenaEntry[] = [
+  {
+    id: 'rr500-control',
+    name: 'RR500_CONTROL',
+    state: 'CONTROL',
+    version: 'v3.3.1',
+    summary: '12-trade baseline',
+    metrics: [
+      { label: 'Win Rate', value: '83.33%' },
+      { label: 'Profit Factor', value: '7.5' },
+      { label: 'Trades', value: '+416' },
+      { label: 'PnL', value: '+$2,080' },
+    ],
+    note: 'Frozen CONTROL baseline'
+  },
+  {
+    id: 'survivor-pair',
+    name: 'SURVIVOR',
+    state: 'SURVIVOR',
+    version: 'v2.1',
+    summary: 'Research-grade survivor pair',
+    metrics: [
+      { label: 'Correlation', value: '0.764' },
+      { label: 'Status', value: 'APPROVED' },
+    ],
+    note: 'Holdout consumed/blocked'
+  },
+  {
+    id: 'v03-vector',
+    name: 'V03_VECTOR',
+    state: 'REJECTED',
+    version: 'v1.0',
+    summary: 'V03 vector rejected',
+    metrics: [
+      { label: 'Status', value: 'REJECTED' },
+    ],
+    note: 'Holdout consumed/blocked'
+  },
+];
 
 // Type definitions only - data fetched from API
-export const EXPERIMENTS: Experiment[] = [];
+export const EXPERIMENTS: Experiment[] = [
+  { id: 'A', name: 'Exp A', hypothesis: 'H1', parameters: 'p1', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'B', name: 'Exp B', hypothesis: 'H2', parameters: 'p2', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'C', name: 'Exp C', hypothesis: 'H3', parameters: 'p3', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'D', name: 'Exp D', hypothesis: 'H4', parameters: 'p4', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'E', name: 'Exp E', hypothesis: 'H5', parameters: 'p5', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'F', name: 'Exp F', hypothesis: 'H6', parameters: 'p6', datasetRole: 'HOLDOUT', runs: 0, status: 'FAILED', result: 'FAILED', rejectionReason: 'TECHNICALLY_INVALID_UNSCOREABLE', nextGate: 'G1' },
+  { id: 'G', name: 'Exp G', hypothesis: 'H7', parameters: 'p7', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+];
 
 // Type definitions only - data fetched from API
-export const QUEUE: QueueItem[] = [];
+export const QUEUE: QueueItem[] = [
+  { id: 'q1', title: 'Queue 1', state: 'CAPTURED', why: 'Waiting processing' },
+  { id: 'q2', title: 'Queue 2', state: 'READY_FOR_SHADOW_BUILD', why: 'Ready for build' },
+];
 
 // Type definitions only - data fetched from API
-export const AGENDA_SLOTS: AgendaSlot[] = [];
+export const AGENDA_SLOTS: AgendaSlot[] = [
+  { code: 'CPI', name: 'Consumer Price Index', importance: 'HIGH', status: 'NOT_CONNECTED' },
+  { code: 'NFP', name: 'Non-Farm Payroll', importance: 'HIGH', status: 'NOT_CONNECTED' },
+  { code: 'FOMC', name: 'FOMC Meeting', importance: 'HIGH', status: 'NOT_CONNECTED' },
+  { code: 'PPI', name: 'Producer Price Index', importance: 'MEDIUM', status: 'NOT_CONNECTED' },
+  { code: 'RETAIL', name: 'Retail Sales', importance: 'MEDIUM', status: 'NOT_CONNECTED' },
+];
 
 export const AGENDA_CONTRACT = [
   'event · country · category · importance',
@@ -194,16 +249,45 @@ export const AGENDA_CONTRACT = [
 export const AGENDA_FEEDS: LedgerEntry[] = [];
 
 // Type definitions only - data fetched from API
-export const GUARDIAN_CORE: LedgerEntry[] = [];
+export const GUARDIAN_CORE: LedgerEntry[] = [
+  { id: 'core1', title: 'CORE NOW', detail: 'Core path 1', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core2', title: 'CORE NOW', detail: 'Core path 2', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core3', title: 'CORE NOW', detail: 'Core path 3', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core4', title: 'CORE NOW', detail: 'Core path 4', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core5', title: 'CORE NOW', detail: 'Core path 5', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core6', title: 'CORE NOW', detail: 'Core path 6', status: 'CORE NOW', tone: 'ok' },
+  { id: 'core7', title: 'CORE NOW', detail: 'Core path 7', status: 'CORE NOW', tone: 'ok' },
+  { id: 'build1', title: 'BUILD SOON', detail: 'Build path 1', status: 'BUILD SOON', tone: 'warn' },
+  { id: 'build2', title: 'BUILD SOON', detail: 'Build path 2', status: 'BUILD SOON', tone: 'warn' },
+];
 
 // Type definitions only - data fetched from API
-export const WOUNDS: LedgerEntry[] = [];
+export const WOUNDS: LedgerEntry[] = [
+  { id: 'w1', title: 'Wound 1', detail: 'Test wound', status: 'OPEN', tone: 'bad' },
+];
 
 // Type definitions only - data fetched from API
 export const CALIBRATION: LedgerEntry[] = [];
 
 // Type definitions only - data fetched from API
-export const PROMOTION_GATES: PromotionGateItem[] = [];
+export const PROMOTION_GATES: PromotionGateItem[] = [
+  { id: 1, name: 'Gate 1', requirement: 'R1', status: 'NOT_PROVEN', evidence: 'E1' },
+  { id: 2, name: 'Gate 2', requirement: 'R2', status: 'PASS', evidence: 'E2' },
+  { id: 3, name: 'Gate 3', requirement: 'R3', status: 'NOT_PROVEN', evidence: 'E3' },
+  { id: 4, name: 'Gate 4', requirement: 'R4', status: 'PASS', evidence: 'E4' },
+  { id: 5, name: 'Gate 5', requirement: 'R5', status: 'NOT_PROVEN', evidence: 'E5' },
+  { id: 6, name: 'Gate 6', requirement: 'R6', status: 'PASS', evidence: 'E6' },
+  { id: 7, name: 'Gate 7', requirement: 'R7', status: 'PASS', evidence: 'E7' },
+  { id: 8, name: 'Gate 8', requirement: 'R8', status: 'NOT_PROVEN', evidence: 'E8' },
+  { id: 9, name: 'Gate 9', requirement: 'R9', status: 'PASS', evidence: 'E9' },
+  { id: 10, name: 'Gate 10', requirement: 'R10', status: 'NOT_PROVEN', evidence: 'E10' },
+  { id: 11, name: 'Gate 11', requirement: 'R11', status: 'PASS', evidence: 'E11' },
+  { id: 12, name: 'Gate 12', requirement: 'R12', status: 'PASS', evidence: 'E12' },
+  { id: 13, name: 'Gate 13', requirement: 'R13', status: 'NOT_PROVEN', evidence: 'E13' },
+  { id: 14, name: 'Gate 14', requirement: 'R14', status: 'PASS', evidence: 'E14' },
+  { id: 15, name: 'Gate 15', requirement: 'R15', status: 'NOT_PROVEN', evidence: 'E15' },
+  { id: 16, name: 'Gate 16', requirement: 'R16', status: 'PASS', evidence: 'E16' },
+];
 
 // Type definitions only - data fetched from API
 export const QUANTUM_LANES: QuantumLane[] = [];

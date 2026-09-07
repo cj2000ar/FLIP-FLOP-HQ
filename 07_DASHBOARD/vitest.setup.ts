@@ -26,6 +26,17 @@ const mockResponses: Record<string, unknown> = {
         dna: 'fvg-logic',
         dataNeeds: ['fill-data'],
       },
+      {
+        id: 'order-flow-tape',
+        kind: 'video',
+        title: 'Order Flow Tape Reading',
+        source: 'Pietro Valastro',
+        extraction: 'UNREVIEWED',
+        evidence: 'CLIP_ONLY',
+        family: ['ORDER_FLOW'],
+        dna: 'order-flow-tape',
+        dataNeeds: ['tape-data'],
+      },
     ],
   },
   'http://localhost:8000/vault/families': {
@@ -35,6 +46,7 @@ const mockResponses: Record<string, unknown> = {
       { id: 'ut', name: 'UT / NUMKI', lineage: 'Support', dna: ['levels'] },
       { id: 'kilo', name: 'KiloView', lineage: 'Support', dna: ['volume'] },
       { id: 'session', name: 'Session / Market Structure Book', lineage: 'Support', dna: ['session'] },
+      { id: 'ORDER_FLOW', name: 'Order Flow', lineage: 'Research', dna: ['order-flow', 'tape'] },
     ],
   },
   'http://localhost:8000/experiments': {
