@@ -33,7 +33,14 @@ import json
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
-logging.basicConfig(level=logging.INFO)
+# Centralized logging (structured JSON, file rotation)
+try:
+    from logging_config import setup_logging, api_logger, audit_logger
+    setup_logging(log_dir=os.getenv("LOG_DIR", "logs"), log_level=os.getenv("LOG_LEVEL", "INFO"))
+except ImportError:
+    logging.basicConfig(level=logging.INFO)
+    api_logger = logging.getLogger("flipflop.api")
+    audit_logger = logging.getLogger("flipflop.audit")
 logger = logging.getLogger(__name__)
 
 

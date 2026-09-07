@@ -1,0 +1,18 @@
+[Unit]
+Description=FlipFlop API Daily Backup
+Documentation=file:///opt/flipflop/api/BACKUP.md
+After=flipflop-api.service
+
+[Service]
+Type=oneshot
+User=flipflop
+WorkingDirectory=/opt/flipflop/api
+Environment="DB_PATH=data/flipflop.db"
+Environment="BACKUP_DIR=backups"
+Environment="BACKUP_RETENTION_DAYS=7"
+Environment="BACKUP_S3_BUCKET="
+Environment="BACKUP_S3_PREFIX=backups/api/"
+ExecStart=/usr/bin/python3 -c "from backup import daily_backup_job; daily_backup_job()"
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=flipflop-backup
