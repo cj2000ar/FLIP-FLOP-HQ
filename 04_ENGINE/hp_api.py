@@ -8,6 +8,12 @@ from pydantic import BaseModel
 from typing import Optional, List
 import logging
 import os
+import sys
+from pathlib import Path
+from datetime import datetime
+from uuid import UUID, uuid4
+import sqlite3
+import json
 
 from hp_infra import (
     HPInfrastructure,
@@ -18,6 +24,13 @@ from hp_infra import (
     DurableReceiptTuple,
     HealthState,
     ArchiveStatus
+)
+
+# Import Guardian engine
+sys.path.insert(0, str(Path(__file__).parent / "RED_DRAGON"))
+from guardian_engine import (
+    GuardianEngine, DeploymentCandidate, EvidenceRecord, GateVerdict,
+    AuthorityLevel, VerdictType, GateID, DecisionCartridge
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -374,6 +387,398 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
             status="ok",
             message="HP infrastructure operational"
         )
+
+    # ========================================================================
+    # GUARDIAN ENFORCEMENT ENDPOINTS
+    # ========================================================================
+
+    # Initialize Guardian engine and database
+    guardian_engine = GuardianEngine()
+
+    def init_guardian_database():
+        """Initialize Guardian database tables"""
+        db_path = os.getenv('FLIPFLOP_DB_PATH', './databases/')
+        os.makedirs(db_path, exist_ok=True)
+        db_file = os.path.join(db_path, 'guardian.db')
+
+        conn = sqlite3.connect(db_file)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS gate_verdicts (
+                verdict_id TEXT PRIMARY KEY,
+                gate_id TEXT NOT NULL,
+                correlation_id TEXT NOT NULL,
+                candidate_id TEXT,
+                verdict TEXT NOT NULL CHECK(verdict IN ('PASS', 'BLOCKED', 'NOT_PROVEN')),
+                reasoning TEXT NOT NULL,
+                evidence_id TEXT,
+                event_time TEXT NOT NULL,
+                knowledge_time TEXT NOT NULL,
+                authority_used TEXT NOT NULL DEFAULT 'ZERO',
+                policy_hash TEXT,
+                created_at TEXT NOT NULL,
+                UNIQUE(gate_id, correlation_id, verdict_id)
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS evidence_records (
+                evidence_id TEXT PRIMARY KEY,
+                evidence_type TEXT NOT NULL,
+                source_system TEXT NOT NULL,
+                observation TEXT NOT NULL,
+                observed_at TEXT NOT NULL,
+                recorded_at TEXT NOT NULL,
+                checksum TEXT NOT NULL,
+                is_contradicted BOOLEAN DEFAULT 0,
+                contradicted_by TEXT,
+                created_at TEXT NOT NULL
+            )
+        """)
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS decision_cartridge (
+                cartridge_id TEXT PRIMARY KEY,
+                correlation_id TEXT NOT NULL,
+                candidate_id TEXT NOT NULL,
+                gate_verdicts TEXT NOT NULL,
+                final_verdict TEXT NOT NULL CHECK(final_verdict IN ('PASS', 'BLOCKED', 'NOT_PROVEN')),
+                evidence_root_hash TEXT NOT NULL,
+                policy_root_hash TEXT NOT NULL,
+                authority TEXT NOT NULL DEFAULT 'ZERO',
+                created_at TEXT NOT NULL,
+                owner_approval_id TEXT,
+                UNIQUE(correlation_id, cartridge_id)
+            )
+        """)
+
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_gate_verdicts_correlation ON gate_verdicts(correlation_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_gate_verdicts_gate ON gate_verdicts(gate_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_cartridge_correlation ON decision_cartridge(correlation_id)")
+
+        conn.commit()
+        conn.close()
+
+        return db_file
+
+    guardian_db_path = init_guardian_database()
+
+    class GuardianEvaluateRequest(BaseModel):
+        correlation_id: str
+        artifact_hashes: dict
+        passport_hash: str
+        side: str
+        source_system: str
+        evidence: List[dict]
+        owner_approval_id: Optional[str] = None
+
+    class GuardianVerdictResponse(BaseModel):
+        verdict_id: str
+        gate_id: str
+        verdict: str
+        reasoning: str
+        evidence_id: Optional[str]
+        event_time: str
+
+    def save_verdict_to_db(verdict: GateVerdict, candidate_id: Optional[str] = None):
+        """Save immutable verdict to database"""
+        conn = sqlite3.connect(guardian_db_path)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO gate_verdicts
+                (verdict_id, gate_id, correlation_id, candidate_id, verdict, reasoning,
+                 evidence_id, event_time, knowledge_time, authority_used, policy_hash, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(verdict.verdict_id),
+                verdict.gate_id.value,
+                str(verdict.correlation_id),
+                candidate_id,
+                verdict.verdict.value,
+                verdict.reasoning,
+                str(verdict.evidence_id) if verdict.evidence_id else None,
+                verdict.event_time.isoformat(),
+                verdict.knowledge_time.isoformat(),
+                verdict.authority_used.value,
+                verdict.policy_hash,
+                datetime.utcnow().isoformat()
+            ))
+            conn.commit()
+        finally:
+            conn.close()
+
+    def save_evidence_to_db(evidence: EvidenceRecord):
+        """Save immutable evidence to database"""
+        conn = sqlite3.connect(guardian_db_path)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                INSERT INTO evidence_records
+                (evidence_id, evidence_type, source_system, observation,
+                 observed_at, recorded_at, checksum, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(evidence.evidence_id),
+                evidence.evidence_type,
+                evidence.source_system,
+                json.dumps(evidence.observation),
+                evidence.observed_at.isoformat(),
+                evidence.recorded_at.isoformat(),
+                evidence.checksum,
+                datetime.utcnow().isoformat()
+            ))
+            conn.commit()
+        finally:
+            conn.close()
+
+    @app.post("/guardian/evaluate", response_model=dict)
+    def evaluate_deployment(request: GuardianEvaluateRequest):
+        """
+        POST /guardian/evaluate - Run deployment candidate through all 8 gates.
+        Returns decision cartridge with verdicts and final verdict.
+        """
+        try:
+            correlation_id = UUID(request.correlation_id)
+
+            # Create candidate
+            candidate = DeploymentCandidate(
+                candidate_id=uuid4(),
+                correlation_id=correlation_id,
+                artifact_hashes=request.artifact_hashes,
+                passport_hash=request.passport_hash,
+                side=request.side,
+                source_system=request.source_system,
+                authority=AuthorityLevel.ZERO
+            )
+
+            # Create evidence records
+            evidence_records = []
+            for ev in request.evidence:
+                evidence = EvidenceRecord(
+                    evidence_id=uuid4(),
+                    evidence_type=ev.get("evidence_type", "UNKNOWN"),
+                    source_system=ev.get("source_system", "API"),
+                    observation=ev.get("observation", {}),
+                    observed_at=datetime.fromisoformat(ev.get("observed_at", datetime.utcnow().isoformat())),
+                    recorded_at=datetime.fromisoformat(ev.get("recorded_at", datetime.utcnow().isoformat())),
+                    checksum=ev.get("checksum", "")
+                )
+                evidence_records.append(evidence)
+                save_evidence_to_db(evidence)
+
+            # Run through all 8 gates sequentially
+            verdicts = []
+            prior_verdicts = []
+
+            for gate_id in [GateID.GATE_1, GateID.GATE_2, GateID.GATE_3, GateID.GATE_4,
+                           GateID.GATE_5, GateID.GATE_6, GateID.GATE_7, GateID.GATE_8]:
+                gate = guardian_engine.get_gate(gate_id)
+                verdict = gate.evaluate(candidate, evidence_records, prior_verdicts)
+                verdicts.append(verdict)
+                prior_verdicts.append(verdict)
+                save_verdict_to_db(verdict, str(candidate.candidate_id))
+
+            # Determine final verdict
+            final_verdict = VerdictType.PASS
+            if any(v.verdict == VerdictType.BLOCKED for v in verdicts):
+                final_verdict = VerdictType.BLOCKED
+            elif any(v.verdict == VerdictType.NOT_PROVEN for v in verdicts):
+                final_verdict = VerdictType.NOT_PROVEN
+
+            # Create decision cartridge
+            gate_verdicts_list = [
+                {
+                    "gate_id": v.gate_id.value,
+                    "verdict_id": str(v.verdict_id),
+                    "verdict": v.verdict.value
+                }
+                for v in verdicts
+            ]
+
+            cartridge = DecisionCartridge(
+                cartridge_id=uuid4(),
+                correlation_id=correlation_id,
+                candidate_id=candidate.candidate_id,
+                gate_verdicts=gate_verdicts_list,
+                final_verdict=final_verdict,
+                evidence_root_hash="root_hash_computed",
+                policy_root_hash="policy_hash_computed",
+                authority=AuthorityLevel.ZERO,
+                owner_approval_id=UUID(request.owner_approval_id) if request.owner_approval_id else None
+            )
+
+            # Save cartridge
+            conn = sqlite3.connect(guardian_db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO decision_cartridge
+                (cartridge_id, correlation_id, candidate_id, gate_verdicts, final_verdict,
+                 evidence_root_hash, policy_root_hash, authority, created_at, owner_approval_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                str(cartridge.cartridge_id),
+                str(cartridge.correlation_id),
+                str(cartridge.candidate_id),
+                json.dumps(gate_verdicts_list),
+                cartridge.final_verdict.value,
+                cartridge.evidence_root_hash,
+                cartridge.policy_root_hash,
+                cartridge.authority.value,
+                datetime.utcnow().isoformat(),
+                str(cartridge.owner_approval_id) if cartridge.owner_approval_id else None
+            ))
+            conn.commit()
+            conn.close()
+
+            return {
+                "cartridge_id": str(cartridge.cartridge_id),
+                "correlation_id": str(cartridge.correlation_id),
+                "final_verdict": cartridge.final_verdict.value,
+                "gate_verdicts": [
+                    {
+                        "gate_id": v.gate_id.value,
+                        "verdict": v.verdict.value,
+                        "reasoning": v.reasoning
+                    }
+                    for v in verdicts
+                ],
+                "authority": cartridge.authority.value,
+                "created_at": datetime.utcnow().isoformat()
+            }
+        except Exception as e:
+            logger.error(f"Guardian evaluation error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/guardian/verdict/{verdict_id}")
+    def get_verdict(verdict_id: str):
+        """GET /guardian/verdict/{verdict_id} - Retrieve immutable verdict"""
+        conn = sqlite3.connect(guardian_db_path)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT verdict_id, gate_id, correlation_id, verdict, reasoning, evidence_id, event_time
+                FROM gate_verdicts
+                WHERE verdict_id = ?
+            """, (verdict_id,))
+
+            row = cursor.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Verdict not found")
+
+            return {
+                "verdict_id": row[0],
+                "gate_id": row[1],
+                "correlation_id": row[2],
+                "verdict": row[3],
+                "reasoning": row[4],
+                "evidence_id": row[5],
+                "event_time": row[6]
+            }
+        finally:
+            conn.close()
+
+    @app.get("/guardian/cartridge/{correlation_id}")
+    def get_cartridge(correlation_id: str):
+        """GET /guardian/cartridge/{correlation_id} - Retrieve decision cartridge"""
+        conn = sqlite3.connect(guardian_db_path)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                SELECT cartridge_id, correlation_id, candidate_id, gate_verdicts, final_verdict,
+                       evidence_root_hash, policy_root_hash, authority, created_at
+                FROM decision_cartridge
+                WHERE correlation_id = ?
+                ORDER BY created_at DESC
+                LIMIT 1
+            """, (correlation_id,))
+
+            row = cursor.fetchone()
+            if not row:
+                raise HTTPException(status_code=404, detail="Cartridge not found")
+
+            return {
+                "cartridge_id": row[0],
+                "correlation_id": row[1],
+                "candidate_id": row[2],
+                "gate_verdicts": json.loads(row[3]),
+                "final_verdict": row[4],
+                "evidence_root_hash": row[5],
+                "policy_root_hash": row[6],
+                "authority": row[7],
+                "created_at": row[8]
+            }
+        finally:
+            conn.close()
+
+    @app.get("/guardian/gates")
+    def list_gates():
+        """GET /guardian/gates - List all 8 gates with info"""
+        gates_info = [
+            {
+                "gate_id": "gate_1",
+                "gate_order": 1,
+                "gate_name": "SCHEMA_AND_IDENTITY",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Missing hash", "Invalid correlation_id", "Passport missing"]
+            },
+            {
+                "gate_id": "gate_2",
+                "gate_order": 2,
+                "gate_name": "HASH_INTEGRITY",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Hash mismatch", "Hash contradiction detected"]
+            },
+            {
+                "gate_id": "gate_3",
+                "gate_order": 3,
+                "gate_name": "AUTHORITY_POLICY_COMPLIANCE",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Authority not ZERO", "Live enabled", "Broker orders enabled", "Control mutation enabled"]
+            },
+            {
+                "gate_id": "gate_4",
+                "gate_order": 4,
+                "gate_name": "MACHINE_HEALTH_AND_READINESS",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Machine error", "Heartbeat stale", "Clock skew excessive", "Fencing token expired"]
+            },
+            {
+                "gate_id": "gate_5",
+                "gate_order": 5,
+                "gate_name": "CANARY_EXECUTION",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Error rate > 5%", "Latency > 200ms", "Canary failed", "Rollback triggered"]
+            },
+            {
+                "gate_id": "gate_6",
+                "gate_order": 6,
+                "gate_name": "EVIDENCE_CONSISTENCY",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Hash contradiction", "Policy contradiction", "Temporal ordering violation"]
+            },
+            {
+                "gate_id": "gate_7",
+                "gate_order": 7,
+                "gate_name": "FRESHNESS_AND_STALENESS",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Evidence > 300s old", "Required evidence missing"]
+            },
+            {
+                "gate_id": "gate_8",
+                "gate_order": 8,
+                "gate_name": "FINAL_ARBITER",
+                "stale_threshold_seconds": 300,
+                "blocking_conditions": ["Prior gate blocked", "Prior gate not proven", "Authority escalation attempted"]
+            }
+        ]
+
+        return gates_info
 
     return app
 

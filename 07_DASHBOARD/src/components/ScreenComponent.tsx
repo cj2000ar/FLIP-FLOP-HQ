@@ -9,6 +9,7 @@ import BatchSummary from './BatchSummary';
 import ArchiveViewer from './ArchiveViewer';
 import Brand from './Brand';
 import Lab from './Lab';
+import GuardianPage from './GuardianPage';
 
 /**
  * ScreenComponent - Main responsive UI container
@@ -38,6 +39,7 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
     { id: 'performance', label: 'Performance', short: 'Perf' },
     { id: 'calendar', label: 'Calendar' },
     { id: 'agents', label: 'Agents' },
+    { id: 'guardian', label: 'Guardian', short: 'Guard' },
     { id: 'lab', label: 'Lab' },
   ];
 
@@ -250,6 +252,9 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
 
         {/* Lab Tab */}
         {activeNav === 'lab' && <Lab />}
+
+        {/* Guardian Tab */}
+        {activeNav === 'guardian' && <GuardianPage />}
 
         {/* Other tabs - Placeholder */}
         {['trades', 'performance', 'calendar', 'agents'].includes(activeNav) && (
