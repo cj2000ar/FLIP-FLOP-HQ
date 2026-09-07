@@ -40,7 +40,7 @@ log_error() {
 log_info "Installing system dependencies..."
 sudo apt-get update
 sudo apt-get install -y \
-    python3.14 \
+    python3.12 \
     python3-pip \
     postgresql \
     postgresql-contrib \
@@ -78,7 +78,7 @@ fi
 # Step 5: Setup Python Environment
 log_info "Setting up Python environment..."
 cd "$APP_HOME/04_ENGINE"
-sudo -u "$DEPLOY_USER" python3.14 -m venv venv
+sudo -u "$DEPLOY_USER" python3.12 -m venv venv
 sudo -u "$DEPLOY_USER" ./venv/bin/pip install --upgrade pip
 sudo -u "$DEPLOY_USER" ./venv/bin/pip install -r requirements.txt
 
