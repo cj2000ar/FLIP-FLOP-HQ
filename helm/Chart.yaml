@@ -1,0 +1,17 @@
+apiVersion: v2
+name: flipflop-hq
+description: Production-grade trading system with Guardian enforcement and NinjaTrader integration
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - trading
+  - guardian
+  - ninjatrader
+  - paper-trading
+home: https://github.com/flipflop-hq/flipflop-hq
+sources:
+  - https://github.com/flipflop-hq/flipflop-hq
+maintainers:
+  - name: FlipFlop Team
+    email: team@flipflop.io
