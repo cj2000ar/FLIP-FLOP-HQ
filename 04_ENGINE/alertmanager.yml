@@ -1,0 +1,71 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: '${SLACK_WEBHOOK_URL}'  # Set via environment variable
+
+route:
+  # Root route with default receiver
+  receiver: 'default'
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+
+  routes:
+    # Critical alerts - immediate notification
+    - match:
+        severity: critical
+      receiver: 'critical'
+      group_wait: 10s
+      repeat_interval: 1h
+
+    # API health alerts
+    - match:
+        alertname: APIDown
+      receiver: 'critical'
+      group_wait: 5s
+      repeat_interval: 30m
+
+    # Warning alerts - batch notifications
+    - match:
+        severity: warning
+      receiver: 'default'
+      group_wait: 5m
+      repeat_interval: 4h
+
+receivers:
+  # Default receiver (warnings, info)
+  - name: 'default'
+    slack_configs:
+      - channel: '#alerts-api'
+        title: '[{{ .GroupLabels.alertname }}]'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+        color: 'warning'
+
+  # Critical receiver (instant notification)
+  - name: 'critical'
+    slack_configs:
+      - channel: '#alerts-critical'
+        title: '[CRITICAL] {{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.summary }}\n{{ .Annotations.description }}{{ end }}'
+        color: 'danger'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        description: '{{ .GroupLabels.alertname }}'
+
+  # Null receiver (for alerts to suppress)
+  - name: 'null'
+
+inhibit_rules:
+  # Inhibit warnings if critical is firing
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+  # Inhibit info if warning is firing
+  - source_match:
+      severity: 'warning'
+    target_match:
+      severity: 'info'
+    equal: ['alertname', 'instance']

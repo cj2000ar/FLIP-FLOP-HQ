@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 30s      # Scrape every 30 seconds
+  evaluation_interval: 30s   # Evaluate rules every 30 seconds
+  external_labels:
+    monitor: 'flipflop-api'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Alert rules
+rule_files:
+  - 'alert_rules.yml'
+
+scrape_configs:
+  # FlipFlop API metrics
+  - job_name: 'flipflop-api'
+    static_configs:
+      - targets: ['private-read-api:8001']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/metrics'
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Alertmanager
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']

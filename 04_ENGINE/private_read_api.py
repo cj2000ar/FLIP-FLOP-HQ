@@ -662,9 +662,12 @@ EVENTS_DATA = [
 # ============================================================================
 
 app = FastAPI(
-    title="Private Read API",
-    description="Lab & Dashboard read-only endpoints (bitemporal, Authority=ZERO)",
-    version="1.0.0"
+    title="FlipFlop HQ Private Read API",
+    description="Read-only API for Lab & Dashboard. Authority: ZERO. Authentication: Machine-ID + Fencing-Token (24h TTL).",
+    version="1.0.0",
+    docs_url="/docs",           # Swagger UI
+    redoc_url="/redoc",         # ReDoc
+    openapi_url="/openapi.json" # OpenAPI schema
 )
 
 app.add_middleware(

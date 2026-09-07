@@ -1,0 +1,483 @@
+openapi: 3.0.0
+info:
+  title: FlipFlop HQ Private Read API
+  description: |
+    Read-only API for Lab & Dashboard. Authority: ZERO.
+
+    **Authentication:** Machine-ID + Fencing-Token headers (24h TTL)
+
+    **Bitemporal:** event_time ≤ knowledge_time enforced
+  version: 1.0.0
+  contact:
+    name: FlipFlop Team
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.flipflop-hq.local
+    description: Production
+  - url: http://localhost:8000
+    description: Development
+
+security:
+  - machineId: []
+    fencingToken: []
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      tags: [System]
+      security: []
+      operationId: health_check
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: Private Read API
+                  version:
+                    type: string
+                    example: 1.0.0
+                  authority:
+                    type: string
+                    example: ZERO
+                  read_only:
+                    type: boolean
+                    example: true
+
+  /dev/issue-token:
+    post:
+      summary: Issue test token (dev/test only)
+      tags: [Authentication]
+      security: []
+      operationId: issue_test_token
+      parameters:
+        - name: machine_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: test-machine
+      responses:
+        '200':
+          description: Test token issued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    format: uuid
+                  machine_id:
+                    type: string
+                  expires_in_seconds:
+                    type: integer
+                    example: 86400
+                  note:
+                    type: string
+                    example: Dev/test token only - 24 hour TTL
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /experiments:
+    get:
+      summary: Experiment ledger (A-G PRE_REGISTERED, R holdout)
+      tags: [Experiments]
+      operationId: get_experiments
+      responses:
+        '200':
+          description: List of experiments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Experiment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /vault/items:
+    get:
+      summary: Strategy vault items with optional family filter
+      tags: [Vault]
+      operationId: get_vault_items
+      parameters:
+        - name: family
+          in: query
+          schema:
+            type: string
+            example: RR500
+          description: Filter by strategy family (RR500, IFVG, UT_NUMKI, etc.)
+      responses:
+        '200':
+          description: List of vault items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VaultItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /vault/families:
+    get:
+      summary: Strategy family definitions (5 families)
+      tags: [Vault]
+      operationId: get_vault_families
+      responses:
+        '200':
+          description: List of strategy families
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StrategyFamily'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /queue:
+    get:
+      summary: Queue items by state
+      tags: [Queue]
+      operationId: get_queue
+      parameters:
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum:
+              - CAPTURED
+              - NEEDS_EXTRACTION
+              - DUPLICATE_DNA
+              - READY_FOR_SPEC
+              - BLOCKED_DATA
+              - READY_FOR_SHADOW_BUILD
+              - SHADOW_RUNNING
+              - REJECTED
+              - SURVIVOR
+              - PROMOTION_REVIEW
+          description: Filter by queue state
+      responses:
+        '200':
+          description: List of queue items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QueueItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /agenda/events:
+    get:
+      summary: Event slots / calendar
+      tags: [Agenda]
+      operationId: get_agenda_events
+      responses:
+        '200':
+          description: List of calendar events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventSlot'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /guardian/wounds:
+    get:
+      summary: Wound registry (permanent incident reference)
+      tags: [Guardian]
+      operationId: get_guardian_wounds
+      responses:
+        '200':
+          description: List of wounds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /guardian/overrides:
+    get:
+      summary: Override ledger (empty until manual intervention)
+      tags: [Guardian]
+      operationId: get_guardian_overrides
+      responses:
+        '200':
+          description: List of overrides
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Override'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /guardian/calibration:
+    get:
+      summary: Calibration ledger (predictions scored)
+      tags: [Guardian]
+      operationId: get_guardian_calibration
+      responses:
+        '200':
+          description: List of calibration entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalibrationEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    machineId:
+      type: apiKey
+      in: header
+      name: Machine-ID
+      description: Machine identifier (required)
+    fencingToken:
+      type: apiKey
+      in: header
+      name: Fencing-Token
+      description: Auth token (24h TTL, UUID format)
+
+  schemas:
+    Experiment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: A
+        name:
+          type: string
+        hypothesis:
+          type: string
+        parameters:
+          type: string
+        datasetRole:
+          type: string
+          enum: [IN_SAMPLE, OUT_OF_SAMPLE, HOLDOUT, FORWARD, DEV_ONLY]
+        runs:
+          type: integer
+        status:
+          type: string
+          enum: [PRE_REGISTERED, RUNNING, COMPLETED, FAILED, REJECTED]
+        result:
+          type: string
+        rejectionReason:
+          type: string
+        event_time:
+          type: integer
+          description: Unix seconds
+        knowledge_time:
+          type: integer
+          description: Unix seconds
+
+    VaultItem:
+      type: object
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+          enum: [video, script, paper]
+        title:
+          type: string
+        source:
+          type: string
+        extraction:
+          type: string
+          enum: [NOT_STARTED, UNREVIEWED, IN_PROGRESS, EXTRACTED, VERIFIED]
+        evidence:
+          type: string
+          enum: [CLIP_ONLY, BACKTEST, MARKET_REPLAY, REALTIME_SIM, BROKER_AUDITED, SEALED_VALIDATED]
+        family:
+          type: array
+          items:
+            type: string
+        dna:
+          type: string
+        dataNeeds:
+          type: array
+          items:
+            type: string
+        event_time:
+          type: integer
+        knowledge_time:
+          type: integer
+
+    StrategyFamily:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        lineage:
+          type: string
+        dna:
+          type: array
+          items:
+            type: string
+
+    QueueItem:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        state:
+          type: string
+        why:
+          type: string
+        event_time:
+          type: integer
+        knowledge_time:
+          type: integer
+
+    EventSlot:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        importance:
+          type: string
+          enum: [HIGH, MEDIUM]
+        status:
+          type: string
+          enum: [NOT_CONNECTED, SCHEDULED, OCCURRED]
+        event_time:
+          type: integer
+        knowledge_time:
+          type: integer
+
+    Wound:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+        tone:
+          type: string
+          enum: [ok, warn, bad, muted, info]
+        event_time:
+          type: integer
+        knowledge_time:
+          type: integer
+
+    Override:
+      type: object
+      properties:
+        id:
+          type: string
+        who:
+          type: string
+        reason:
+          type: string
+        before_state:
+          type: string
+        after_state:
+          type: string
+        outcome:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    CalibrationEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        detail:
+          type: string
+        status:
+          type: string
+        tone:
+          type: string
+        event_time:
+          type: integer
+        knowledge_time:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: Missing Machine-ID header
+
+    Forbidden:
+      description: Token expired or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: Fencing-Token expired or invalid
+
+tags:
+  - name: System
+    description: Health & status
+  - name: Authentication
+    description: Token management (dev/test)
+  - name: Vault
+    description: Strategy vault & families
+  - name: Queue
+    description: Item queue
+  - name: Experiments
+    description: Experiment ledger
+  - name: Agenda
+    description: Event calendar
+  - name: Guardian
+    description: Trust architecture & wounds

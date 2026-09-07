@@ -1,0 +1,95 @@
+groups:
+  - name: flipflop-api
+    interval: 30s
+    rules:
+      # API Health Alerts
+      - alert: APIDown
+        expr: api_health_status == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "FlipFlop API is down"
+          description: "API health check failed for 5 minutes"
+
+      # Request Latency Alerts
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, api_request_duration_seconds) > 1.0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency (p95 > 1s)"
+          description: "{{ .Labels.endpoint }} p95 latency: {{ .Value }}s"
+
+      - alert: CriticalRequestLatency
+        expr: histogram_quantile(0.99, api_request_duration_seconds) > 5.0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical request latency (p99 > 5s)"
+          description: "{{ .Labels.endpoint }} p99 latency: {{ .Value }}s"
+
+      # Error Rate Alerts
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(api_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(api_requests_total[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate (>5%)"
+          description: "Error rate: {{ .Value | humanizePercentage }}"
+
+      - alert: AuthenticationFailures
+        expr: rate(token_validation_failures_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High token validation failure rate"
+          description: "{{ .Labels.reason }} failures: {{ .Value }}/sec"
+
+      # Database Performance Alerts
+      - alert: SlowDatabase
+        expr: histogram_quantile(0.95, db_query_duration_seconds) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow database queries"
+          description: "{{ .Labels.endpoint }} p95 query time: {{ .Value }}s"
+
+      # Token Store Alerts
+      - alert: HighTokenLoad
+        expr: active_tokens > 10000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of active tokens"
+          description: "Active tokens: {{ .Value }}"
+
+      # Request Rate Alerts
+      - alert: LowRequestRate
+        expr: rate(api_requests_total[5m]) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low request rate (possible outage)"
+          description: "Request rate: {{ .Value }}/sec"
+
+      - alert: HighRequestRate
+        expr: rate(api_requests_total[1m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Unusually high request rate"
+          description: "Request rate: {{ .Value }}/sec (possible DDoS)"
