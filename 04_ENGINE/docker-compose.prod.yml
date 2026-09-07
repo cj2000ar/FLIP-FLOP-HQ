@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # Private Read API
+  private-read-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flipflop-api
+    expose:
+      - "8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PORT=8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    networks:
+      - flipflop-network
+    # No ports exposed - only through nginx
+
+  # Nginx Reverse Proxy + TLS Termination
+  nginx:
+    image: nginx:alpine
+    container_name: flipflop-nginx
+    ports:
+      - "80:80"     # HTTP redirect to HTTPS
+      - "443:443"   # HTTPS
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - private-read-api
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - flipflop-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+
+volumes:
+  nginx_logs:
+
+networks:
+  flipflop-network:
+    driver: bridge
