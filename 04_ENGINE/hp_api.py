@@ -34,6 +34,12 @@ from guardian_engine import (
     AuthorityLevel, VerdictType, GateID, DecisionCartridge
 )
 
+# Import NinjaTrader Bridge
+from ninjatrader_bridge import (
+    NinjaTraderBridge, ReplaySession, TradeEvent, TradeSide,
+    TradeStatus, ReplayMetrics
+)
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -139,6 +145,165 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Initialize NinjaTrader Bridge
+    nt_bridge = NinjaTraderBridge(db_path=os.path.join(os.getenv('FLIPFLOP_DB_PATH', './databases/'), 'ninjatrader.db'))
+
+    # ========================================================================
+    # SHADOW LAB / NINJATRADER ENDPOINTS
+    # ========================================================================
+
+    @app.post("/shadow/session/create")
+    def create_replay_session(
+        strategy_name: str,
+        instrument: str,
+        market_date: str,
+        replay_speed: int = 1,
+        start_time: str = "09:30",
+        end_time: str = "16:00"
+    ):
+        """POST /shadow/session/create - Create Market Replay session"""
+        try:
+            session = nt_bridge.create_replay_session(
+                strategy_name=strategy_name,
+                instrument=instrument,
+                market_date=market_date,
+                replay_speed=replay_speed,
+                start_time=start_time,
+                end_time=end_time
+            )
+            return {
+                "session_id": str(session.session_id),
+                "strategy": session.strategy_name,
+                "instrument": session.instrument,
+                "market_date": session.market_date,
+                "replay_speed": session.replay_speed,
+                "authority": session.authority,
+                "live_enabled": session.live_enabled,
+                "created_at": session.created_at.isoformat()
+            }
+        except Exception as e:
+            logger.error(f"Create replay session error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post("/shadow/trade/record")
+    def record_trade_event(
+        session_id: str,
+        strategy_name: str,
+        instrument: str,
+        side: str,
+        entry_price: float,
+        entry_quantity: int,
+        stop_price: float,
+        target_price: float,
+        exit_price: Optional[float] = None,
+        pnl_ticks: Optional[int] = None,
+        pnl_dollars: Optional[float] = None,
+        cost_per_side: float = 2.25
+    ):
+        """POST /shadow/trade/record - Record trade from Market Replay"""
+        try:
+            sid = UUID(session_id)
+            trade = nt_bridge.record_trade(
+                session_id=sid,
+                strategy_name=strategy_name,
+                instrument=instrument,
+                side=TradeSide(side),
+                entry_time=datetime.utcnow(),
+                entry_price=entry_price,
+                entry_quantity=entry_quantity,
+                stop_price=stop_price,
+                target_price=target_price,
+                exit_time=datetime.utcnow() if exit_price else None,
+                exit_price=exit_price,
+                status=TradeStatus.TARGET_HIT if exit_price and exit_price >= target_price else TradeStatus.STOPPED_OUT if exit_price and exit_price <= stop_price else TradeStatus.FILLED,
+                pnl_ticks=pnl_ticks,
+                pnl_dollars=pnl_dollars,
+                cost_per_side=cost_per_side
+            )
+            return {
+                "event_id": str(trade.event_id),
+                "side": trade.side.value,
+                "entry_price": trade.entry_price,
+                "exit_price": trade.exit_price,
+                "pnl_dollars": trade.pnl_dollars,
+                "status": trade.status.value
+            }
+        except Exception as e:
+            logger.error(f"Record trade error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/shadow/session/{session_id}/metrics")
+    def get_session_metrics(session_id: str):
+        """GET /shadow/session/{id}/metrics - Get running P&L metrics"""
+        try:
+            sid = UUID(session_id)
+            metrics = nt_bridge.get_session_metrics(sid)
+            if not metrics:
+                raise HTTPException(status_code=404, detail="Session not found")
+            return metrics
+        except Exception as e:
+            logger.error(f"Get metrics error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/shadow/session/{session_id}/trades")
+    def get_session_trades(session_id: str):
+        """GET /shadow/session/{id}/trades - Get all trades"""
+        try:
+            sid = UUID(session_id)
+            trades = nt_bridge.get_session_trades(sid)
+            return {"trades": trades, "count": len(trades)}
+        except Exception as e:
+            logger.error(f"Get trades error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/shadow/session/{session_id}/vs-baseline")
+    def compare_to_baseline(session_id: str, baseline_winrate: float = 0.833):
+        """GET /shadow/session/{id}/vs-baseline - Compare to RR500 baseline"""
+        try:
+            sid = UUID(session_id)
+            comparison = nt_bridge.compare_to_baseline(sid, baseline_winrate)
+            if not comparison:
+                raise HTTPException(status_code=404, detail="Session not found")
+            return comparison
+        except Exception as e:
+            logger.error(f"Compare baseline error: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get("/shadow/strategies")
+    def list_strategies():
+        """GET /shadow/strategies - List available strategies"""
+        strategies = [
+            {
+                "name": "RR500",
+                "description": "RR500 / FlipFlop Quant Mirror baseline",
+                "baseline_winrate": 0.833,
+                "baseline_pnl": 2080,
+                "baseline_trades": 12
+            },
+            {
+                "name": "IFVG",
+                "description": "Fair Value Gap (FVG) strategy",
+                "baseline_winrate": 0.0,
+                "baseline_pnl": 0,
+                "baseline_trades": 0
+            },
+            {
+                "name": "UT",
+                "description": "ATR Trailing Stop (UT/NUMKI)",
+                "baseline_winrate": 0.0,
+                "baseline_pnl": 0,
+                "baseline_trades": 0
+            },
+            {
+                "name": "KiloView",
+                "description": "Market structure + session scoring",
+                "baseline_winrate": 0.0,
+                "baseline_pnl": 0,
+                "baseline_trades": 0
+            }
+        ]
+        return strategies
 
     # ========================================================================
     # HEARTBEAT ENDPOINTS
