@@ -1,0 +1,237 @@
+name: Deploy FlipFlop API
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - '04_ENGINE/**'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    branches: [main, master]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/api
+
+jobs:
+  # Lint & Test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd 04_ENGINE
+          pip install -r requirements.txt pytest flake8 black mypy
+
+      - name: Lint with flake8
+        run: |
+          cd 04_ENGINE
+          flake8 . --max-line-length=100 --ignore=E203,W503
+
+      - name: Format check with black
+        run: |
+          cd 04_ENGINE
+          black --check .
+
+      - name: Type check with mypy
+        run: |
+          cd 04_ENGINE
+          mypy . --ignore-missing-imports || true
+
+  # Build Docker image
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Container Registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./04_ENGINE
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # Security scan
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: './04_ENGINE'
+          exit-code: '1'
+
+      - name: OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          path: './04_ENGINE'
+
+  # Deploy to staging
+  deploy-staging:
+    needs: [build, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://api-staging.flipflop-hq.local
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to staging
+        env:
+          DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+          DEPLOY_HOST: ${{ secrets.STAGING_DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/deploy_key deploy@"$DEPLOY_HOST" \
+            "cd /opt/flipflop/api && \
+             git fetch origin && \
+             git checkout ${{ github.sha }} && \
+             docker-compose -f docker-compose.prod.yml pull && \
+             docker-compose -f docker-compose.prod.yml up -d"
+
+      - name: Health check
+        run: |
+          for i in {1..30}; do
+            if curl -sf https://api-staging.flipflop-hq.local/health; then
+              echo "✓ Staging health check passed"
+              exit 0
+            fi
+            echo "Attempt $i/30 - waiting for API..."
+            sleep 10
+          done
+          echo "✗ Staging health check failed"
+          exit 1
+
+  # Run integration tests
+  integration-tests:
+    needs: deploy-staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install test dependencies
+        run: |
+          pip install pytest requests python-dotenv
+
+      - name: Run integration tests
+        env:
+          API_URL: https://api-staging.flipflop-hq.local
+          MACHINE_ID: ci-test-machine
+          FENCING_TOKEN: ${{ secrets.STAGING_TEST_TOKEN }}
+        run: |
+          cd 04_ENGINE
+          pytest tests/integration/ -v --tb=short
+
+  # Deploy to production (manual approval)
+  deploy-production:
+    needs: integration-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://api.flipflop-hq.local
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to production
+        env:
+          DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_KEY }}
+          DEPLOY_HOST: ${{ secrets.PRODUCTION_DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/deploy_key deploy@"$DEPLOY_HOST" \
+            "cd /opt/flipflop/api && \
+             git fetch origin && \
+             git checkout ${{ github.sha }} && \
+             docker-compose -f docker-compose.prod.yml pull && \
+             docker-compose -f docker-compose.prod.yml up -d && \
+             docker-compose -f docker-compose.monitoring.yml up -d"
+
+      - name: Production health check
+        run: |
+          for i in {1..60}; do
+            if curl -sf https://api.flipflop-hq.local/health; then
+              echo "✓ Production health check passed"
+              exit 0
+            fi
+            echo "Attempt $i/60 - waiting for API..."
+            sleep 5
+          done
+          echo "✗ Production health check failed"
+          exit 1
+
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "Production deployment ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Deployment ${{ job.status | upper }}*\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
