@@ -19,7 +19,7 @@ Bitemporal: event_time ≤ knowledge_time enforced
 Port: 8000 (same as guardian_api)
 """
 
-from fastapi import FastAPI, HTTPException, Header, Query
+from fastapi import FastAPI, HTTPException, Header, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any, Literal
@@ -28,6 +28,9 @@ from enum import Enum
 import logging
 import os
 from uuid import uuid4
+import json
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -663,6 +666,39 @@ app.add_middleware(
     allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"],
 )
+
+
+# ============================================================================
+# AUDIT LOGGING MIDDLEWARE
+# ============================================================================
+
+class AuditLoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        machine_id = request.headers.get("Machine-ID", "unknown")
+        endpoint = request.url.path
+        request_time = datetime.utcnow().isoformat()
+
+        try:
+            response = await call_next(request)
+            status_code = response.status_code
+        except Exception as e:
+            status_code = 500
+            response = Response(content=str(e), status_code=status_code)
+
+        audit_log = {
+            "timestamp": request_time,
+            "machine_id": machine_id,
+            "endpoint": endpoint,
+            "method": request.method,
+            "status_code": status_code,
+            "request_id": str(uuid4())[:8],
+        }
+
+        logger.info(json.dumps(audit_log))
+        return response
+
+
+app.add_middleware(AuditLoggingMiddleware)
 
 
 # ============================================================================
