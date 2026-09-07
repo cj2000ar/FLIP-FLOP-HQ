@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import './GuardianPage.css';
 
+// Browser UUID v4 generator
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 interface GateVerdict {
   gate_id: string;
   verdict: 'PASS' | 'BLOCKED' | 'NOT_PROVEN';
@@ -26,11 +35,12 @@ export const GuardianPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/guardian/evaluate', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8002';
+      const response = await fetch(`${apiUrl}/guardian/evaluate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          correlation_id: crypto.randomUUID?.() || Math.random().toString(),
+          correlation_id: generateUUID(),
           artifact_hashes: {
             strategy: 'sha256_' + Math.random().toString(36).substring(7),
             engine: 'sha256_' + Math.random().toString(36).substring(7),

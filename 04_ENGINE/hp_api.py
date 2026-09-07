@@ -4,6 +4,7 @@ FlipFlop HQ Phase 2
 """
 
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 import logging
@@ -128,6 +129,15 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
         title="HP 24/7 Infrastructure API",
         description="FlipFlop HQ Phase 2 - Machine health, fencing, storage",
         version="1.0.0"
+    )
+
+    # Add CORS middleware for cross-origin requests from dashboard
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # ========================================================================
@@ -792,5 +802,6 @@ if __name__ == "__main__":
     # Create FastAPI app
     app = create_app(hp)
 
-    # Run server
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # Run server on configurable port
+    port = int(os.getenv('API_PORT', 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
