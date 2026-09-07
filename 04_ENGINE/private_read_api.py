@@ -27,6 +27,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 import logging
 import os
+import time
 from uuid import uuid4
 import json
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -705,6 +706,32 @@ app.add_middleware(AuditLoggingMiddleware)
 # MIDDLEWARE & AUTH
 # ============================================================================
 
+_TOKEN_STORE = {}  # Dict[str, {"expires_at": float, "machine_id": str}]
+_TOKEN_TTL_SECONDS = 86400  # 24 hours
+
+
+def _validate_token_locally(token: str, machine_id: str) -> bool:
+    """
+    Validate token against local store (dev/test mode).
+
+    Production: Use HP /validate_fencing_token instead.
+    Token format: UUID or test token (alphanumeric, 8+ chars).
+    TTL: 24 hours from issue time.
+    """
+    if token not in _TOKEN_STORE:
+        return False
+
+    stored = _TOKEN_STORE[token]
+    if stored["machine_id"] != machine_id:
+        return False
+
+    if time.time() > stored["expires_at"]:
+        del _TOKEN_STORE[token]
+        return False
+
+    return True
+
+
 async def validate_auth(
     machine_id: str = Header(None, alias="Machine-ID"),
     fencing_token: str = Header(None, alias="Fencing-Token"),
@@ -712,26 +739,36 @@ async def validate_auth(
     """
     Validate Machine-ID and Fencing-Token headers.
 
-    Production: Calls HP /validate_fencing_token for token validation + TTL.
-    Dev: Accepts test tokens (machine_id + fencing_token non-empty).
+    Dev/Test: Uses local token store with 24-hour TTL.
+    Production: Should call HP /validate_fencing_token (not yet available).
     """
     if not machine_id:
         raise HTTPException(status_code=401, detail="Missing Machine-ID header")
     if not fencing_token:
         raise HTTPException(status_code=401, detail="Missing Fencing-Token header")
 
-    if len(fencing_token) < 8:
+    # Format validation: UUID or alphanumeric 8+ chars
+    if not (len(fencing_token) >= 8 and fencing_token.replace("-", "").isalnum()):
         raise HTTPException(status_code=401, detail="Invalid Fencing-Token format")
 
-    # TODO: Production: Uncomment HP validation below when endpoint ready
-    # response = await validate_fencing_token_from_hp(machine_id, fencing_token)
-    # if not response.get("is_valid"):
-    #     raise HTTPException(status_code=403, detail="Fencing-Token expired or invalid")
-    # if response.get("expires_at") and datetime.fromisoformat(response["expires_at"]) < datetime.utcnow():
-    #     raise HTTPException(status_code=403, detail="Fencing-Token expired")
+    # Token validation with TTL check
+    if not _validate_token_locally(fencing_token, machine_id):
+        raise HTTPException(status_code=403, detail="Fencing-Token expired or invalid")
 
-    logger.info(f"Auth successful for machine_id={machine_id}")
+    logger.info(f"Auth successful for machine_id={machine_id}, token valid")
     return machine_id
+
+
+def issue_test_token(machine_id: str) -> str:
+    """Issue test token for dev/test (24-hour TTL). NOT for production."""
+    import uuid
+    token = str(uuid.uuid4())
+    _TOKEN_STORE[token] = {
+        "machine_id": machine_id,
+        "expires_at": time.time() + _TOKEN_TTL_SECONDS,
+    }
+    logger.info(f"Issued test token for machine_id={machine_id}, expires in {_TOKEN_TTL_SECONDS}s")
+    return token
 
 
 def add_bitemporal_fields(data: Dict, event_time_seconds: int = None):
@@ -777,6 +814,28 @@ async def health():
         "version": "1.0.0",
         "authority": "ZERO",
         "read_only": True
+    }
+
+
+@app.post("/dev/issue-token")
+async def dev_issue_token(machine_id: str = Query(None, description="Machine ID to issue token for")):
+    """
+    DEV ONLY: Issue test token with 24-hour TTL.
+
+    Usage: POST /dev/issue-token?machine_id=test-machine
+    Returns: {"token": "...", "expires_in_seconds": 86400}
+
+    Production: Remove this endpoint and integrate with HP /validate_fencing_token.
+    """
+    if not machine_id:
+        raise HTTPException(status_code=400, detail="machine_id required")
+
+    token = issue_test_token(machine_id)
+    return {
+        "token": token,
+        "machine_id": machine_id,
+        "expires_in_seconds": _TOKEN_TTL_SECONDS,
+        "note": "Dev/test token only - 24 hour TTL"
     }
 
 
