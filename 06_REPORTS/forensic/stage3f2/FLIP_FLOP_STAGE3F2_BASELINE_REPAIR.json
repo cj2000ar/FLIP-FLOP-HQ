@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3F2-TBBO-BASELINE-REPAIR",
+  "created_utc": "2026-08-07T03:14:51.677633+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "registry_sha256": "aa6e2f05c742e7093be20cdd2087c09a83a4ff10e2d31f3a6b352cc79bc8fc92",
+    "raw_sessions": 24,
+    "clean_sessions": 22
+  },
+  "repair_grid": {
+    "geometry_modes": [
+      "DNA_TP_DNA_SP",
+      "DNA_TP_REGISTRY_STOP",
+      "FORMULA_TP_REGISTRY_STOP"
+    ],
+    "trigger_modes": [
+      "TRADE_TOUCH",
+      "MID_TOUCH",
+      "BBO_EXECUTABLE",
+      "LEGACY_STAGE3F"
+    ],
+    "start_offsets_ms": [
+      0,
+      1,
+      100,
+      500
+    ],
+    "total_profiles": 48
+  },
+  "best_profile": {
+    "geometry_mode": "DNA_TP_DNA_SP",
+    "trigger_mode": "TRADE_TOUCH",
+    "start_offset_ms": 0,
+    "clean_sessions": 22,
+    "resolved_sessions": 22,
+    "unresolved_sessions": 0,
+    "outcome_matches": 16,
+    "outcome_match_rate": 0.7272727272727273,
+    "tv_target_sessions": 6,
+    "target_matches": 1,
+    "target_preservation_rate": 0.16666666666666666,
+    "tv_double_stops": 16,
+    "raw_double_stops": 20,
+    "raw_targets": 2,
+    "default_net": 1016.0,
+    "raw_net_resolved_only": -1109.0,
+    "net_difference": -2125.0,
+    "absolute_net_difference": 2125.0,
+    "pass_outcome_rate": false,
+    "pass_target_rate": false,
+    "pass_zero_unresolved": true,
+    "all_parity_gates_pass": false
+  },
+  "verdict": "BASELINE_REPAIR_INCOMPLETE_STAGE3F_REMAINS_SUSPENDED",
+  "root_cause_counts": {
+    "BEST_PROFILE_MATCH": 16,
+    "ACTUAL_PATH_DIFFERS_OR_ADDITIONAL_REPAIR_REQUIRED": 6
+  },
+  "interpretation": [
+    "DNA_TP uses the exact target distance exported by Pine.",
+    "TRADE_TOUCH approximates TradingView high/low geometry using the ordered last-trade path.",
+    "BBO_EXECUTABLE models immediately executable quote-side triggers.",
+    "A parity pass repairs only the original baseline. Breakeven must still be rerun separately.",
+    "A parity failure means the default-bar strategy and owned raw path cannot yet be reconciled sufficiently."
+  ],
+  "gates": {
+    "source_integrity": "PASS",
+    "repair_tournament": "PASS",
+    "baseline_repair": "FAIL",
+    "stage3f_breakeven_verdict": "SUSPENDED",
+    "stage3f3_be_rerun": "BLOCKED",
+    "pine_modification": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "session_results": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2_baseline_repair\\BASELINE_REPAIR_SESSION_RESULTS.csv",
+    "leaderboard": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2_baseline_repair\\BASELINE_REPAIR_LEADERBOARD.csv",
+    "root_causes": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2_baseline_repair\\ROOT_CAUSE_BY_SESSION.csv",
+    "best_profile_mismatches": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2_baseline_repair\\BEST_PROFILE_MISMATCHES.csv",
+    "geometry_audit": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2_baseline_repair\\GEOMETRY_LEVEL_AUDIT.csv"
+  }
+}

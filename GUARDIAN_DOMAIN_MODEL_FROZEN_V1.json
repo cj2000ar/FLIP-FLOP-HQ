@@ -1,0 +1,681 @@
+{
+  "schema_version": "1.0",
+  "phase": "PHASE_2_FROZEN",
+  "authority_invariant": {
+    "authority": "ZERO",
+    "live_enabled": false,
+    "broker_orders_allowed": false,
+    "control_mutation_allowed": false,
+    "failure_policy": "FAIL_CLOSED",
+    "status": "LOCKED_IMMUTABLE"
+  },
+  "entities": {
+    "ReleaseGate": {
+      "id": "gate_id",
+      "name": "string",
+      "version": "semantic_version",
+      "description": "Permitting decision point for deployment candidates. Evaluates evidence, applies policy, produces verdict.",
+      "fields": {
+        "gate_id": {"type": "uuid", "required": true, "description": "Unique gate identifier"},
+        "gate_name": {"type": "string", "required": true, "description": "Human-readable gate name"},
+        "gate_order": {"type": "int", "required": true, "description": "Sequential gate number (1-8)"},
+        "gate_version": {"type": "semver", "required": true, "description": "Gate schema version"},
+        "policy_ref": {"type": "string", "required": true, "description": "Reference to AuthorityPolicy"},
+        "required_evidence_types": {"type": "array<string>", "description": "Types of evidence this gate requires"},
+        "stale_threshold_seconds": {"type": "int", "required": true, "description": "Max age of fresh evidence"},
+        "created_at": {"type": "timestamp", "required": true},
+        "modified_at": {"type": "timestamp", "required": true}
+      },
+      "constraints": [
+        "gate_id must be globally unique",
+        "gate_order 1-8 (sequential, no gaps)",
+        "policy_ref must exist in AuthorityPolicy table",
+        "stale_threshold >= 60 seconds",
+        "version immutable after first verdict"
+      ]
+    },
+    "GateVerdict": {
+      "id": "verdict_id",
+      "description": "Outcome of a ReleaseGate evaluation. Binary outcome: PASS, BLOCKED, or NOT_PROVEN.",
+      "fields": {
+        "verdict_id": {"type": "uuid", "required": true, "description": "Unique verdict identifier"},
+        "gate_id": {"type": "uuid", "required": true, "description": "Foreign key to ReleaseGate"},
+        "correlation_id": {"type": "uuid", "required": true, "description": "Links verdict to deployment candidate"},
+        "verdict": {"type": "enum(PASS|BLOCKED|NOT_PROVEN)", "required": true},
+        "reasoning": {"type": "string", "description": "Human-readable explanation"},
+        "evidence_id": {"type": "uuid", "description": "Primary evidence evaluated"},
+        "secondary_evidence_ids": {"type": "array<uuid>", "description": "Supporting evidence"},
+        "event_time": {"type": "timestamp", "required": true, "description": "When verdict was issued"},
+        "knowledge_time": {"type": "timestamp", "required": true, "description": "When evidence was known"},
+        "authority_used": {"type": "enum(ZERO)", "required": true, "description": "Authority level at verdict"},
+        "policy_hash": {"type": "sha256", "description": "Hash of applied policy"}
+      },
+      "constraints": [
+        "verdict must be one of: PASS, BLOCKED, NOT_PROVEN",
+        "event_time <= knowledge_time",
+        "authority_used must be ZERO (hard-locked)",
+        "gate_id foreign key must exist",
+        "correlation_id must match DeploymentCandidate",
+        "verdict immutable after creation (audit-only append)",
+        "stale evidence (> gate.stale_threshold) forces NOT_PROVEN"
+      ]
+    },
+    "EvidenceRecord": {
+      "id": "evidence_id",
+      "description": "Factual observation about deployment candidate, infrastructure, or system state. Sources: hash verification, canary results, policy evaluation, machine health.",
+      "fields": {
+        "evidence_id": {"type": "uuid", "required": true},
+        "evidence_type": {"type": "string", "required": true, "description": "E.g., HASH_MATCH, CANARY_PASS, POLICY_CHECK, MACHINE_HEALTH"},
+        "correlation_id": {"type": "uuid", "description": "Links to deployment candidate"},
+        "source_system": {"type": "string", "required": true, "description": "E.g., HP_INFRA, GUARDIAN_HASH, CANARY_ENGINE"},
+        "observation": {"type": "json", "required": true, "description": "Fact payload (structure varies by type)"},
+        "is_contradicted": {"type": "boolean", "required": true, "default": false, "description": "True if newer evidence contradicts this"},
+        "contradicted_by": {"type": "array<uuid>", "description": "Evidence IDs that contradict this"},
+        "observed_at": {"type": "timestamp", "required": true, "description": "When fact was observed"},
+        "recorded_at": {"type": "timestamp", "required": true, "description": "When Guardian recorded it"},
+        "ttl_seconds": {"type": "int", "description": "Evidence freshness window"},
+        "checksum": {"type": "sha256", "required": true}
+      },
+      "constraints": [
+        "evidence_id globally unique",
+        "evidence_type immutable",
+        "observation payload immutable (copy-on-write)",
+        "is_contradicted only set by BLOCKED verdict pathway",
+        "observed_at <= recorded_at",
+        "ttl_seconds >= gate.stale_threshold if gate-critical",
+        "no cascade delete (retention for audit)"
+      ]
+    },
+    "AuthorityPolicy": {
+      "id": "policy_id",
+      "description": "Rules governing what evidence suffices for a gate verdict. Defines thresholds, required fields, contradictions.",
+      "fields": {
+        "policy_id": {"type": "uuid", "required": true},
+        "policy_name": {"type": "string", "required": true},
+        "policy_version": {"type": "semver", "required": true},
+        "authority_level": {"type": "enum(ZERO)", "required": true, "description": "Hard-locked to ZERO"},
+        "target_gate": {"type": "uuid", "required": true, "description": "Which gate this policy serves"},
+        "required_checks": {"type": "array<string>", "required": true, "description": "Mandatory checks (e.g., [SCHEMA_VALID, HASH_MATCH, NO_CONTRADICTIONS])"},
+        "all_checks_must_pass": {"type": "boolean", "required": true, "default": true},
+        "contradictory_states": {"type": "array<array<string>>", "description": "Evidence combinations that force BLOCKED"},
+        "stale_blocks": {"type": "boolean", "required": true, "default": true, "description": "Old evidence forces BLOCKED"},
+        "owner_approval_required": {"type": "boolean", "required": true, "default": false},
+        "created_at": {"type": "timestamp", "required": true},
+        "locked_at": {"type": "timestamp", "description": "Once locked, immutable"}
+      },
+      "constraints": [
+        "policy_id globally unique",
+        "authority_level immutable (ZERO only)",
+        "all_checks_must_pass default true (fail-closed)",
+        "contradictory_states immutable after first use",
+        "stale_blocks default true (fail-closed)",
+        "locked_at prevents any modification",
+        "target_gate must exist"
+      ]
+    },
+    "DecisionCartridge": {
+      "id": "cartridge_id",
+      "description": "Immutable snapshot of a deployment candidate's pass through all 8 gates. Final verdict bundle.",
+      "fields": {
+        "cartridge_id": {"type": "uuid", "required": true},
+        "correlation_id": {"type": "uuid", "required": true, "description": "Links to DeploymentCandidate"},
+        "candidate_id": {"type": "uuid", "required": true, "description": "DeploymentCandidate ID"},
+        "gate_verdicts": {"type": "array<{gate_id, verdict_id, verdict, reasoning}>", "required": true, "description": "All 8 gate results"},
+        "final_verdict": {"type": "enum(PASS|BLOCKED|NOT_PROVEN)", "required": true, "description": "Aggregate of all gates"},
+        "blocking_gates": {"type": "array<uuid>", "description": "Gate IDs that voted BLOCKED"},
+        "not_proven_gates": {"type": "array<uuid>", "description": "Gate IDs that voted NOT_PROVEN"},
+        "evidence_root_hash": {"type": "sha256", "required": true, "description": "Hash of all evidence used"},
+        "policy_root_hash": {"type": "sha256", "required": true, "description": "Hash of all policies applied"},
+        "created_at": {"type": "timestamp", "required": true},
+        "authority": {"type": "enum(ZERO)", "required": true},
+        "owner_approval_id": {"type": "uuid", "description": "If approval required, owner's ID"}
+      },
+      "constraints": [
+        "cartridge_id immutable",
+        "all 8 gates must have verdicts",
+        "final_verdict = PASS only if all 8 gates = PASS",
+        "final_verdict = BLOCKED if any gate = BLOCKED",
+        "final_verdict = NOT_PROVEN if any gate = NOT_PROVEN and none = BLOCKED",
+        "gate_verdicts immutable (sealed)",
+        "authority always ZERO",
+        "no modification after creation"
+      ]
+    },
+    "CanaryRun": {
+      "id": "canary_id",
+      "description": "Controlled test deployment of candidate artifact to canary cohort. Generates evidence for gate evaluation.",
+      "fields": {
+        "canary_id": {"type": "uuid", "required": true},
+        "candidate_id": {"type": "uuid", "required": true, "description": "DeploymentCandidate under test"},
+        "correlation_id": {"type": "uuid", "required": true},
+        "artifact_hash": {"type": "sha256", "required": true},
+        "cohort_size": {"type": "int", "required": true, "description": "Number of machines in canary"},
+        "cohort_machines": {"type": "array<string>", "required": true, "description": "Machine identifiers"},
+        "deployment_time": {"type": "timestamp", "required": true},
+        "observation_window_seconds": {"type": "int", "required": true, "default": 300},
+        "result": {"type": "enum(PASS|FAIL|INCOMPLETE|TIMEOUT)", "required": true},
+        "error_rate": {"type": "float", "min": 0, "max": 1, "description": "Fraction of machines reporting errors"},
+        "latency_p99_ms": {"type": "float", "description": "99th percentile latency"},
+        "rollback_triggered": {"type": "boolean", "required": true, "default": false},
+        "rollback_time": {"type": "timestamp", "description": "When rollback occurred"},
+        "evidence_id": {"type": "uuid", "description": "EvidenceRecord generated by this run"}
+      },
+      "constraints": [
+        "canary_id globally unique",
+        "result immutable after observation_window_seconds",
+        "error_rate in [0, 1]",
+        "only one active canary per candidate",
+        "rollback_triggered only if result != PASS",
+        "cohort_size <= total machine fleet",
+        "if rollback_triggered, rollback_time required"
+      ]
+    },
+    "DeploymentCandidate": {
+      "id": "candidate_id",
+      "description": "Artifact bundle awaiting gate evaluations. Contains hashes, passport, and links to gate verdicts.",
+      "fields": {
+        "candidate_id": {"type": "uuid", "required": true},
+        "correlation_id": {"type": "uuid", "required": true, "description": "Traceability ID"},
+        "artifact_hashes": {"type": "object{strategy: sha256, engine: sha256, ui: sha256}", "required": true, "description": "Content hashes of BUY/SELL strategy, engine, UI"},
+        "passport_hash": {"type": "sha256", "required": true, "description": "Hash of CONTROL/passport"},
+        "side": {"type": "enum(BUY|SELL|BOTH)", "required": true},
+        "source_system": {"type": "string", "required": true, "description": "E.g., NINJA_INFRA, DEV_BRANCH"},
+        "created_at": {"type": "timestamp", "required": true},
+        "gate_results": {"type": "array<{gate_id, verdict_id, verdict}>", "description": "Results of gate evaluations"},
+        "canary_evidence_id": {"type": "uuid", "description": "EvidenceRecord from canary run"},
+        "decision_cartridge_id": {"type": "uuid", "description": "Final DecisionCartridge"},
+        "authority": {"type": "enum(ZERO)", "required": true},
+        "owner_approval_id": {"type": "uuid", "description": "Owner who approved (if required)"},
+        "promotion_ready": {"type": "boolean", "required": true, "default": false},
+        "status": {"type": "enum(STAGING|IN_GATES|BLOCKED|APPROVED|DEPLOYED|ROLLED_BACK)", "required": true}
+      },
+      "constraints": [
+        "candidate_id globally unique",
+        "artifact_hashes immutable",
+        "passport_hash immutable",
+        "side immutable",
+        "promotion_ready = true only if DecisionCartridge.final_verdict = PASS",
+        "owner_approval_id required if gate policy requires approval",
+        "status transitions one-way: STAGING -> IN_GATES -> (BLOCKED|APPROVED) -> (DEPLOYED|ROLLED_BACK)",
+        "authority always ZERO"
+      ]
+    }
+  },
+  "relationships": {
+    "gate_to_verdict": {
+      "source": "ReleaseGate",
+      "target": "GateVerdict",
+      "cardinality": "1:N",
+      "foreign_key": "GateVerdict.gate_id -> ReleaseGate.gate_id",
+      "description": "A gate produces many verdicts (one per candidate evaluation)",
+      "cascade_rules": "ON DELETE RESTRICT (verdicts must be manually archived)"
+    },
+    "verdict_to_evidence": {
+      "source": "GateVerdict",
+      "target": "EvidenceRecord",
+      "cardinality": "1:N",
+      "description": "A verdict references primary and secondary evidence",
+      "cascade_rules": "ON DELETE RESTRICT (evidence must be retained for audit)"
+    },
+    "policy_to_gate": {
+      "source": "AuthorityPolicy",
+      "target": "ReleaseGate",
+      "cardinality": "1:N",
+      "foreign_key": "ReleaseGate.policy_ref -> AuthorityPolicy.policy_id",
+      "description": "A policy governs one or more gates",
+      "cascade_rules": "ON DELETE RESTRICT"
+    },
+    "candidate_to_cartridge": {
+      "source": "DeploymentCandidate",
+      "target": "DecisionCartridge",
+      "cardinality": "1:1",
+      "foreign_key": "DeploymentCandidate.decision_cartridge_id -> DecisionCartridge.cartridge_id",
+      "description": "Each candidate gets one final decision cartridge",
+      "cascade_rules": "ON DELETE RESTRICT"
+    },
+    "candidate_to_canary": {
+      "source": "DeploymentCandidate",
+      "target": "CanaryRun",
+      "cardinality": "1:N",
+      "foreign_key": "CanaryRun.candidate_id -> DeploymentCandidate.candidate_id",
+      "description": "A candidate may have multiple canary runs",
+      "cascade_rules": "ON DELETE RESTRICT"
+    },
+    "canary_to_evidence": {
+      "source": "CanaryRun",
+      "target": "EvidenceRecord",
+      "cardinality": "1:1",
+      "foreign_key": "CanaryRun.evidence_id -> EvidenceRecord.evidence_id",
+      "description": "Each canary run generates evidence record",
+      "cascade_rules": "ON DELETE RESTRICT"
+    },
+    "candidate_to_evidence": {
+      "source": "DeploymentCandidate",
+      "target": "EvidenceRecord",
+      "cardinality": "1:N",
+      "description": "A candidate accumulates evidence from multiple sources (hashes, canary, policy checks)",
+      "cascade_rules": "ON DELETE RESTRICT"
+    },
+    "cartridge_to_verdict": {
+      "source": "DecisionCartridge",
+      "target": "GateVerdict",
+      "cardinality": "1:N",
+      "description": "A cartridge seals all verdicts from a candidate's gate journey",
+      "cascade_rules": "ON DELETE RESTRICT"
+    }
+  },
+  "frozen_tuples": {
+    "AuthorityTuple": {
+      "fields": [
+        {"name": "authority", "type": "enum(ZERO)", "immutable": true, "value": "ZERO"},
+        {"name": "live_enabled", "type": "boolean", "immutable": true, "value": false},
+        {"name": "broker_orders_allowed", "type": "boolean", "immutable": true, "value": false},
+        {"name": "control_mutation_allowed", "type": "boolean", "immutable": true, "value": false},
+        {"name": "owner_approval_id", "type": "uuid", "immutable": false, "nullable": true}
+      ],
+      "semantics": "Defines the hard governance boundary. No code path may escalate authority or enable live/broker/mutation. Checked on every gate entry.",
+      "frozen_at": "2026-09-07T00:00:00Z",
+      "constraint_checks": [
+        "authority == ZERO OR FAIL_CLOSED",
+        "live_enabled == false OR FAIL_CLOSED",
+        "broker_orders_allowed == false OR FAIL_CLOSED",
+        "control_mutation_allowed == false OR FAIL_CLOSED"
+      ]
+    },
+    "StrategyIdentityTuple": {
+      "fields": [
+        {"name": "side", "type": "enum(BUY|SELL)", "immutable": true},
+        {"name": "sha256", "type": "hash", "immutable": true, "description": "Content hash of strategy code"},
+        {"name": "passport_id", "type": "string", "immutable": true, "description": "Identifier from CONTROL passport"},
+        {"name": "release_gate_version", "type": "semver", "immutable": true},
+        {"name": "verification_state", "type": "enum(ASSERTED|PROVEN|CONTRADICTED)", "immutable": false}
+      ],
+      "semantics": "Uniquely identifies a strategy artifact and its verification status. BUY and SELL are independent; each requires separate hash match and canary.",
+      "frozen_at": "2026-09-07T00:00:00Z",
+      "example": {
+        "side": "BUY",
+        "sha256": "657F9C62DEADBEEFCAFEBABE...",
+        "passport_id": "FLIP_FLOP_CONTROL_V1.4",
+        "release_gate_version": "1.0.0",
+        "verification_state": "PROVEN"
+      }
+    },
+    "GateDecisionTuple": {
+      "fields": [
+        {"name": "gate_id", "type": "uuid", "immutable": true},
+        {"name": "correlation_id", "type": "uuid", "immutable": true, "description": "Links to deployment candidate"},
+        {"name": "input_hashes", "type": "array<sha256>", "immutable": true, "description": "Hashes of all input evidence"},
+        {"name": "evidence_id", "type": "uuid", "immutable": true, "description": "Primary evidence evaluated"},
+        {"name": "verdict", "type": "enum(PASS|BLOCKED|NOT_PROVEN)", "immutable": true},
+        {"name": "event_time", "type": "timestamp", "immutable": true},
+        {"name": "knowledge_time", "type": "timestamp", "immutable": true}
+      ],
+      "semantics": "Immutable record of a gate's single decision. Audit trail cannot be modified. Verdict binding: once PASS or BLOCKED, cannot be revisited.",
+      "frozen_at": "2026-09-07T00:00:00Z",
+      "constraint_checks": [
+        "event_time <= knowledge_time",
+        "input_hashes non-empty",
+        "verdict one of three allowed states",
+        "evidence_id must exist in EvidenceRecord table"
+      ]
+    },
+    "DeploymentCandidateTuple": {
+      "fields": [
+        {"name": "candidate_id", "type": "uuid", "immutable": true},
+        {"name": "artifact_hashes", "type": "object", "immutable": true, "description": "{strategy_sha256, engine_sha256, ui_sha256}"},
+        {"name": "passport_hash", "type": "sha256", "immutable": true},
+        {"name": "gate_results", "type": "array<{gate_id, verdict}>", "immutable": false, "description": "Populated as gates evaluate"},
+        {"name": "canary_evidence_id", "type": "uuid", "immutable": false, "nullable": true},
+        {"name": "authority", "type": "enum(ZERO)", "immutable": true},
+        {"name": "owner_approval_id", "type": "uuid", "immutable": false, "nullable": true}
+      ],
+      "semantics": "Deployment bundle with fixed content, mutable gate journey. Cannot change artifacts after creation. Gate results and canary evidence append-only.",
+      "frozen_at": "2026-09-07T00:00:00Z",
+      "promotion_rules": {
+        "to_approved": "Requires gate_results.all_verdicts = PASS AND (owner_approval_id present if policy requires)",
+        "to_deployed": "Requires decision_cartridge.final_verdict = PASS AND no contradictions in evidence",
+        "to_blocked": "Any gate verdict = BLOCKED",
+        "to_rolled_back": "Canary failure OR evidence contradiction detected"
+      }
+    }
+  },
+  "eight_gates": [
+    {
+      "gate_number": 1,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "gate_name": "SCHEMA_AND_IDENTITY",
+      "description": "Validates deployment candidate structure and artifact identity",
+      "required_checks": [
+        "candidate_schema_valid",
+        "artifact_hashes_present",
+        "passport_hash_present",
+        "correlation_id_valid"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Schema validation fails",
+        "Any required hash missing",
+        "Correlation ID malformed or duplicated"
+      ],
+      "not_proven_conditions": [
+        "Passport not yet available from CONTROL"
+      ]
+    },
+    {
+      "gate_number": 2,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47a",
+      "gate_name": "HASH_INTEGRITY",
+      "description": "Verifies artifact content hashes match expected values from source",
+      "required_checks": [
+        "strategy_sha256_matches",
+        "engine_sha256_matches",
+        "ui_sha256_matches",
+        "passport_hash_matches"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Any artifact hash mismatch",
+        "Passport hash mismatch",
+        "Hash source contradicts stored hash"
+      ],
+      "not_proven_conditions": [
+        "Artifact not yet fetched",
+        "Hash source unavailable"
+      ]
+    },
+    {
+      "gate_number": 3,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47b",
+      "gate_name": "AUTHORITY_POLICY_COMPLIANCE",
+      "description": "Confirms all policy checks pass: authority=ZERO, live=false, no mutations",
+      "required_checks": [
+        "authority_equals_zero",
+        "live_enabled_false",
+        "broker_orders_false",
+        "control_mutation_false",
+        "policy_schema_valid"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "authority != ZERO",
+        "live_enabled = true",
+        "broker_orders_allowed = true",
+        "control_mutation_allowed = true"
+      ],
+      "not_proven_conditions": [
+        "Policy not yet loaded"
+      ]
+    },
+    {
+      "gate_number": 4,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47c",
+      "gate_name": "MACHINE_HEALTH_AND_READINESS",
+      "description": "Verifies HP infrastructure is healthy and ready to receive deployment",
+      "required_checks": [
+        "no_open_errors_in_fleet",
+        "all_machines_healthy",
+        "fencing_token_valid",
+        "heartbeat_recent",
+        "clock_within_tolerance"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Any machine in error state",
+        "Fencing token expired",
+        "Clock skew > 5 seconds",
+        "Heartbeat stale > 60 seconds"
+      ],
+      "not_proven_conditions": [
+        "Heartbeat not yet received",
+        "Health check in progress"
+      ]
+    },
+    {
+      "gate_number": 5,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47d",
+      "gate_name": "CANARY_EXECUTION",
+      "description": "Runs controlled canary deployment and evaluates results",
+      "required_checks": [
+        "canary_deployment_success",
+        "error_rate_lt_threshold",
+        "latency_p99_lt_threshold",
+        "no_rollback_triggered",
+        "observation_window_complete"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Canary deployment fails",
+        "Error rate > 5%",
+        "Latency p99 > 200ms",
+        "Rollback triggered",
+        "Any critical error in cohort"
+      ],
+      "not_proven_conditions": [
+        "Canary still running",
+        "Observation window not complete",
+        "Cohort timeout (> 5 minutes)"
+      ]
+    },
+    {
+      "gate_number": 6,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47e",
+      "gate_name": "EVIDENCE_CONSISTENCY",
+      "description": "Detects and blocks contradictory evidence from multiple sources",
+      "required_checks": [
+        "no_contradicted_hashes",
+        "no_contradicted_policies",
+        "no_contradicted_canary_results",
+        "evidence_timestamps_consistent",
+        "event_ordering_valid"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Evidence contradiction detected",
+        "Hash conflict (two different hashes for same artifact)",
+        "Policy conflict (contradictory checks)",
+        "Canary contradiction with hash evidence",
+        "Temporal ordering violation (newer contradicts older)"
+      ],
+      "not_proven_conditions": [
+        "Evidence not yet collected",
+        "Contradiction resolution pending"
+      ]
+    },
+    {
+      "gate_number": 7,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d47f",
+      "gate_name": "FRESHNESS_AND_STALENESS",
+      "description": "Enforces evidence freshness: blocks if any evidence stale or missing",
+      "required_checks": [
+        "all_evidence_fresh_le_stale_threshold",
+        "no_missing_required_evidence",
+        "hash_evidence_age_lt_300s",
+        "canary_evidence_age_lt_300s",
+        "policy_evidence_age_lt_300s"
+      ],
+      "stale_threshold_seconds": 300,
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Any evidence older than stale_threshold (300s)",
+        "Required evidence missing",
+        "Evidence not yet timestamp-verified"
+      ],
+      "not_proven_conditions": [
+        "Evidence collection in progress",
+        "Age verification pending"
+      ]
+    },
+    {
+      "gate_number": 8,
+      "gate_id": "f47ac10b-58cc-4372-a567-0e02b2c3d480",
+      "gate_name": "FINAL_ARBITER",
+      "description": "Aggregate gate: confirms all prior gates passed, no escalation, owner approval if required",
+      "required_checks": [
+        "all_prior_gates_passed",
+        "authority_still_zero",
+        "no_authority_escalation",
+        "owner_approval_present_if_required",
+        "decision_cartridge_sealed"
+      ],
+      "possible_verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+      "blocking_conditions": [
+        "Any prior gate = BLOCKED",
+        "Any prior gate = NOT_PROVEN",
+        "Authority escalation attempted",
+        "Owner approval missing when required",
+        "Decision cartridge not properly sealed"
+      ],
+      "not_proven_conditions": [
+        "Decision cartridge not yet assembled"
+      ]
+    }
+  ],
+  "verdicts": {
+    "PASS": {
+      "description": "Gate evidence requirements met. Candidate may proceed.",
+      "semantics": "Affirmative: all required checks passed, no blocking conditions detected, evidence fresh and consistent",
+      "downstream_effect": "Gate verdict recorded. If all 8 gates = PASS, DecisionCartridge.final_verdict = PASS, promotion eligible"
+    },
+    "BLOCKED": {
+      "description": "Evidence negates gate requirement. Candidate cannot proceed.",
+      "semantics": "Negative: blocking condition detected (hash mismatch, policy violation, canary failure, evidence contradiction, stale evidence, authority escalation attempt)",
+      "downstream_effect": "DecisionCartridge.final_verdict = BLOCKED. Candidate rolled back or held. No recovery without owner intervention to fix root cause."
+    },
+    "NOT_PROVEN": {
+      "description": "Evidence unavailable or incomplete. Gate cannot decide.",
+      "semantics": "Indeterminate: required evidence not yet available, still collecting (e.g., canary running), or resolution pending",
+      "downstream_effect": "DecisionCartridge.final_verdict = NOT_PROVEN if no gate = BLOCKED. Candidate remains in IN_GATES state until all gates resolve."
+    }
+  },
+  "fail_closed_constraints": [
+    {
+      "constraint_id": "FC01",
+      "name": "NO_AUTHORITY_ESCALATION",
+      "rule": "Authority must always be ZERO. No code path may escalate authority. Any attempt to set authority != ZERO triggers BLOCKED verdict and FAIL_CLOSED.",
+      "enforcement": "Gate 3 (AUTHORITY_POLICY_COMPLIANCE) and Gate 8 (FINAL_ARBITER) check authority == ZERO. Violation = BLOCKED.",
+      "testing": "Negative authority test: attempt to promote candidate with authority=ONE or higher. Must result in BLOCKED."
+    },
+    {
+      "constraint_id": "FC02",
+      "name": "STALE_EVIDENCE_BLOCKS",
+      "rule": "Evidence older than gate.stale_threshold (300 seconds) forces NOT_PROVEN or BLOCKED verdict. Never proceed with stale evidence.",
+      "enforcement": "Gate 7 (FRESHNESS_AND_STALENESS) verifies all evidence timestamps. If any evidence.age > stale_threshold, verdict = BLOCKED.",
+      "testing": "Stale evidence test: inject evidence older than 300s. Must result in BLOCKED."
+    },
+    {
+      "constraint_id": "FC03",
+      "name": "CONTRADICTED_EVIDENCE_BLOCKS",
+      "rule": "If newer evidence contradicts older evidence (hash mismatch, policy reversal, canary failure), verdict = BLOCKED.",
+      "enforcement": "Gate 6 (EVIDENCE_CONSISTENCY) detects contradictions. EvidenceRecord.is_contradicted flag marks contradicted evidence.",
+      "testing": "Contradiction test: submit hash A, then hash B for same artifact. Second verdict must be BLOCKED."
+    },
+    {
+      "constraint_id": "FC04",
+      "name": "MISSING_REQUIRED_EVIDENCE_BLOCKS",
+      "rule": "If any gate's required_evidence_types are missing, verdict = BLOCKED or NOT_PROVEN (depending on collection status).",
+      "enforcement": "Each gate lists required_checks. Missing check = NOT_PROVEN. If timeout > 5 minutes, = BLOCKED.",
+      "testing": "Missing evidence test: attempt to promote without hash verification. Must result in NOT_PROVEN."
+    },
+    {
+      "constraint_id": "FC05",
+      "name": "CANARY_FAILURE_BLOCKS",
+      "rule": "If canary error_rate > 5% or latency_p99 > 200ms or rollback triggered, verdict = BLOCKED.",
+      "enforcement": "Gate 5 (CANARY_EXECUTION) evaluates CanaryRun.result. Failure = BLOCKED.",
+      "testing": "Canary failure test: inject canary with error_rate=10%. Must result in BLOCKED."
+    },
+    {
+      "constraint_id": "FC06",
+      "name": "HASH_MISMATCH_BLOCKS",
+      "rule": "If artifact content hash doesn't match expected value, verdict = BLOCKED.",
+      "enforcement": "Gate 2 (HASH_INTEGRITY) verifies all hashes. Mismatch = BLOCKED.",
+      "testing": "Hash mismatch test: submit artifact with wrong hash. Must result in BLOCKED."
+    },
+    {
+      "constraint_id": "FC07",
+      "name": "ALL_GATES_MUST_PASS_FOR_PROMOTION",
+      "rule": "DeploymentCandidate.promotion_ready = true only if DecisionCartridge.final_verdict = PASS (all 8 gates = PASS).",
+      "enforcement": "DecisionCartridge logic: final_verdict = PASS IFF all gate_verdicts[*].verdict = PASS.",
+      "testing": "Partial pass test: 7 gates = PASS, 1 gate = NOT_PROVEN. DecisionCartridge.final_verdict must be NOT_PROVEN."
+    },
+    {
+      "constraint_id": "FC08",
+      "name": "NO_MANUAL_OVERRIDE_OF_GATE_VERDICTS",
+      "rule": "Once a gate verdict is issued, it cannot be modified or overridden. All changes require new gate evaluation.",
+      "enforcement": "GateVerdict.verdict immutable after creation. Any change requires new verdict_id.",
+      "testing": "Override test: attempt to modify verdict_id = X. Must fail with immutability constraint."
+    }
+  ],
+  "integration_points": {
+    "HP_INFRA": {
+      "component": "HP Infra (24/7 Worker Machines)",
+      "guardian_consumer_role": "Source of machine health evidence, fencing tokens, heartbeats. Receives promotion signals.",
+      "inputs_to_guardian": [
+        "MachineHealthReport (Gate 4 source): {machine_id, health_status, error_count, last_heartbeat, clock_offset}",
+        "FencingTokenProof: {token_hash, epoch, expiry, signature}",
+        "ArtifactDeploymentManifest: {candidate_id, artifact_paths, checksums}"
+      ],
+      "outputs_from_guardian": [
+        "Gate4Verdict: PASS|BLOCKED|NOT_PROVEN (gates artifact deployment)",
+        "Gate7Verdict: Freshness check (rejects stale health reports)",
+        "PromotionApproval: {candidate_id, authority=ZERO, sealed_decision_cartridge}"
+      ],
+      "constraints": [
+        "Heartbeat must arrive within 60 seconds",
+        "Clock skew must be < 5 seconds",
+        "Fencing token must not be expired",
+        "No machine can receive artifact until Gate 4 + Gate 5 = PASS"
+      ]
+    },
+    "NINJA_TRADER_BATCH": {
+      "component": "NinjaTrader Batch Engine (Order/Execution Interface)",
+      "guardian_consumer_role": "Consumes promotion decisions. Receives no-go signals for BLOCKED candidates. Follows Guardian arbiter.",
+      "inputs_to_guardian": [
+        "StrategyExecutionIntent: {side, entry_ticks, stop_ticks, target_ticks, quantity, validity}",
+        "OrderExecutionProof: {order_id, fill_price, fill_time, timestamp, broker_acknowledgment}"
+      ],
+      "outputs_from_guardian": [
+        "PromotionApproval: {candidate_id, all_gates_passed, canary_evidence_id, decision_cartridge_sealed}",
+        "BLOCKED_Signal: {candidate_id, blocking_gate_id, reason, no_retry_until=timestamp}",
+        "NOT_PROVEN_Signal: {candidate_id, waiting_gates, estimated_resolution_time}"
+      ],
+      "constraints": [
+        "NinjaTrader Batch must not execute orders if Guardian verdict = BLOCKED",
+        "NinjaTrader Batch must wait for all 8 gates if Guardian verdict = NOT_PROVEN",
+        "NinjaTrader Batch receives NO authority escalation signals from Guardian (Authority=ZERO always)",
+        "No live orders permitted (live_enabled = false)"
+      ]
+    },
+    "UI_DASHBOARD": {
+      "component": "UI Control Center (Phone, Tablet, Desktop)",
+      "guardian_consumer_role": "Displays Guardian state, gate verdicts, evidence status, promotion readiness. Shows truth age and stale warnings.",
+      "inputs_to_guardian": [
+        "DashboardStateRequest: {user_role, include_sensitive_data}",
+        "ManualApprovalRequest: {owner_id, candidate_id, approval_signature} (optional, policy-dependent)"
+      ],
+      "outputs_from_guardian": [
+        "GuardianStateSnapshot: {phase, authority, gates[], verdicts[], evidence_status, final_verdict, promotion_ready, truth_age_seconds}",
+        "TruthBar: {is_fresh, age_seconds, stale_since_timestamp, warning_level}",
+        "PromotionStatus: {candidate_id, gate_results, blocking_gates, approval_status}"
+      ],
+      "constraints": [
+        "UI must display truth_age and stale warnings prominently",
+        "UI must NOT grant authority or override Guardian verdicts",
+        "UI must show Authority=ZERO in all screens (visual enforcement)",
+        "UI must distinguish observed health from Guardian authority (no confusion)",
+        "Admin/public toggle filters sensitive data"
+      ]
+    }
+  },
+  "metadata": {
+    "created_at": "2026-09-07T00:00:00Z",
+    "frozen_by": "Domain Architect",
+    "phase": "PHASE_2_FROZEN_M01",
+    "authority_invariant_status": "LOCKED_IMMUTABLE",
+    "next_milestone": "HP Infra Implementation (M02) + Guardian Enforcement (M03) start 2026-09-08",
+    "critical_risks": [
+      "R01: Canary PASS lacks closure evidence (BLOCKED until Gate 5 produces evidence)",
+      "R04: HP restart/sleep/clock jump (Gate 4 monitors, Gate 7 enforces freshness)",
+      "R03: UI mistaken for authority (visual lock: Authority=ZERO on all screens)"
+    ]
+  }
+}

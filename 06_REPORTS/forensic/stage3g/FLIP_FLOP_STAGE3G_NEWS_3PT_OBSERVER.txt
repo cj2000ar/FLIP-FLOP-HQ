@@ -1,0 +1,76 @@
+================================================================================================================
+FLIP FLOP STAGE 3G.1 - VALIDATED MULTI-FILE NEWS COVERAGE AUDIT
+================================================================================================================
+STATUS: PASS
+BREAKEVEN BRANCH CLOSED
+DEFAULT DETAILIZATION EXCLUDED
+NO DIRECT NEWS ORDERS
+NO PINE CHANGE
+STAGE 4E UNCHANGED
+LIVE ROUTING LOCKED
+
+FROZEN MEMORY
+Control: V3.6.72 | +$294,276 | PF 2.877 | 7/7 positive years
+One-account holdout: route-static +$36,631.50 | RF +$33,289.50
+Stage 3F.3: REVERT_TO_FROZEN_CONTROL_NO_BE
+
+PREDECLARED THREE-POINT OBSERVER
+Range: exactly 10 minutes before the official release
+BUY: ordered range high + 3.00 NQ points
+SELL: ordered range low - 3.00 NQ points
+Trigger: first ordered last-trade touch during the first 10 minutes after release
+Reversal: prohibited
+Usage: choose BUY, SELL, or SKIP at the existing frozen FLIP FLOP session
+Direct report-time order: not placed and not simulated
+
+COVERAGE AND SIGNALS
+AUG07_PRODUCTIVITY         | CLEAN      | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+AUG12_CPI                  | CLEAN      | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+AUG14_PPI                  | CLEAN      | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+AUG15_IMPORT_EXPORT        | CLEAN      | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+SEP16_IMPORT_EXPORT        | CLEAN      | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+SEP17_FOMC                 | DEGRADED   | NO_OVERLAPPING_FILES            | NOT_SCORED_NO_OWNED_WINDOW_OVERLAP | direction UNAVAILABLE
+
+DECISION
+OWNED_RAW_COVERAGE_INSUFFICIENT_NO_OBSERVER_JUDGMENT
+Clean manifest events: 5
+Resolved clean events: 0
+Minimum for mechanism scoring: 3
+
+ONE-TICK DIAGNOSTIC
+Observer selected net: $0.00
+Always BUY net: $0.00
+Always SELL net: $0.00
+Paired net: $0.00
+BUY signals: 0
+SELL signals: 0
+SKIP signals: 0
+Whipsaw events: 0
+
+NON-NEGOTIABLE
+No result from five clean events can promote a model or change Pine.
+No incomplete observer window is scored.
+No degraded event enters clean totals.
+No parameter tournament is allowed around the fixed three-point buffer.
+
+OUTPUTS
+Parquet catalog: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\news_three_point_observer\stage3g\PARQUET_TIME_COVERAGE_CATALOG.csv
+Coverage audit: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\news_three_point_observer\stage3g\NEWS_EVENT_COVERAGE_AUDIT.csv
+Event results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\news_three_point_observer\stage3g\NEWS_3PT_OBSERVER_EVENT_RESULTS.csv
+Stress summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\news_three_point_observer\stage3g\NEWS_3PT_OBSERVER_STRESS_SUMMARY.csv
+Memory lock: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3g\NEWS_3PT_FROZEN_MEMORY_LOCK.json
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3g\FLIP_FLOP_STAGE3G_NEWS_3PT_OBSERVER.json
+
+GATES
+Frozen control integrity: PASS
+Stage 3F.3 no-BE fallback: PASS
+Ordered TBBO only: PASS
+Default detailization excluded: PASS
+Observer result: OWNED_RAW_COVERAGE_INSUFFICIENT_NO_OBSERVER_JUDGMENT
+Direct news orders: BLOCKED
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity change: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+================================================================================================================

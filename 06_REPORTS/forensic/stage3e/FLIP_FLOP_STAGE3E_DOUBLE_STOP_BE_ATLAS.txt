@@ -1,0 +1,62 @@
+========================================================================================================
+FLIP FLOP STAGE 3E - DOUBLE-STOP BREAKEVEN RESCUE ATLAS
+========================================================================================================
+STATUS: PASS
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+WHY THIS IS A DIFFERENT BRANCH
+Stage 3D rejected generic locks on completed survivor/target paths.
+Stage 3E isolates sessions where BOTH workers eventually stop.
+The question is whether the second stop can become a scratch after a real post-proof excursion.
+
+FULL HISTORY
+Sessions: 2583
+Double-stop sessions: 1427 (55.25%)
+Target sessions: 1156
+Control net: $294,276.00
+Current double-stop loss: $-156,763.00
+
+JULY 23, 2026 18:00 CASE
+Quantity: 1 NQ per worker
+BUY entry/exit: 28700.50 -> 28699.25
+SELL entry/exit: 28700.00 -> 28701.25
+BUY net: $-29.50
+SELL net: $-29.50
+BUY approximate MFE: 8.75 points
+SELL approximate MFE: 0.00 points
+Pair net: $-59.00
+
+BREAKEVEN UPPER-BOUND SCREEN
+Price-BE assumes stop at entry plus one adverse exit tick.
+Savings are theoretical until exact tick sequencing proves target winners are preserved.
+Arm  0.5 pts | eligible 1427 (100.00% of double stops) | price-BE ceiling $53,140.00 | double-loss reduction 33.90% | winner harm budget  9.79%
+Arm  1.0 pts | eligible 1340 (93.90% of double stops) | price-BE ceiling $49,860.00 | double-loss reduction 31.81% | winner harm budget  9.18%
+Arm  2.0 pts | eligible 1169 (81.92% of double stops) | price-BE ceiling $43,900.00 | double-loss reduction 28.00% | winner harm budget  8.08%
+Arm  3.0 pts | eligible 1009 (70.71% of double stops) | price-BE ceiling $38,100.00 | double-loss reduction 24.30% | winner harm budget  7.02%
+Arm  4.0 pts | eligible  870 (60.97% of double stops) | price-BE ceiling $33,140.00 | double-loss reduction 21.14% | winner harm budget  6.10%
+Arm  5.0 pts | eligible  732 (51.30% of double stops) | price-BE ceiling $28,120.00 | double-loss reduction 17.94% | winner harm budget  5.18%
+Arm  8.0 pts | eligible  385 (26.98% of double stops) | price-BE ceiling $15,240.00 | double-loss reduction  9.72% | winner harm budget  2.81%
+
+CRITICAL RISK
+The upper-bound savings disappear if too many eventual target winners retrace to BE after arming.
+Exact post-proof order cannot be established from trade-list MFE alone.
+The next required test is a raw TBBO replay of first stop, arm, BE crossing, target, and original stop.
+
+OUTPUTS
+Full atlas: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3e_atlas\FULL_HISTORY_DOUBLE_STOP_ATLAS.csv
+Threshold summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3e_atlas\BREAKEVEN_ARM_THRESHOLD_SUMMARY.csv
+Route summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3e_atlas\DOUBLE_STOP_ROUTE_SUMMARY.csv
+Top cases: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3e_atlas\TOP_100_DOUBLE_STOP_GIVEBACK_CASES.csv
+July 23 case: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3e_atlas\JULY_23_2026_CASE.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3e\FLIP_FLOP_STAGE3E_DOUBLE_STOP_BE_ATLAS.json
+
+GATES
+Source pair integrity: PASS
+Double-stop reclassification: PASS
+Raw tick replay: REQUIRED NEXT
+Pine modification: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+========================================================================================================

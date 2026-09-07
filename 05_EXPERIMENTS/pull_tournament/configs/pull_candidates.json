@@ -1,0 +1,87 @@
+{
+  "status": "DORMANT_UNTIL_TICK_REPLAY_PASSES",
+  "control": {
+    "name": "V3.6.72 frozen exits",
+    "modifiable": false
+  },
+  "candidate_families": [
+    {
+      "family": "fixed_peak_giveback_points",
+      "activation_points": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30
+      ],
+      "giveback_points": [
+        2.5,
+        5,
+        7.5,
+        10,
+        15
+      ]
+    },
+    {
+      "family": "percent_peak_giveback",
+      "activation_points": [
+        10,
+        15,
+        20,
+        30
+      ],
+      "giveback_percent": [
+        15,
+        20,
+        25,
+        30,
+        40,
+        50
+      ]
+    },
+    {
+      "family": "profit_floor_steps",
+      "steps": [
+        {
+          "trigger": 10,
+          "floor": 2.5
+        },
+        {
+          "trigger": 15,
+          "floor": 5
+        },
+        {
+          "trigger": 20,
+          "floor": 10
+        },
+        {
+          "trigger": 30,
+          "floor": 15
+        },
+        {
+          "trigger": 40,
+          "floor": 25
+        }
+      ]
+    },
+    {
+      "family": "route_specific",
+      "routes": [
+        "NY",
+        "WEEKLY",
+        "WEEKDAY_PREMIUM",
+        "WEEKDAY_WEAK"
+      ],
+      "rule": "separate parameters learned only through walk-forward validation"
+    }
+  ],
+  "promotion_gates": [
+    "baseline tick replay matches accepted tolerance",
+    "no future leakage",
+    "positive holdout delta after costs",
+    "no material increase in extreme session loss",
+    "stable across years and routes",
+    "survives slippage and latency stress"
+  ]
+}

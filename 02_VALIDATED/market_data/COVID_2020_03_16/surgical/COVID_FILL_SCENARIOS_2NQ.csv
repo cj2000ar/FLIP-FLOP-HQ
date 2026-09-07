@@ -1,0 +1,7 @@
+scenario,exit_price,timestamp,estimated_buy_net_2_nq,note
+FIRST_POST_GAP_TRADE,7304.75,2020-03-16T13:45:01+00:00,-3079.0,Earliest NQM0 TBBO trade after the largest no-trade gap.
+FIRST_VALID_BID_AFTER_RESUME,7304.0,2020-03-16T13:45:01.014882989+00:00,-3109.0,"First non-crossed, non-missing best bid carried by a TBBO trade event."
+WORST_TRADE_FIRST_250MS,7272.75,2020-03-16T13:45:01.170858085+00:00,-4359.0,Stress case using the lowest trade during the first 250 milliseconds.
+WORST_TRADE_FIRST_1S,7272.75,2020-03-16T13:45:01.170858085+00:00,-4359.0,Stress case using the lowest trade during the first second.
+WORST_TRADE_FIRST_5S,7272.75,2020-03-16T13:45:01.170858085+00:00,-4359.0,Stress case using the lowest trade during the first five seconds.
+TRADINGVIEW_TRANSLATED_EXIT,7213.75,,-6719.0,TradingView BUY exit translated into the raw NQM0 price scale.

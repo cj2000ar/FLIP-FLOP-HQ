@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "text_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage3f3\\FLIP_FLOP_STAGE3F3_ORDERED_TBBO_BE_RERUN.txt",
+  "json_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage3f3\\FLIP_FLOP_STAGE3F3_ORDERED_TBBO_BE_RERUN.json",
+  "memory_lock": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage3f3\\FLIP_FLOP_FROZEN_MEMORY_LOCK.json",
+  "verdict": "REVERT_TO_FROZEN_CONTROL_NO_BE",
+  "live_routing": "LOCKED"
+}

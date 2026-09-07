@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H3-PREENTRY-MICROSTRUCTURE-TOXICITY-ATLAS",
+  "created_utc": "2026-08-08T00:27:24.751423+00:00",
+  "authority": "ORDERED_TBBO_PREENTRY_ONLY",
+  "freeze_seconds_before_entry": 5,
+  "horizons_seconds": {
+    "H300": 300,
+    "H60": 60,
+    "H15": 15
+  },
+  "labels": {
+    "TOXIC": "oracle best direction still <= 0; hindsight label only",
+    "WINNER": "oracle best direction > 0; hindsight label only"
+  },
+  "sample": {
+    "clean_sessions": 22,
+    "toxic": 19,
+    "winner": 3
+  },
+  "coverage_pass_counts": {
+    "H15": 14,
+    "H300": 14,
+    "H60": 14
+  },
+  "winner_coverage_pass_counts": {
+    "H15": 1,
+    "H300": 1,
+    "H60": 1
+  },
+  "verdict": "PARTIAL_MICROSTRUCTURE_COVERAGE_DIAGNOSTIC_ONLY",
+  "statistics": {
+    "cliffs_delta": "toxic versus winner rank effect size",
+    "auc": "descriptive one-feature separation only",
+    "permutation_p": "exact when combination count <= 200,000",
+    "bh_q_value": "Benjamini-Hochberg multiple-testing control",
+    "warning": "n=3 winners makes every feature result exploratory"
+  },
+  "hard_guards": {
+    "post_entry_events_used": false,
+    "threshold_search": false,
+    "classifier_training": false,
+    "feature_selection_for_live_rule": false,
+    "pine_modification": false,
+    "stage4e_modification": false,
+    "quantity_change": false,
+    "live_routing": false
+  },
+  "outputs": {
+    "catalog": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\PARQUET_TIME_CATALOG.csv",
+    "coverage": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\PREENTRY_MICROSTRUCTURE_COVERAGE.csv",
+    "feature_matrix": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\PREENTRY_MICROSTRUCTURE_FEATURE_MATRIX.csv",
+    "feature_separation": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\TOXIC_VS_WINNER_FEATURE_SEPARATION.csv",
+    "route_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\ROUTE_LABEL_SUMMARY.csv",
+    "coverage_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\COVERAGE_SUMMARY.csv",
+    "top_toxic_profiles": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3\\TOP_TOXIC_MICROSTRUCTURE_PROFILES.csv"
+  }
+}

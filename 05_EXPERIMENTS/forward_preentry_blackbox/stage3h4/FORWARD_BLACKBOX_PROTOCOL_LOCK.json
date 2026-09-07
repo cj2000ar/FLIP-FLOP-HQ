@@ -1,0 +1,63 @@
+{
+  "status": "FROZEN",
+  "protocol_id": "FF-STAGE3H4-FROZEN-FORWARD-BLACKBOX-V1",
+  "protocol_hash": "d0757cd4fb33ade3e1d505a1c7ca2af40ad68ff5b5ceddbb28e13e7be5596fbb",
+  "package_protocol_frozen_utc": "2026-08-08T00:32:00+00:00",
+  "installed_utc": "2026-08-08T00:47:26.557188+00:00",
+  "eligible_after_utc": "2026-08-08T00:47:26.557040+00:00",
+  "pine_schedule_checks": {
+    "BUY_V3.6.72_2020_CONTROL.pine": {
+      "sha256": "657f9c62d2e6f12547632c34c6a755ee56bb475b3d012cf548ee19acfb616452",
+      "schedule_fingerprint": "PASS"
+    },
+    "SELL_V3.6.72_2020_CONTROL.pine": {
+      "sha256": "836c39fa5892b410b3f986cb40b8b917e353713e074ac235d7712ac3e1fa00c6",
+      "schedule_fingerprint": "PASS"
+    }
+  },
+  "protocol": {
+    "protocol_id": "FF-STAGE3H4-FROZEN-FORWARD-BLACKBOX-V1",
+    "control_version": "V3.6.72",
+    "package_protocol_frozen_utc": "2026-08-08T00:32:00+00:00",
+    "schedule_rules": {
+      "NY": "Monday-Friday 09:30 ET",
+      "WEEKLY": "Sunday 18:00 ET",
+      "WEEKDAY_REOPEN": "Monday-Thursday 18:00 ET",
+      "WEEKDAY_1830": "DISABLED in frozen default (weekdayDelayedPool=OFF)"
+    },
+    "preopen": {
+      "start": "T-60m",
+      "freeze": "T-5m",
+      "decision": "FREEZE_GT_START_BUY__FREEZE_LT_START_SELL__EQUAL_SKIP",
+      "max_start_lag_seconds": 60.0,
+      "max_end_lag_seconds": 60.0,
+      "max_internal_gap_seconds": 60.0
+    },
+    "microstructure": {
+      "freeze": "T-5s",
+      "horizons_seconds": {
+        "H300": 300,
+        "H60": 60,
+        "H15": 15
+      },
+      "max_start_lag_seconds": {
+        "H300": 5.0,
+        "H60": 3.0,
+        "H15": 1.5
+      },
+      "max_end_lag_seconds": 1.5,
+      "max_internal_gap_seconds": {
+        "H300": 10.0,
+        "H60": 7.5,
+        "H15": 3.0
+      },
+      "decision_authority": "TELEMETRY_ONLY"
+    },
+    "path_authority": "ORDERED_TBBO_ONLY",
+    "default_bars": "EXCLUDED",
+    "pine_change": false,
+    "stage4e_change": false,
+    "quantity_change": false,
+    "live_routing": false
+  }
+}

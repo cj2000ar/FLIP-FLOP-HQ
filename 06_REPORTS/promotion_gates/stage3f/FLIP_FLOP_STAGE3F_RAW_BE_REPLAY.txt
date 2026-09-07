@@ -1,0 +1,103 @@
+==========================================================================================================
+FLIP FLOP STAGE 3F - RAW DOUBLE-STOP BREAKEVEN REPLAY
+==========================================================================================================
+STATUS: PASS
+NO NEW DATA PURCHASED
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+EXACT QUESTION
+After the first worker stops, can a later favorable survivor move arm BE,
+save eventual double stops, and preserve enough eventual target winners?
+
+OWNED RAW DATA
+Raw sessions: 24
+Clean promotion sessions: 22
+Degraded diagnostic sessions: 2
+Raw baseline outcomes at one extra tick: {'DOUBLE_STOP': 19, nan: 2, 'BUY_TARGET': 1}
+Raw baseline unresolved sessions: 2
+
+RULE GRID
+Arm points: [0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 8.0]
+BE modes: PRICE_BE and COST_COVER_BE (+0.50 point)
+Cost stress: [0, 1, 2, 4] extra ticks
+Arm must occur on a strictly later event than the first worker stop.
+Original target remains unchanged.
+
+BEST PROVISIONAL RESULT
+Status: NO_BREAKEVEN_RULE_PASSED_RAW_GATES
+Arm: 8.0 points
+BE mode: PRICE_BE
+Delta at 0 ticks: $0.00
+Delta at 1 tick: $0.00
+Delta at 2 ticks: $0.00
+Delta at 4 ticks: $0.00
+Double stops rescued at 1 tick: 0
+Target winners scratched at 1 tick: 0
+August delta at 1 tick: $0.00
+September delta at 1 tick: $0.00
+All gates passed: False
+
+GATE DETAIL
+zero_unresolved_all_stress: FAIL
+positive_delta_0t: FAIL
+positive_delta_1t: FAIL
+nonnegative_delta_2t: PASS
+nonnegative_delta_4t: PASS
+august_nonnegative_1t: PASS
+september_nonnegative_1t: PASS
+rescues_exist_1t: FAIL
+net_rescue_exceeds_target_damage_1t: FAIL
+
+TOP ZERO-TICK RULES
+Arm  8.0 | COST_COVER_BE | delta $    0.00 | rescues  0 | targets scratched  0 | unresolved  2
+Arm  8.0 | PRICE_BE      | delta $    0.00 | rescues  0 | targets scratched  0 | unresolved  2
+Arm  0.5 | COST_COVER_BE | delta $ -200.00 | rescues  8 | targets scratched  1 | unresolved  2
+Arm  1.0 | COST_COVER_BE | delta $ -230.00 | rescues  6 | targets scratched  1 | unresolved  2
+Arm  0.5 | PRICE_BE      | delta $ -300.00 | rescues  8 | targets scratched  1 | unresolved  2
+Arm  1.0 | PRICE_BE      | delta $ -350.00 | rescues  6 | targets scratched  1 | unresolved  2
+Arm  2.0 | COST_COVER_BE | delta $ -380.00 | rescues  4 | targets scratched  1 | unresolved  2
+Arm  3.0 | COST_COVER_BE | delta $ -440.00 | rescues  3 | targets scratched  1 | unresolved  2
+
+TOP ONE-TICK RULES
+Arm  8.0 | COST_COVER_BE | delta $    0.00 | rescues  0 | targets scratched  0 | unresolved  2
+Arm  8.0 | PRICE_BE      | delta $    0.00 | rescues  0 | targets scratched  0 | unresolved  2
+Arm  0.5 | COST_COVER_BE | delta $ -210.00 | rescues  8 | targets scratched  1 | unresolved  2
+Arm  1.0 | COST_COVER_BE | delta $ -240.00 | rescues  6 | targets scratched  1 | unresolved  2
+Arm  0.5 | PRICE_BE      | delta $ -310.00 | rescues  8 | targets scratched  1 | unresolved  2
+Arm  1.0 | PRICE_BE      | delta $ -360.00 | rescues  6 | targets scratched  1 | unresolved  2
+Arm  2.0 | COST_COVER_BE | delta $ -390.00 | rescues  4 | targets scratched  1 | unresolved  2
+Arm  3.0 | COST_COVER_BE | delta $ -450.00 | rescues  3 | targets scratched  1 | unresolved  2
+
+JULY 23, 2026
+The MFE atlas confirms the case is a BE candidate.
+It is not exact-replayed because its raw TBBO is not currently owned.
+No purchase is authorized before the owned 22-clean-session screen is reviewed.
+
+COVID CONTINUITY
+FF-STRESS-COVID-2020-03-16 | BREAKEVEN_CANNOT_GUARANTEE_EXIT_THROUGH_HALT
+
+NON-NEGOTIABLE INTERPRETATION
+Savings and target damage are both included in the candidate delta.
+Unresolved same-event ordering is never guessed.
+A raw pass is provisional only, not permission to alter Pine.
+
+OUTPUTS
+Session results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\RAW_24_SESSION_BE_RULE_RESULTS.csv
+Raw baselines: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\RAW_24_SESSION_ORIGINAL_BASELINES.csv
+Leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\RAW_22_CLEAN_BE_LEADERBOARD.csv
+Promotion gates: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\BREAKEVEN_PROMOTION_GATES.csv
+COVID diagnostic: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\COVID_BREAKEVEN_DIAGNOSTIC.csv
+Unresolved events: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f_raw_replay\RAW_UNRESOLVED_BE_EVENTS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage3f\FLIP_FLOP_STAGE3F_RAW_BE_REPLAY.json
+
+GATES
+Control integrity: PASS
+Raw order reconstruction: PASS
+Target-winner damage included: PASS
+Breakeven result: NO_BREAKEVEN_RULE_PASSED_RAW_GATES
+Pine modification: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+==========================================================================================================

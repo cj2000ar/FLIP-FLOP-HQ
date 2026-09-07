@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "protocol_hash": "d0757cd4fb33ade3e1d505a1c7ca2af40ad68ff5b5ceddbb28e13e7be5596fbb",
+  "run_utc": "2026-08-27T01:47:04.000979+00:00",
+  "catalog_files": 31,
+  "eligible_sessions_examined": 27,
+  "ledger_records_appended": 0,
+  "latest_sessions": 27,
+  "preopen_pass": 0,
+  "h300_pass": 0,
+  "h60_pass": 0,
+  "h15_pass": 0,
+  "live_routing": "LOCKED"
+}

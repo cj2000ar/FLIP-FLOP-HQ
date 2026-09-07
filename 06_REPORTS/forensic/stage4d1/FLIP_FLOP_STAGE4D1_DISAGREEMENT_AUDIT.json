@@ -1,0 +1,216 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE4D1-HOLDOUT-DISAGREEMENT-AUDIT",
+  "created_utc": "2026-08-07T01:55:29.398586+00:00",
+  "source_integrity": {
+    "stage4d_decision": "HOLDOUT_MIXED_RESEARCH_ONLY",
+    "result_manifest_status": "OPENED_AND_SCORED_ONCE",
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "holdout_rows": 240
+  },
+  "frozen_route_static_map": {
+    "NY": "SELL",
+    "WEEKDAY_PREMIUM": "BUY",
+    "WEEKDAY_WEAK": "SELL",
+    "WEEKLY": "BUY"
+  },
+  "summary": {
+    "rf_net_1t": 33289.5,
+    "static_net_1t": 36631.5,
+    "gap_rf_minus_static": -3342.0,
+    "rf_percent_of_static": 0.908767044756562,
+    "rf_shortfall_vs_static": 0.09123295524343802,
+    "rf_trade_coverage": 0.8583333333333333,
+    "static_trade_coverage": 1.0,
+    "rf_win_rate_taken": 0.36893203883495146,
+    "static_win_rate_taken": 0.37916666666666665,
+    "rf_label_match_rate_all": 0.375,
+    "static_label_match_rate_all": 0.37916666666666665,
+    "rf_skips": 34,
+    "rf_skips_missed_static_winners": 10,
+    "rf_skips_avoided_static_losers": 24,
+    "opposite_direction_sessions": 110,
+    "opposite_rf_better_sessions": 35,
+    "opposite_static_better_sessions": 40
+  },
+  "relationship_summary": [
+    {
+      "relationship": "OPPOSITE_DIRECTION",
+      "sessions": 110,
+      "rf_net": 14674.5,
+      "static_net": 16939.5,
+      "delta": -2265.0,
+      "session_pct": 0.4583333333333333
+    },
+    {
+      "relationship": "RF_SKIP_STATIC_TRADE",
+      "sessions": 34,
+      "rf_net": 0.0,
+      "static_net": 1077.0,
+      "delta": -1077.0,
+      "session_pct": 0.14166666666666666
+    },
+    {
+      "relationship": "SAME_ACTION",
+      "sessions": 96,
+      "rf_net": 18615.0,
+      "static_net": 18615.0,
+      "delta": 0.0,
+      "session_pct": 0.4
+    }
+  ],
+  "route_summary": [
+    {
+      "route_class": "WEEKDAY_PREMIUM",
+      "sessions": 23,
+      "rf_trades": 23,
+      "static_trades": 23,
+      "rf_net": 1113.0,
+      "static_net": 2913.0,
+      "delta": -1800.0
+    },
+    {
+      "route_class": "WEEKDAY_WEAK",
+      "sessions": 37,
+      "rf_trades": 3,
+      "static_trades": 37,
+      "rf_net": -103.5,
+      "static_net": 1198.5,
+      "delta": -1302.0
+    },
+    {
+      "route_class": "NY",
+      "sessions": 150,
+      "rf_trades": 150,
+      "static_trades": 150,
+      "rf_net": 27600.0,
+      "static_net": 28290.0,
+      "delta": -690.0
+    },
+    {
+      "route_class": "WEEKLY",
+      "sessions": 30,
+      "rf_trades": 30,
+      "static_trades": 30,
+      "rf_net": 4680.0,
+      "static_net": 4230.0,
+      "delta": 450.0
+    }
+  ],
+  "month_summary": [
+    {
+      "month": "2026-01",
+      "sessions": 34,
+      "rf_net": 3004.5,
+      "static_net": 4906.5,
+      "delta": -1902.0
+    },
+    {
+      "month": "2026-02",
+      "sessions": 32,
+      "rf_net": 4248.0,
+      "static_net": 3900.0,
+      "delta": 348.0
+    },
+    {
+      "month": "2026-03",
+      "sessions": 37,
+      "rf_net": 5490.0,
+      "static_net": 5713.5,
+      "delta": -223.5
+    },
+    {
+      "month": "2026-04",
+      "sessions": 33,
+      "rf_net": 5388.0,
+      "static_net": 3595.5,
+      "delta": 1792.5
+    },
+    {
+      "month": "2026-05",
+      "sessions": 35,
+      "rf_net": 4389.0,
+      "static_net": 7377.0,
+      "delta": -2988.0
+    },
+    {
+      "month": "2026-06",
+      "sessions": 34,
+      "rf_net": 4246.5,
+      "static_net": 5992.5,
+      "delta": -1746.0
+    },
+    {
+      "month": "2026-07",
+      "sessions": 35,
+      "rf_net": 6523.5,
+      "static_net": 5146.5,
+      "delta": 1377.0
+    }
+  ],
+  "action_matrix": [
+    {
+      "rf_action": "SELL",
+      "static_action": "BUY",
+      "sessions": 30,
+      "rf_net": 1530.0,
+      "static_net": 2880.0,
+      "delta": -1350.0
+    },
+    {
+      "rf_action": "SKIP",
+      "static_action": "SELL",
+      "sessions": 34,
+      "rf_net": 0.0,
+      "static_net": 1077.0,
+      "delta": -1077.0
+    },
+    {
+      "rf_action": "BUY",
+      "static_action": "SELL",
+      "sessions": 80,
+      "rf_net": 13144.5,
+      "static_net": 14059.5,
+      "delta": -915.0
+    },
+    {
+      "rf_action": "BUY",
+      "static_action": "BUY",
+      "sessions": 23,
+      "rf_net": 4263.0,
+      "static_net": 4263.0,
+      "delta": 0.0
+    },
+    {
+      "rf_action": "SELL",
+      "static_action": "SELL",
+      "sessions": 73,
+      "rf_net": 14352.0,
+      "static_net": 14352.0,
+      "delta": 0.0
+    }
+  ],
+  "interpretation_limits": [
+    "This audit explains a consumed holdout. It cannot select or tune a replacement.",
+    "Accuracy is secondary to realized net after costs.",
+    "No RF threshold, route map, feature, or model may be changed from these results.",
+    "Fresh forward shadow data is required for any future selection."
+  ],
+  "gates": {
+    "holdout_integrity": "PASS",
+    "session_alignment": "PASS",
+    "gap_decomposition": "PASS",
+    "model_retuning": "FORBIDDEN",
+    "route_map_retuning": "FORBIDDEN",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "session_map": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\RF_VS_ROUTE_STATIC_SESSION_MAP.csv",
+    "relationship_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\DISAGREEMENT_TYPE_SUMMARY.csv",
+    "route_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\ROUTE_GAP_SUMMARY.csv",
+    "month_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\MONTH_GAP_SUMMARY.csv",
+    "action_matrix": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\ACTION_MATRIX.csv",
+    "rf_worst_sessions": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\TOP_30_RF_UNDERPERFORMANCE_SESSIONS.csv",
+    "rf_best_sessions": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d1_disagreement_audit\\TOP_30_RF_OUTPERFORMANCE_SESSIONS.csv"
+  }
+}

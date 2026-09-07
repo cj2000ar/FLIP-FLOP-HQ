@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H3A-COVERAGE-FAILURE-AUTOPSY",
+  "created_utc": "2026-08-08T00:29:52.789909+00:00",
+  "stage3h3_coverage_remains_valid": true,
+  "stage3h3_feature_separation_authority": "VOID",
+  "strict_statistics_authorized": false,
+  "eligible_horizons": [],
+  "winner_pass_counts": {
+    "H15": 1,
+    "H300": 1,
+    "H60": 1
+  },
+  "toxic_pass_counts": {
+    "H15": 13,
+    "H300": 13,
+    "H60": 13
+  },
+  "original_feature_separation_rows": 1,
+  "verdict": "NO_VALID_FEATURE_SEPARATION_AUTHORIZED_IN_STAGE3H3",
+  "gates": {
+    "threshold_search": "BLOCKED",
+    "classifier_training": "BLOCKED",
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_change": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "failure_detail": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3a\\STRICT_COVERAGE_FAILURE_DETAIL.csv",
+    "coverage_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3a\\STRICT_COVERAGE_SUMMARY.csv",
+    "failure_reason_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_microstructure_toxicity\\stage3h3a\\FAILURE_REASON_SUMMARY.csv",
+    "void_lock": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3h3a\\STAGE3H3_FEATURE_SEPARATION_VOID_LOCK.txt"
+  }
+}

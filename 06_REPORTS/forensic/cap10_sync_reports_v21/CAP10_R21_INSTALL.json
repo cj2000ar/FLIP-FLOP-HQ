@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "frozen_v3672_modified": false,
+  "tv_drawdown_fix": "ENABLED",
+  "deep_vs_chart_scope_label": "ENABLED",
+  "capacity_live_routing": "HARD_BLOCKED",
+  "files": [
+    {
+      "file": "Flip_Flop_BUY_V3_6_72_CAP10_SYNC_REPORTS_V21.pine",
+      "sha256": "8393877c317ec8ba64a6b11b6d9ec06a72595b12f478bf2a58e711f2ae23d6b7"
+    },
+    {
+      "file": "Flip_Flop_SELL_V3_6_72_CAP10_SYNC_REPORTS_V21.pine",
+      "sha256": "3d6779965247639cf1bc65b0284bde94bc7fa257b2c82034f517e43250d62f25"
+    },
+    {
+      "file": "cap10_strategy_reporter_v21.py",
+      "sha256": "da8bbdb269725d885dd97bf8efd87daada60fe4ab7b1a422781f23d0fea6ee32"
+    },
+    {
+      "file": "RUN_CAP10_STRATEGY_REPORTER_V21.ps1",
+      "sha256": "51e9f1c8dd64e2928cb8ab28d31f099cb2eec955d79226d880e42ec23566625e"
+    }
+  ]
+}

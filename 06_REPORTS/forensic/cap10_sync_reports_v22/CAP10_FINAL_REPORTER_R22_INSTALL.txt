@@ -1,0 +1,12 @@
+﻿FLIP FLOP CAP10 FINAL REPORTER R2.2
+STATUS: PASS
+Installed to: C:\FLIP_FLOP_HQ\07_TOOLS\cap10_sync_reports_v22
+Reporter SHA256: 6deeb69f9f40e20713c335be070f8d9af75b317087e82e936dee5ad2eea5a938
+Notepad auto-open: ENABLED
+Pair DD authority: CLOSED-EQUITY ONLY
+Frozen V3.6.72 modified: NO
+Capacity live routing: LOCKED
+
+NEXT
+Run:
+C:\FLIP_FLOP_HQ\07_TOOLS\cap10_sync_reports_v22\RUN_CAP10_FINAL_REPORTER_R22.ps1

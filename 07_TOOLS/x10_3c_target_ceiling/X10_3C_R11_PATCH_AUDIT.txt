@@ -1,0 +1,21 @@
+﻿================================================================================================================
+FLIP FLOP X10.3C-R1.1 SYNCHRONIZED EXPORT SELECTOR PATCH
+================================================================================================================
+STATUS: PASS
+Patched: C:\FLIP_FLOP_HQ\07_TOOLS\x10_3c_target_ceiling\x10_3c_target_ceiling.py
+SHA256: 9BDF545EEB79C9C136295CBA2DC1E00229A0581B51D0340ED8D93CA4BFACB392
+
+FIX
+Old behavior: BUY and SELL were chosen independently by largest file.
+Observed failure: BUY 5,085 vs SELL 2,585.
+New behavior:
+1. candidate BUY/SELL counts must match
+2. complete entry timestamp vectors must match exactly
+3. highest synchronized pair wins
+4. every candidate synchronized pair is written to an audit CSV
+
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+================================================================================================================

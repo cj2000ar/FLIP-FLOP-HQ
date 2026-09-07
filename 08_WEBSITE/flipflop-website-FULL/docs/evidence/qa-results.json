@@ -1,0 +1,151 @@
+{
+  "views": [
+    {
+      "view": "Operaciones",
+      "headings": [
+        "Cada operación, en contexto.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    },
+    {
+      "view": "Rendimiento",
+      "headings": [
+        "Una perspectiva completa.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    },
+    {
+      "view": "Calendario",
+      "headings": [
+        "Tu próximo paso, a la vista.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    },
+    {
+      "view": "Agentes",
+      "headings": [
+        "Un equipo detrás de tu HQ.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    },
+    {
+      "view": "Ajustes de la demostración",
+      "headings": [
+        "Tu espacio. Tus preferencias.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    },
+    {
+      "view": "Resumen",
+      "headings": [
+        "Tu operación, conectada.",
+        "Un solo HQ.Donde estés.",
+        "Automatización organizada",
+        "HQ en tus dispositivos",
+        "Cada paso, a la vista"
+      ]
+    }
+  ],
+  "desktopLanguages": [
+    {
+      "heading": "Your trading. In a new orbit.Your trading.In a new orbit.",
+      "lang": "en",
+      "overflow": false
+    },
+    {
+      "heading": "Seu trading. Em outra órbita.Seu trading.Em outra órbita.",
+      "lang": "pt",
+      "overflow": false
+    },
+    {
+      "heading": "Votre trading. Sur une autre orbite.Votre trading.Sur une autre orbite.",
+      "lang": "fr",
+      "overflow": false
+    },
+    {
+      "heading": "Il tuo trading. In un’altra orbita.Il tuo trading.In un’altra orbita.",
+      "lang": "it",
+      "overflow": false
+    },
+    {
+      "heading": "Dein Trading. In einer neuen Umlaufbahn.Dein Trading.In neuer Umlaufbahn.",
+      "lang": "de",
+      "overflow": false
+    },
+    {
+      "heading": "Tu trading. En otra órbita.Tu trading.En otra o´rbita.",
+      "lang": "es",
+      "overflow": false
+    }
+  ],
+  "mobileLanguages": [
+    {
+      "lang": "en",
+      "overflow": false
+    },
+    {
+      "lang": "pt",
+      "overflow": false
+    },
+    {
+      "lang": "fr",
+      "overflow": false
+    },
+    {
+      "lang": "it",
+      "overflow": false
+    },
+    {
+      "lang": "de",
+      "overflow": false
+    },
+    {
+      "lang": "es",
+      "overflow": false
+    }
+  ],
+  "responsive": [
+    {
+      "content": 320,
+      "pauseVisible": true,
+      "route": "/demo",
+      "viewport": 320,
+      "width": 320
+    },
+    {
+      "content": 768,
+      "pauseVisible": true,
+      "route": "/demo",
+      "viewport": 768,
+      "width": 768
+    },
+    {
+      "content": 1024,
+      "pauseVisible": true,
+      "route": "/demo",
+      "viewport": 1024,
+      "width": 1024
+    },
+    {
+      "content": 320,
+      "route": "/",
+      "viewport": 320,
+      "width": 320
+    }
+  ]
+}

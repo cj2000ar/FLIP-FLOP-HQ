@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3F2A-DEFAULT-BAR-PATH-AUTOPSY",
+  "created_utc": "2026-08-07T03:24:05.668581+00:00",
+  "source_integrity": {
+    "stage3f2_verdict": "BASELINE_REPAIR_INCOMPLETE_STAGE3F_REMAINS_SUSPENDED",
+    "registry_sha256": "aa6e2f05c742e7093be20cdd2087c09a83a4ff10e2d31f3a6b352cc79bc8fc92",
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "clean_sessions": 22,
+    "target_sessions": 6
+  },
+  "target_event_order": {
+    "targets_preserved_by_ordered_tbbo": 1,
+    "survivor_stopped_before_target": 5,
+    "same_30m_bar_order_artifacts": 5,
+    "sequence_counts": {
+      "RAW_SURVIVOR_STOP_BEFORE_TARGET": 5,
+      "RAW_TARGET_PRESERVED": 1
+    },
+    "cause_counts": {
+      "DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT": 5,
+      "HIGH_DETAIL_CONFIRMS_DEFAULT_TARGET": 1
+    }
+  },
+  "alignment_health": {
+    "all_offsets_consistent_within_one_tick": true,
+    "maximum_clean_event_gap_seconds": 32.838513302,
+    "median_offset_difference": 0.0,
+    "maximum_absolute_offset_difference": 0.0
+  },
+  "verdict": "ORDERED_TBBO_OVERRULES_FIVE_DEFAULT_BAR_TARGETS",
+  "interpretation": [
+    "The audit does not force ordered TBBO to match default-bar outcomes.",
+    "A default target is overruled when the actual survivor stop occurs before the target in clean ordered events.",
+    "Same-candle target and stop touches are especially strong evidence of bar-path sequencing sensitivity.",
+    "This finding cannot be extrapolated from 22 selected sessions to the entire 2,583-session history.",
+    "Breakeven remains unapproved. A new raw BE replay is allowed only after choosing the ordered-TBBO baseline as the research truth for owned dates."
+  ],
+  "gates": {
+    "same_date_target_overlap": "PASS",
+    "ordered_event_autopsy": "PASS",
+    "contract_offset_consistency": "PASS",
+    "default_bar_target_reliability": "FAIL",
+    "stage3f_original_verdict": "VOID_BASELINE",
+    "stage3f_repaired_raw_be_rerun": "REVIEWABLE",
+    "pine_modification": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "target_autopsy": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2a_path_autopsy\\SIX_DEFAULT_TARGET_EVENT_ORDER.csv",
+    "alignment_health": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2a_path_autopsy\\ALL_22_CLEAN_ALIGNMENT_HEALTH.csv",
+    "event_timeline": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f2a_path_autopsy\\TARGET_EVENT_TIMELINE.csv"
+  }
+}

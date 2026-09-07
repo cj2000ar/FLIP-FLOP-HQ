@@ -1,0 +1,31 @@
+{
+  "status": "LOCKED",
+  "created_utc": "2026-08-07T03:32:23.819683+00:00",
+  "frozen_control": {
+    "version": "V3.6.72",
+    "paired_history_sessions": 2583,
+    "combined_net": 294276.0,
+    "pair_profit_factor": 2.877,
+    "positive_years": "7/7",
+    "source_control_manifest": "C:\\FLIP_FLOP_HQ\\00_CONTROL\\V3_6_72_2020_BASELINE\\control_manifest.json",
+    "source_hashes_verified": 4
+  },
+  "best_one_account_holdout": {
+    "route_static_1tick_net": 36631.5,
+    "rf_d8_edge_60_1tick_net": 33289.5,
+    "status": "RESEARCH_ONLY"
+  },
+  "ordered_path_authority": {
+    "source": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3f2a\\FLIP_FLOP_STAGE3F2A_PATH_AUTOPSY.json",
+    "verdict": "ORDERED_TBBO_OVERRULES_FIVE_DEFAULT_BAR_TARGETS",
+    "default_bar_role": "BROAD_HISTORICAL_MAP_ONLY",
+    "tbbo_role": "PATH_SENSITIVE_EXECUTION_AUTHORITY"
+  },
+  "fallback": {
+    "on_be_failure": "REVERT_TO_FROZEN_CONTROL_NO_BE",
+    "pine_changes": "NONE",
+    "stage4e_changes": "NONE",
+    "quantity_changes": "NONE",
+    "live_routing": "LOCKED"
+  }
+}

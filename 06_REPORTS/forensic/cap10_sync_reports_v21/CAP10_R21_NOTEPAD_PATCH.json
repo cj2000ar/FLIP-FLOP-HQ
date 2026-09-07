@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "notepad_auto_open": "ENABLED",
+  "txt_summary": "ENABLED",
+  "html_report": "ENABLED",
+  "csv_report": "ENABLED",
+  "reporter_sha256": "4e4b9abcc22badca37bc55a9933452de095265b68fa1c063b1ce8c5ce79967a7",
+  "frozen_v3672_modified": false
+}

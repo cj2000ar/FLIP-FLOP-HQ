@@ -1,0 +1,147 @@
+/* FlipFlop HQ identity — ported verbatim from 08_WEBSITE (design/tokens.json, brand-palette.css, globals.css). */
+:root {
+  --brand-green: #2a7d3c;
+  --brand-red: #dd281c;
+  --brand-green-ink: #62b676;
+  --brand-red-ink: #f14234;
+  --brand-green-hover: #267036;
+  --brand-red-hover: #c72419;
+  --brand-green-soft: #0d1710;
+  --brand-red-soft: #1e0c0b;
+
+  --hq-bg: #030404;
+  --hq-surface: #090909;
+  --hq-surface-2: #0c0c0c;
+  --hq-surface-3: #191919;
+  --hq-fg: #eeeeef;
+  --hq-muted: #a1a5a8;
+  --hq-muted-2: #8e9792;
+  --hq-border: #26282a;
+  --hq-ring: #53b87c;
+  --hq-hairline: #ffffff12;
+
+  --hq-panel-bg: linear-gradient(120deg, rgba(26, 29, 28, 0.7), rgba(6, 8, 7, 0.85));
+  --hq-panel-border: #ffffff16;
+  --hq-panel-border-top: #ffffff24;
+  --hq-panel-radius: 17px;
+  --hq-panel-shadow: 0 10px 40px #00000028;
+  --hq-panel-blur: blur(22px);
+
+  --hq-nav-bg: #0b0e0ced;
+  --hq-nav-border: #ffffff22;
+}
+
+.hq-panel {
+  background: var(--hq-panel-bg);
+  border: 1px solid var(--hq-panel-border);
+  border-top-color: var(--hq-panel-border-top);
+  border-radius: var(--hq-panel-radius);
+  backdrop-filter: var(--hq-panel-blur);
+  -webkit-backdrop-filter: var(--hq-panel-blur);
+  box-shadow: var(--hq-panel-shadow);
+}
+
+.hq-overline {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #9da3a4;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Brand lockup */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+.brand-symbol {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  overflow: hidden;
+  background: #000;
+}
+.brand-symbol img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+}
+.brand-letters {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-size: 24px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-weight: 680;
+  font-synthesis: none;
+  letter-spacing: -0.035em;
+}
+.brand-flip,
+.brand-q {
+  color: var(--brand-green-ink) !important;
+}
+.brand-flop,
+.brand-h {
+  color: var(--brand-red-ink) !important;
+}
+.brand-hq {
+  display: inline-flex;
+  gap: 0;
+  margin-left: 4px;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+.brand-compact {
+  gap: 5px;
+}
+.brand-compact .brand-symbol {
+  display: none;
+}
+.brand-compact .brand-letters {
+  font-size: 12px;
+  gap: 3px;
+  letter-spacing: -0.25px;
+}
+.brand-compact .brand-hq {
+  font-size: 9px;
+  margin-left: 2px;
+}
+
+.sidebar-brand {
+  padding: 4px 6px 14px;
+  border-bottom: 1px solid #ffffff0c;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+.sidebar-brand .brand-lockup {
+  gap: 8px;
+}
+.sidebar-brand .brand-symbol {
+  width: 30px;
+  height: 30px;
+  flex-basis: 30px;
+}
+.sidebar-brand .brand-letters {
+  font-size: 18px;
+  gap: 4px;
+}
+.sidebar-brand .brand-hq {
+  font-size: 11px;
+  margin-left: 3px;
+}

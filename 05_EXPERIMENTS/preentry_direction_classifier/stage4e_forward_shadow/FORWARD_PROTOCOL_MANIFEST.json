@@ -1,0 +1,30 @@
+{
+  "status": "FROZEN_FORWARD_PROTOCOL",
+  "created_utc": "2026-08-07T02:02:06.366144+00:00",
+  "protocol_cutoff_local": "2026-08-07T00:00:00",
+  "model_sha256": "4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e",
+  "base_dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+  "rf_candidate": "RF_D8_EDGE_60",
+  "rf_edge_threshold": 60.0,
+  "route_static_map": {
+    "NY": "SELL",
+    "WEEKLY": "BUY",
+    "WEEKDAY_PREMIUM": "BUY",
+    "WEEKDAY_WEAK": "SELL"
+  },
+  "comparison_candidates": [
+    "RF_D8_EDGE_60",
+    "ROUTE_STATIC",
+    "ALWAYS_SELL"
+  ],
+  "minimum_forward_sessions": 90,
+  "minimum_route_counts": {
+    "NY": 30,
+    "WEEKLY": 8,
+    "WEEKDAY_PREMIUM": 8,
+    "WEEKDAY_WEAK": 8
+  },
+  "primary_cost_stress_ticks": 1,
+  "retuning": "FORBIDDEN",
+  "live_routing": "LOCKED"
+}

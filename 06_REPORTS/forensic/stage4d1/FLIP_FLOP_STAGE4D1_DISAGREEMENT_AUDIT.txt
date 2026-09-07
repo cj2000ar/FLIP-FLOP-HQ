@@ -1,0 +1,82 @@
+========================================================================================================
+FLIP FLOP STAGE 4D.1 - RF VS ROUTE-STATIC HOLDOUT DISAGREEMENT AUDIT
+========================================================================================================
+STATUS: PASS
+NO MODEL RETUNING
+NO ROUTE-MAP RETUNING
+LIVE ROUTING LOCKED
+
+FROZEN ROUTE-STATIC MAP
+NY: SELL
+WEEKDAY_PREMIUM: BUY
+WEEKDAY_WEAK: SELL
+WEEKLY: BUY
+
+HEADLINE
+RF net at one extra tick: $33,289.50
+Route-static net at one extra tick: $36,631.50
+RF minus route-static: $-3,342.00
+RF as percent of route-static: 90.88%
+RF shortfall versus route-static: 9.12%
+
+COVERAGE AND QUALITY
+RF trade coverage: 85.83%
+Route-static trade coverage: 100.00%
+RF win rate on trades taken: 36.89%
+Route-static win rate on trades taken: 37.92%
+RF exact BUY/SELL/SKIP label match: 37.50%
+Route-static exact label match: 37.92%
+
+RF SKIP QUALITY
+RF skips: 34
+Skipped route-static winners: 10
+Avoided route-static losers: 24
+
+OPPOSITE-DIRECTION CONTESTS
+Opposite-direction sessions: 110
+RF produced the better result: 35
+Route-static produced the better result: 40
+
+DISAGREEMENT TYPE CONTRIBUTION
+OPPOSITE_DIRECTION       | sessions 110 (45.83%) | RF $14,674.50 | static $16,939.50 | delta $-2,265.00
+RF_SKIP_STATIC_TRADE     | sessions  34 (14.17%) | RF $     0.00 | static $ 1,077.00 | delta $-1,077.00
+SAME_ACTION              | sessions  96 (40.00%) | RF $18,615.00 | static $18,615.00 | delta $     0.00
+
+ROUTE CONTRIBUTION
+WEEKDAY_PREMIUM      | sessions  23 | RF $ 1,113.00 | static $ 2,913.00 | delta $-1,800.00
+WEEKDAY_WEAK         | sessions  37 | RF $  -103.50 | static $ 1,198.50 | delta $-1,302.00
+NY                   | sessions 150 | RF $27,600.00 | static $28,290.00 | delta $  -690.00
+WEEKLY               | sessions  30 | RF $ 4,680.00 | static $ 4,230.00 | delta $   450.00
+
+MONTH CONTRIBUTION
+2026-01 | RF $ 3,004.50 | static $ 4,906.50 | delta $-1,902.00
+2026-02 | RF $ 4,248.00 | static $ 3,900.00 | delta $   348.00
+2026-03 | RF $ 5,490.00 | static $ 5,713.50 | delta $  -223.50
+2026-04 | RF $ 5,388.00 | static $ 3,595.50 | delta $ 1,792.50
+2026-05 | RF $ 4,389.00 | static $ 7,377.00 | delta $-2,988.00
+2026-06 | RF $ 4,246.50 | static $ 5,992.50 | delta $-1,746.00
+2026-07 | RF $ 6,523.50 | static $ 5,146.50 | delta $ 1,377.00
+
+NON-NEGOTIABLE INTERPRETATION
+This audit explains the consumed holdout only.
+It cannot justify changing the RF model or route-static map.
+The next selection evidence must come from frozen forward shadow sessions.
+
+OUTPUTS
+Session map: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\RF_VS_ROUTE_STATIC_SESSION_MAP.csv
+Disagreement summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\DISAGREEMENT_TYPE_SUMMARY.csv
+Route gap: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\ROUTE_GAP_SUMMARY.csv
+Month gap: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\MONTH_GAP_SUMMARY.csv
+Action matrix: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\ACTION_MATRIX.csv
+Top RF underperformance: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\TOP_30_RF_UNDERPERFORMANCE_SESSIONS.csv
+Top RF outperformance: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d1_disagreement_audit\TOP_30_RF_OUTPERFORMANCE_SESSIONS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage4d1\FLIP_FLOP_STAGE4D1_DISAGREEMENT_AUDIT.json
+
+GATES
+Holdout integrity: PASS
+Session alignment: PASS
+Gap decomposition: PASS
+Model retuning: FORBIDDEN
+Route-map retuning: FORBIDDEN
+Live routing: LOCKED
+========================================================================================================

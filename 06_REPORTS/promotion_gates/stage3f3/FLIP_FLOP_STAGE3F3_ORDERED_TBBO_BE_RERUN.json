@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3F3-ORDERED-TBBO-BE-RERUN",
+  "created_utc": "2026-08-07T03:32:23.820089+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "registry_sha256": "aa6e2f05c742e7093be20cdd2087c09a83a4ff10e2d31f3a6b352cc79bc8fc92",
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "stage3f2a_verdict": "ORDERED_TBBO_OVERRULES_FIVE_DEFAULT_BAR_TARGETS",
+    "clean_sessions": 22,
+    "degraded_sessions": 2
+  },
+  "authority": {
+    "geometry": "EXACT_DNA_TP_SP_ON_RAW_ACTIVE_CONTRACT_ENTRIES",
+    "path_trigger": "ORDERED_TBBO_LAST_TRADE_TOUCH",
+    "stop_fill": "SAME_EVENT_EXECUTABLE_BID_ASK_PLUS_STRESS",
+    "entry_anchor": "EXACT_ENTRY_TIMESTAMP_0MS",
+    "default_bar_labels_used_for_scoring": false
+  },
+  "grid": {
+    "arm_points": [
+      0.5,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      8.0
+    ],
+    "be_modes": {
+      "PRICE_BE": 0.0,
+      "COST_COVER_BE": 0.5
+    },
+    "extra_ticks": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "candidate_count": 14
+  },
+  "verdict": "REVERT_TO_FROZEN_CONTROL_NO_BE",
+  "best_rule": {
+    "arm_points": 8.0,
+    "be_mode": "PRICE_BE",
+    "delta_0t": 0.0,
+    "delta_1t": 0.0,
+    "delta_2t": 0.0,
+    "delta_4t": 0.0,
+    "candidate_net_1t": -1934.0,
+    "profit_factor_1t": 0.2721114038389161,
+    "max_drawdown_1t": -1934.0,
+    "rescues_1t": 1,
+    "scratched_targets_1t": 0,
+    "preserved_targets_1t": 2,
+    "august_candidate_net_1t": -1194.0,
+    "september_candidate_net_1t": -740.0,
+    "all_gates_pass": false,
+    "gate_detail": {
+      "zero_unresolved_all_stress": true,
+      "positive_delta_0t": false,
+      "positive_delta_1t": false,
+      "nonnegative_delta_2t": true,
+      "nonnegative_delta_4t": true,
+      "positive_candidate_net_1t": false,
+      "august_candidate_nonnegative_1t": false,
+      "september_candidate_nonnegative_1t": false,
+      "actual_rescue_exists_1t": true,
+      "zero_raw_target_winners_scratched_1t": true
+    }
+  },
+  "fallback": "V3.6.72 remains the execution control. Stage 4E candidates remain frozen and unchanged.",
+  "gates": {
+    "source_integrity": "PASS",
+    "ordered_tbbo_authority": "PASS",
+    "default_bar_excluded": "PASS",
+    "be_result": "REVERT_TO_FROZEN_CONTROL_NO_BE",
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_change": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "session_results": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f3_ordered_tbbo\\ORDERED_TBBO_BE_SESSION_RESULTS.csv",
+    "leaderboard": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f3_ordered_tbbo\\ORDERED_TBBO_BE_LEADERBOARD.csv",
+    "promotion_gates": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f3_ordered_tbbo\\ORDERED_TBBO_BE_PROMOTION_GATES.csv",
+    "unresolved": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f3_ordered_tbbo\\ORDERED_TBBO_BE_UNRESOLVED.csv",
+    "memory_lock": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage3f3\\FLIP_FLOP_FROZEN_MEMORY_LOCK.json"
+  }
+}

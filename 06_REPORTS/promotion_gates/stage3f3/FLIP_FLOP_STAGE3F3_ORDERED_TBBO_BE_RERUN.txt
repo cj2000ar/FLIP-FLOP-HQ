@@ -1,0 +1,97 @@
+==============================================================================================================
+FLIP FLOP STAGE 3F.3 - ORDERED TBBO BREAKEVEN RERUN
+==============================================================================================================
+STATUS: PASS
+DEFAULT BAR LABELS EXCLUDED FROM SCORING
+PINE WORKERS UNCHANGED
+STAGE 4E UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+MEMORY LOCK
+Frozen control: V3.6.72
+Frozen paired history: +$294,276 | PF 2.877 | 7/7 positive years
+Best one-account holdout: route-static +$36,631.50 at one tick
+Frozen RF holdout: +$33,289.50 at one tick
+
+HIGH-DETAIL AUTHORITY
+Geometry: exact Pine DNA tp/sp on raw active-contract entries
+Path: ordered TBBO last-trade touches
+Stop fills: executable bid/ask plus stress
+Entry anchor: exact timestamp, 0 ms
+Default 30-minute sequencing: prohibited for scoring
+
+RAW CLEAN BASELINE
+Clean sessions: 22
+Double stops: 20
+Targets: 2
+
+RULE GRID
+Arms: [0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 8.0]
+BE modes: PRICE_BE and COST_COVER_BE (+0.50 point)
+Stress: [0, 1, 2, 4] extra ticks
+
+VERDICT
+REVERT_TO_FROZEN_CONTROL_NO_BE
+Best arm: 8.0 points
+Best BE mode: PRICE_BE
+Delta 0 ticks: $0.00
+Delta 1 tick: $0.00
+Delta 2 ticks: $0.00
+Delta 4 ticks: $0.00
+Candidate net 1 tick: $-1,934.00
+Rescues 1 tick: 1
+Raw targets scratched 1 tick: 0
+Raw targets preserved 1 tick: 2
+August candidate net 1 tick: $-1,194.00
+September candidate net 1 tick: $-740.00
+All gates passed: False
+
+BEST-RULE GATES
+zero_unresolved_all_stress: PASS
+positive_delta_0t: FAIL
+positive_delta_1t: FAIL
+nonnegative_delta_2t: PASS
+nonnegative_delta_4t: PASS
+positive_candidate_net_1t: FAIL
+august_candidate_nonnegative_1t: FAIL
+september_candidate_nonnegative_1t: FAIL
+actual_rescue_exists_1t: PASS
+zero_raw_target_winners_scratched_1t: PASS
+
+TOP ONE-TICK RULES
+Arm  8.0 | COST_COVER_BE | candidate $-1,934.00 | delta $    0.00 | rescues  1 | targets scratched 0 | unresolved 0
+Arm  8.0 | PRICE_BE      | candidate $-1,934.00 | delta $    0.00 | rescues  1 | targets scratched 0 | unresolved 0
+Arm  0.5 | COST_COVER_BE | candidate $-2,004.00 | delta $  -70.00 | rescues 17 | targets scratched 1 | unresolved 0
+Arm  0.5 | PRICE_BE      | candidate $-2,014.00 | delta $  -80.00 | rescues 17 | targets scratched 1 | unresolved 0
+Arm  1.0 | COST_COVER_BE | candidate $-2,034.00 | delta $ -100.00 | rescues 15 | targets scratched 1 | unresolved 0
+Arm  1.0 | PRICE_BE      | candidate $-2,114.00 | delta $ -180.00 | rescues 15 | targets scratched 1 | unresolved 0
+Arm  2.0 | COST_COVER_BE | candidate $-2,174.00 | delta $ -240.00 | rescues 10 | targets scratched 1 | unresolved 0
+Arm  3.0 | COST_COVER_BE | candidate $-2,294.00 | delta $ -360.00 | rescues  8 | targets scratched 1 | unresolved 0
+Arm  2.0 | PRICE_BE      | candidate $-2,304.00 | delta $ -370.00 | rescues 10 | targets scratched 1 | unresolved 0
+Arm  3.0 | PRICE_BE      | candidate $-2,394.00 | delta $ -460.00 | rescues  8 | targets scratched 1 | unresolved 0
+
+FALLBACK
+If no rule passes, the branch automatically returns to:
+V3.6.72 frozen control, no breakeven, no Pine changes.
+Stage 4E RF / route-static / always-SELL shadow candidates remain unchanged.
+
+OUTPUTS
+Session results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f3_ordered_tbbo\ORDERED_TBBO_BE_SESSION_RESULTS.csv
+Leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f3_ordered_tbbo\ORDERED_TBBO_BE_LEADERBOARD.csv
+Promotion gates: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f3_ordered_tbbo\ORDERED_TBBO_BE_PROMOTION_GATES.csv
+Unresolved events: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f3_ordered_tbbo\ORDERED_TBBO_BE_UNRESOLVED.csv
+Frozen memory lock: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage3f3\FLIP_FLOP_FROZEN_MEMORY_LOCK.json
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage3f3\FLIP_FLOP_STAGE3F3_ORDERED_TBBO_BE_RERUN.json
+
+GATES
+Source integrity: PASS
+Ordered TBBO authority: PASS
+Default bars excluded: PASS
+BE result: REVERT_TO_FROZEN_CONTROL_NO_BE
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity change: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+==============================================================================================================

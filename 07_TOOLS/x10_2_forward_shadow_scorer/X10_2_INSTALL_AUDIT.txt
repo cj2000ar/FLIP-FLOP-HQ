@@ -1,0 +1,18 @@
+﻿================================================================================================================
+FLIP FLOP X10.2 FORWARD SHADOW SCORER INSTALL
+================================================================================================================
+STATUS: PASS
+Installed to: C:\FLIP_FLOP_HQ\07_TOOLS\x10_2_forward_shadow_scorer
+Protocol SHA256: F14D59DB4F401E7E7A275249D2F50BBB4231669D8D9FBE93DA085387C865D23B
+Scorer SHA256: 4F49813016D0F9FED273FF7F96F16DDD24CC3B4DE25AB38621B56D89B1430876
+Scorer self-test: PASS
+Frozen V3.6.72 modified: NO
+Pine promotion: BLOCKED
+Capacity live routing: LOCKED
+Forward ledger: APPEND-ONLY
+Notepad auto-open: ENABLED
+
+NEXT
+Run:
+C:\FLIP_FLOP_HQ\07_TOOLS\x10_2_forward_shadow_scorer\RUN_X10_2_FORWARD_SHADOW.ps1
+================================================================================================================

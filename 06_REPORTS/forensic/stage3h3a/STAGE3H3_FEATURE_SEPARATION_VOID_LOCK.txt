@@ -1,0 +1,24 @@
+FLIP FLOP STAGE 3H.3 FEATURE-SEPARATION VOID LOCK
+===================================================
+
+Stage 3H.3 coverage result remains valid.
+
+Stage 3H.3 feature-separation statistics are NOT research-authoritative because
+the statistics stage did not strictly gate rows by validated horizon coverage.
+
+Original feature-separation rows: 1
+
+Strict eligible horizons:
+NONE
+
+Winner pass counts:
+{'H15': 1, 'H300': 1, 'H60': 1}
+
+Toxic pass counts:
+{'H15': 13, 'H300': 13, 'H60': 13}
+
+Verdict:
+NO_VALID_FEATURE_SEPARATION_AUTHORIZED_IN_STAGE3H3
+
+No Stage 3H.3 feature, threshold, classifier, Pine change, Stage 4E change,
+quantity change, or live routing decision may be based on the voided statistics.

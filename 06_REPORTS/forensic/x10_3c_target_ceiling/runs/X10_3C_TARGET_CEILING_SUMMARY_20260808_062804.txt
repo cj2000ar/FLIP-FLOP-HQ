@@ -1,0 +1,79 @@
+================================================================================================================================
+FLIP FLOP X10.3C-R1.1 TARGET CEILING AUTOPSY
+================================================================================================================================
+STATUS: PASS
+
+SOURCE AUTHORITY
+Selection rule: synchronized pair only = equal trade count + exact entry timestamp vector.
+BUY:  C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (1).csv
+SELL: C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (2).csv
+BUY SHA256:  51FF94FFCD76B92BD50FE66B686BF55FF44C74F0508C9A4EE27476CF93267128
+SELL SHA256: A8D8AA238D90D5B75ECBD41DA646ADEDCF0E7C1CC9CD6676314A536A35AC0863
+PAIR SYNC SHA256: 2F09CCA2651652572C47EA615A830D509E6E433BA7AEA1AD38AFDA951663DB0F
+
+CORE COUNTS
+Synchronized pair sessions:             2,585
+Worker trades analyzed:                 5,170
+Target winners analyzed:                1,158
+NY target winners:                      723
+
+MAX-WIN AUTOPSY
+Highest recurring normal target win:    $631.00
+Occurrences of that recurring max:      154
+As % of all target wins:                13.30%
+As % of NY target wins:                 21.30%
+Absolute historical max target win:     $6,671.00
+Absolute max event:                     2020-03-16 09:30:00 | SELL | NY | 167.00 pts
+
+CEILING SATURATION
+NY 2025 cap wins / target wins:         45 / 108 = 41.67%
+NY 2026 cap wins / target wins:         109 / 109 = 100.00%
+ALL routes 2025 cap wins/target wins:   73 / 187 = 39.04%
+ALL routes 2026 cap wins/target wins:   170 / 170 = 100.00%
+First observed route-cap target winner: 2025-07-07 09:30:00 | BUY | NY | 16.00 pts | $631.00
+
+NY TARGET SCALE COMPRESSION
+Median target bps 2020:                 12.133
+Median target bps 2024:                 7.320
+Median target bps 2026:                 5.837
+Compression 2020 -> 2026:               51.89%
+Compression 2024 -> 2026:               20.26%
+
+TRADINGVIEW POST-TARGET AUTHORITY CHECK
+Target winners with nonzero extra favorable excursion beyond realized target: 0 / 1158
+POST-TARGET CONTINUATION AUTHORITY:     NONE_FROM_TV_TRADE_LIST
+Interpretation: the closed Trade List does not tell us what price did AFTER the target exit.
+Any claim about profits left after target therefore requires ordered market-data replay.
+
+OWNED HIGH-DETAIL REPLAY READINESS
+Target exits with any L1 authority overlap in exit bar: 0
+Target exits with one-file full +5m coverage:           0
+Target exits with one-file full +30m coverage:          0
+
+NEXT PREDECLARED REPLAY METRICS
+For every covered target winner, ordered TBBO trade-space replay will measure:
+  +1s / +5s / +30s / +1m / +5m / +15m / +30m continuation
+  extra favorable points beyond original target
+  retracement after target
+  time-to-extra +1 / +2 / +4 / +8 points
+  route/year/side distributions
+  no multi-level fill claims (authority remains L1 trade-space only)
+
+AGENTS
+QUANT_MATH_AGENT             ACTIVE         ceiling frequency, bps compression, route/year math
+RESULTS_ORGANIZER            ACTIVE         append-only run ledger + immutable CSV outputs
+TARGET_CEILING_AGENT         ACTIVE         hard-cap saturation and recurring max-win audit
+TV_PATH_AUTHORITY_AGENT      ACTIVE         blocks false post-target claims from closed Trade List
+HIGH_DETAIL_OVERLAP_AGENT    ACTIVE         maps target exits to owned L1 authority windows
+POST_TARGET_REPLAY_AGENT     ARMED_NEXT     ordered TBBO replay only on covered target winners
+SIGNAL_SCALE_AGENT           UNCHANGED      capacity research remains separate
+GOVERNOR                     ACTIVE         no Pine/X10.2/live modifications
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+X10.2 forward championship modified: NO
+Entry/exit logic modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+X10.3C authority: FORENSIC RESEARCH ONLY
+================================================================================================================================

@@ -1,0 +1,218 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE4D-LOCKED-HOLDOUT-AUDIT",
+  "created_utc": "2026-08-07T01:40:28.632359+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "model_sha256": "4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e",
+    "holdout_identity_sha256": "a1c6ea4e36d88e1a87bd7f492d81736f4f064aa7112dac887c74f38eae06f0d5",
+    "holdout_rows": 240
+  },
+  "frozen_champion": {
+    "candidate_id": "RF_D8_EDGE_60",
+    "model_name": "RF_D8",
+    "edge_threshold": 60.0,
+    "features": [
+      "route_class",
+      "s60",
+      "day_of_week",
+      "month_number",
+      "q",
+      "tp",
+      "risk",
+      "r1",
+      "r2",
+      "r60",
+      "rg60",
+      "ef60",
+      "al",
+      "wc",
+      "cp",
+      "pdl",
+      "pwl",
+      "dh",
+      "dl",
+      "wh",
+      "wl",
+      "pdr",
+      "pwr",
+      "r30",
+      "gate"
+    ]
+  },
+  "holdout_champion_results": [
+    {
+      "extra_ticks": 0,
+      "sessions": 240,
+      "trades_taken": 206,
+      "skips": 34,
+      "buy_actions": 103,
+      "sell_actions": 103,
+      "net": 35334.5,
+      "profit_factor": 5.660621249093188,
+      "max_drawdown": -531.0,
+      "worst_session": -59.0,
+      "best_session": 631.0,
+      "average_month": 5047.785714285715,
+      "median_month": 4679.0,
+      "worst_month": 3299.5,
+      "best_month": 6808.5,
+      "positive_months": 7,
+      "negative_months": 0,
+      "monthly": {
+        "2026-01": 3299.5,
+        "2026-02": 4528.0,
+        "2026-03": 5790.0,
+        "2026-04": 5668.0,
+        "2026-05": 4679.0,
+        "2026-06": 4561.5,
+        "2026-07": 6808.5
+      },
+      "route_net": {
+        "NY": 29100.0,
+        "WEEKDAY_PREMIUM": 1343.0,
+        "WEEKDAY_WEAK": -88.5,
+        "WEEKLY": 4980.0
+      }
+    },
+    {
+      "extra_ticks": 1,
+      "sessions": 240,
+      "trades_taken": 206,
+      "skips": 34,
+      "buy_actions": 103,
+      "sell_actions": 103,
+      "net": 33289.5,
+      "profit_factor": 4.754525461004906,
+      "max_drawdown": -621.0,
+      "worst_session": -69.0,
+      "best_session": 621.0,
+      "average_month": 4755.642857142857,
+      "median_month": 4389.0,
+      "worst_month": 3004.5,
+      "best_month": 6523.5,
+      "positive_months": 7,
+      "negative_months": 0,
+      "monthly": {
+        "2026-01": 3004.5,
+        "2026-02": 4248.0,
+        "2026-03": 5490.0,
+        "2026-04": 5388.0,
+        "2026-05": 4389.0,
+        "2026-06": 4246.5,
+        "2026-07": 6523.5
+      },
+      "route_net": {
+        "NY": 27600.0,
+        "WEEKDAY_PREMIUM": 1113.0,
+        "WEEKDAY_WEAK": -103.5,
+        "WEEKLY": 4680.0
+      }
+    },
+    {
+      "extra_ticks": 2,
+      "sessions": 240,
+      "trades_taken": 206,
+      "skips": 34,
+      "buy_actions": 103,
+      "sell_actions": 103,
+      "net": 31244.5,
+      "profit_factor": 4.0778210116731515,
+      "max_drawdown": -711.0,
+      "worst_session": -79.0,
+      "best_session": 611.0,
+      "average_month": 4463.5,
+      "median_month": 4099.0,
+      "worst_month": 2709.5,
+      "best_month": 6238.5,
+      "positive_months": 7,
+      "negative_months": 0,
+      "monthly": {
+        "2026-01": 2709.5,
+        "2026-02": 3968.0,
+        "2026-03": 5190.0,
+        "2026-04": 5108.0,
+        "2026-05": 4099.0,
+        "2026-06": 3931.5,
+        "2026-07": 6238.5
+      },
+      "route_net": {
+        "NY": 26100.0,
+        "WEEKDAY_PREMIUM": 883.0,
+        "WEEKDAY_WEAK": -118.5,
+        "WEEKLY": 4380.0
+      }
+    },
+    {
+      "extra_ticks": 4,
+      "sessions": 240,
+      "trades_taken": 206,
+      "skips": 34,
+      "buy_actions": 103,
+      "sell_actions": 103,
+      "net": 27154.5,
+      "profit_factor": 3.134536021695555,
+      "max_drawdown": -891.0,
+      "worst_session": -99.0,
+      "best_session": 591.0,
+      "average_month": 3879.214285714286,
+      "median_month": 3519.0,
+      "worst_month": 2119.5,
+      "best_month": 5668.5,
+      "positive_months": 7,
+      "negative_months": 0,
+      "monthly": {
+        "2026-01": 2119.5,
+        "2026-02": 3408.0,
+        "2026-03": 4590.0,
+        "2026-04": 4548.0,
+        "2026-05": 3519.0,
+        "2026-06": 3301.5,
+        "2026-07": 5668.5
+      },
+      "route_net": {
+        "NY": 23100.0,
+        "WEEKDAY_PREMIUM": 423.0,
+        "WEEKDAY_WEAK": -148.5,
+        "WEEKLY": 3780.0
+      }
+    }
+  ],
+  "decision": {
+    "status": "HOLDOUT_MIXED_RESEARCH_ONLY",
+    "gate_detail": {
+      "holdout_0t_positive": true,
+      "holdout_1t_positive": true,
+      "holdout_2t_positive": true,
+      "holdout_4t_positive": true,
+      "holdout_pf_1t": true,
+      "minimum_positive_months": true,
+      "beats_best_static_1t_by_5pct": false,
+      "drawdown_within_150pct_static": true,
+      "minimum_trade_coverage": true
+    },
+    "best_static_policy_1t": "ROUTE_STATIC",
+    "best_static_net_1t": 36631.5,
+    "best_static_pf_1t": 4.903612531969309,
+    "best_static_max_drawdown_1t": -552.0
+  },
+  "gates": {
+    "frozen_input_integrity": "PASS",
+    "single_opening": "PASS",
+    "holdout_scored_once": "PASS",
+    "holdout_result": "HOLDOUT_MIXED_RESEARCH_ONLY",
+    "pine_execution_change": "NONE",
+    "quantity_change": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "predictions": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\LOCKED_HOLDOUT_SESSION_PREDICTIONS.csv",
+    "champion_results": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\LOCKED_HOLDOUT_CHAMPION_RESULTS.csv",
+    "baselines": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\LOCKED_HOLDOUT_BASELINES.csv",
+    "monthly": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\LOCKED_HOLDOUT_MONTHLY.csv",
+    "route": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\LOCKED_HOLDOUT_ROUTE.csv",
+    "result_manifest": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4d_locked_holdout\\HOLDOUT_RESULT_MANIFEST.json"
+  }
+}

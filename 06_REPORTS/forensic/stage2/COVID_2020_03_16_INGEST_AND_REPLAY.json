@@ -1,0 +1,327 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STRESS-COVID-2020-03-16",
+  "created_utc": "2026-08-06T05:00:46.200519+00:00",
+  "source": {
+    "found_zip": "C:\\Users\\cj200\\Downloads\\GLBX-20260806-A8CJT6C8BX.zip",
+    "canonical_zip": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\DATABENTO_COVID_2020_03_16_c77e649a361f.zip",
+    "zip_sha256": "c77e649a361fd536e6ac482bca66d4a308ca3b402898f5daf2ca36aa1103ba42",
+    "extract_root": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f",
+    "manifest": {
+      "path": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\manifest.json",
+      "records_detected": 0,
+      "records_verified": 0,
+      "verified": []
+    },
+    "metadata": {
+      "version": 1,
+      "job_id": "GLBX-20260806-A8CJT6C8BX",
+      "query": {
+        "dataset": "GLBX.MDP3",
+        "schema": "tbbo",
+        "symbols": [
+          "NQ.FUT"
+        ],
+        "stype_in": "parent",
+        "stype_out": "instrument_id",
+        "start": 1584316800000000000,
+        "end": 1584489600000000000,
+        "limit": null,
+        "encoding": "dbn",
+        "compression": "zstd"
+      },
+      "customizations": {
+        "pretty_px": false,
+        "pretty_ts": false,
+        "map_symbols": false,
+        "split_symbols": true,
+        "split_duration": "day",
+        "split_size": null,
+        "packaging": null,
+        "delivery": "download"
+      }
+    },
+    "condition": [
+      {
+        "date": "2020-03-16",
+        "condition": "available",
+        "last_modified_date": "2024-05-14"
+      },
+      {
+        "date": "2020-03-17",
+        "condition": "available",
+        "last_modified_date": "2024-05-14"
+      }
+    ]
+  },
+  "file_inventory": [
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQH0-NQM0.dbn.zst",
+      "symbol": "NQH0-NQM0",
+      "is_outright": false,
+      "bytes": 624912,
+      "sha256": "fff496109991ebba4559e7813fcba3626b2f99f400547e2371ddc7d6ce33d497"
+    },
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQH0-NQU0.dbn.zst",
+      "symbol": "NQH0-NQU0",
+      "is_outright": false,
+      "bytes": 630,
+      "sha256": "706dcd0c9fc25dd26a7bb4c7c7bde20430ef63381faed6a83115374c7fc92f78"
+    },
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQH0.dbn.zst",
+      "symbol": "NQH0",
+      "is_outright": true,
+      "bytes": 3854039,
+      "sha256": "19f521c6a38890cfd33c66012064d6452dc35c7fee08317895f35da63f6ddc62"
+    },
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQM0-NQU0.dbn.zst",
+      "symbol": "NQM0-NQU0",
+      "is_outright": false,
+      "bytes": 2722,
+      "sha256": "290fe3729d6661aeb4f817bdae239d5b79af369ef4a845ada77373cf58e23649"
+    },
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQM0.dbn.zst",
+      "symbol": "NQM0",
+      "is_outright": true,
+      "bytes": 5626873,
+      "sha256": "09752b2571a02de3adfd7df8f0e704504da5199a9732d19caab3933ed3b35861"
+    },
+    {
+      "name": "glbx-mdp3-20200316.tbbo.NQU0.dbn.zst",
+      "symbol": "NQU0",
+      "is_outright": true,
+      "bytes": 7780,
+      "sha256": "2447b6a79127a3104fb0b00f35d2bf75022e9bd84c8e04961a8b64ce3073267e"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQH0-NQM0.dbn.zst",
+      "symbol": "NQH0-NQM0",
+      "is_outright": false,
+      "bytes": 545828,
+      "sha256": "d970a37901494e1580fb2f9c5d010c123b40c3d5f6b7928d2de46b7ff92314e3"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQH0.dbn.zst",
+      "symbol": "NQH0",
+      "is_outright": true,
+      "bytes": 3992833,
+      "sha256": "d20fbac24e3603adf04508617482c032f91d5c45cf1b85353ddccf3f19bbae1c"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQM0-NQU0.dbn.zst",
+      "symbol": "NQM0-NQU0",
+      "is_outright": false,
+      "bytes": 703,
+      "sha256": "acc49970a6351861490ed6ae03a01e83722e7063ab985ea48c6c428643a81831"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQM0-NQZ0.dbn.zst",
+      "symbol": "NQM0-NQZ0",
+      "is_outright": false,
+      "bytes": 287,
+      "sha256": "9c9b5d10cd27badd52cc16089cf0908293fc59ebc56d9f9d15333a69cfc11017"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQM0.dbn.zst",
+      "symbol": "NQM0",
+      "is_outright": true,
+      "bytes": 7748435,
+      "sha256": "99ba47437c2102a7f2a171e1d78970bb2924891ea4ca28872394da75dd9dfe15"
+    },
+    {
+      "name": "glbx-mdp3-20200317.tbbo.NQU0.dbn.zst",
+      "symbol": "NQU0",
+      "is_outright": true,
+      "bytes": 1087,
+      "sha256": "a44df884ee1fdbad097c629e624c257b0d44a4ec677bb07c78a13be020b59bc2"
+    }
+  ],
+  "control_trade": {
+    "buy": {
+      "entry_time": "2020-03-16 09:30",
+      "exit_time": "2020-03-16 09:30",
+      "entry_price": 7396.5,
+      "exit_price": 7228.75,
+      "quantity": 2,
+      "net_pnl": -6719.0,
+      "commission": 9.0,
+      "entry_signal": "[CC] BUY NY",
+      "exit_signal": "NQ09B BUY NY STOP",
+      "favorable_excursion": 0.0,
+      "adverse_excursion": -6714.5,
+      "duration_bars": 0
+    },
+    "sell": {
+      "entry_time": "2020-03-16 09:30",
+      "exit_time": "2020-03-16 09:30",
+      "entry_price": 7396.0,
+      "exit_price": 7229.0,
+      "quantity": 2,
+      "net_pnl": 6671.0,
+      "commission": 9.0,
+      "entry_signal": "[CC] SELL NY",
+      "exit_signal": "NQ09B SELL NY N130 TP2",
+      "favorable_excursion": 6675.5,
+      "adverse_excursion": -14.5,
+      "duration_bars": 0
+    }
+  },
+  "contract_summaries": [
+    {
+      "symbol": "NQH0",
+      "is_outright": true,
+      "rows_total": 344115,
+      "window_rows": 27314,
+      "window_volume": 34976.0,
+      "opening_rows": 10292,
+      "opening_volume": 13791.0,
+      "window_low": 7023.0,
+      "window_high": 7556.0,
+      "median_spread": 2.0,
+      "max_spread": 108.75
+    },
+    {
+      "symbol": "NQM0",
+      "is_outright": true,
+      "rows_total": 599291,
+      "window_rows": 36273,
+      "window_volume": 52758.0,
+      "opening_rows": 14658,
+      "opening_volume": 23191.0,
+      "window_low": 7044.75,
+      "window_high": 7541.0,
+      "median_spread": 1.5,
+      "max_spread": 41.0
+    },
+    {
+      "symbol": "NQU0",
+      "is_outright": true,
+      "rows_total": 360,
+      "window_rows": 17,
+      "window_volume": 28.0,
+      "opening_rows": 12,
+      "opening_volume": 23.0,
+      "window_low": 7095.0,
+      "window_high": 7260.25,
+      "median_spread": 8.25,
+      "max_spread": 105.0
+    },
+    {
+      "symbol": "NQH0-NQM0",
+      "is_outright": false,
+      "rows_total": 51683,
+      "window_rows": 4217,
+      "window_volume": 10382.0,
+      "opening_rows": 2019,
+      "opening_volume": 4615.0,
+      "window_low": -21.35,
+      "window_high": -17.05,
+      "median_spread": 0.05000000000000071,
+      "max_spread": 1.1999999999999993
+    },
+    {
+      "symbol": "NQH0-NQU0",
+      "is_outright": false,
+      "rows_total": 21,
+      "window_rows": 1,
+      "window_volume": 1.0,
+      "opening_rows": 0,
+      "opening_volume": 0.0,
+      "window_low": -26.0,
+      "window_high": -26.0,
+      "median_spread": 0.8500000000000014,
+      "max_spread": 0.8500000000000014
+    },
+    {
+      "symbol": "NQM0-NQU0",
+      "is_outright": false,
+      "rows_total": 110,
+      "window_rows": 6,
+      "window_volume": 7.0,
+      "opening_rows": 3,
+      "opening_volume": 4.0,
+      "window_low": -8.75,
+      "window_high": -8.5,
+      "median_spread": 4.2749999999999995,
+      "max_spread": 6.850000000000001
+    },
+    {
+      "symbol": "NQM0-NQZ0",
+      "is_outright": false,
+      "rows_total": 8,
+      "window_rows": 0,
+      "window_volume": 0.0,
+      "opening_rows": 0,
+      "opening_volume": 0.0,
+      "window_low": null,
+      "window_high": null,
+      "median_spread": null,
+      "max_spread": null
+    }
+  ],
+  "active_contract": {
+    "symbol": "NQM0",
+    "is_outright": true,
+    "rows_total": 599291,
+    "window_rows": 36273,
+    "window_volume": 52758.0,
+    "opening_rows": 14658,
+    "opening_volume": 23191.0,
+    "window_low": 7044.75,
+    "window_high": 7541.0,
+    "median_spread": 1.5,
+    "max_spread": 41.0
+  },
+  "preliminary_replay": {
+    "active_symbol": "NQM0",
+    "selection_method": "Highest traded size from 13:30-14:00 UTC; trade count tie-breaker",
+    "first_raw_trade": {
+      "ts_event": "2020-03-16T13:30:00+00:00",
+      "symbol": "NQM0",
+      "price": 7381.25,
+      "size": 3,
+      "bid": 7500.0,
+      "ask": 7381.25,
+      "spread_points": -118.75,
+      "source_file": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst"
+    },
+    "tradingview_mid_reference": 7396.25,
+    "raw_reference": 7381.25,
+    "estimated_raw_minus_tv_offset": -15.0,
+    "buy_stop_raw": 7380.5,
+    "sell_stop_raw": 7382.0,
+    "first_buy_stop_cross": {
+      "ts_event": "2020-03-16T13:45:01+00:00",
+      "trade_price": 7304.75,
+      "bid": 7366.75,
+      "ask": 7297.0,
+      "executable_price": 7366.75,
+      "level": 7380.5,
+      "overshoot_points": 13.75,
+      "size": 726
+    },
+    "first_sell_stop_cross": null,
+    "opening_30m": {
+      "trades": 14658,
+      "volume": 23191.0,
+      "low": 7044.75,
+      "high": 7381.25,
+      "range_points": 336.5,
+      "median_spread": 1.5,
+      "p95_spread": 4.5,
+      "max_spread": 14.5
+    }
+  },
+  "gates": {
+    "source_integrity": "PASS",
+    "dbn_decode": "PASS",
+    "active_contract": "PASS",
+    "pull_tournament": "BLOCKED_PENDING_NORMAL_SESSION",
+    "large_size_scaling": "BLOCKED",
+    "live_routing": "LOCKED"
+  }
+}

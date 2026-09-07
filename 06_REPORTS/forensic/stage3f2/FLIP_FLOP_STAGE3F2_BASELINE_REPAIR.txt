@@ -1,0 +1,74 @@
+============================================================================================================
+FLIP FLOP STAGE 3F.2 - HIGH-DETAIL TBBO ORIGINAL-BASELINE REPAIR
+============================================================================================================
+STATUS: PASS
+NO BREAKEVEN RULE SCORED
+NO PINE CHANGE
+NO DATA PURCHASE
+LIVE ROUTING LOCKED
+
+WHY
+Stage 3F preserved 0 of 6 default-bar target sessions.
+The original baseline must be repaired before breakeven can be judged.
+
+REPAIR GRID
+Geometry modes: ['DNA_TP_DNA_SP', 'DNA_TP_REGISTRY_STOP', 'FORMULA_TP_REGISTRY_STOP']
+Trigger modes: ['TRADE_TOUCH', 'MID_TOUCH', 'BBO_EXECUTABLE', 'LEGACY_STAGE3F']
+Start offsets: [0, 1, 100, 500] milliseconds
+Profiles tested: 48
+
+BEST PROFILE
+Geometry: DNA_TP_DNA_SP
+Trigger: TRADE_TOUCH
+Start offset: 0 ms
+Outcome matches: 16/22 (72.73%)
+Target sessions preserved: 1/6 (16.67%)
+Unresolved sessions: 0
+Default net: $1,016.00
+Raw reconstructed net: $-1,109.00
+All parity gates passed: False
+
+VERDICT
+BASELINE_REPAIR_INCOMPLETE_STAGE3F_REMAINS_SUSPENDED
+
+ROOT-CAUSE COUNTS
+BEST_PROFILE_MATCH: 16
+ACTUAL_PATH_DIFFERS_OR_ADDITIONAL_REPAIR_REQUIRED: 6
+
+TOP 10 REPAIR PROFILES
+DNA_TP_DNA_SP               | TRADE_TOUCH        |   0 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+DNA_TP_DNA_SP               | TRADE_TOUCH        |   1 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+DNA_TP_REGISTRY_STOP        | TRADE_TOUCH        |   0 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+DNA_TP_REGISTRY_STOP        | TRADE_TOUCH        |   1 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+FORMULA_TP_REGISTRY_STOP    | TRADE_TOUCH        |   0 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+FORMULA_TP_REGISTRY_STOP    | TRADE_TOUCH        |   1 ms | match 16/22 | targets 1/6 | unresolved 0 | net diff $-2,125.00
+DNA_TP_DNA_SP               | TRADE_TOUCH        | 100 ms | match 15/22 | targets 1/6 | unresolved 0 | net diff $-1,465.00
+DNA_TP_REGISTRY_STOP        | TRADE_TOUCH        | 100 ms | match 15/22 | targets 1/6 | unresolved 0 | net diff $-1,465.00
+FORMULA_TP_REGISTRY_STOP    | TRADE_TOUCH        | 100 ms | match 15/22 | targets 1/6 | unresolved 0 | net diff $-1,465.00
+DNA_TP_DNA_SP               | LEGACY_STAGE3F     | 100 ms | match 15/22 | targets 1/6 | unresolved 1 | net diff $-2,977.00
+
+INTERPRETATION
+DNA_TP_DNA_SP uses Pine's exact exported target and stop distances.
+TRADE_TOUCH uses ordered trade prices for high/low-style path triggering.
+BBO_EXECUTABLE uses immediately executable quote-side prices.
+The winning profile, if any, repairs only the original baseline.
+Breakeven remains suspended until a separate Stage 3F.3 rerun.
+
+OUTPUTS
+Session results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2_baseline_repair\BASELINE_REPAIR_SESSION_RESULTS.csv
+Leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2_baseline_repair\BASELINE_REPAIR_LEADERBOARD.csv
+Root causes: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2_baseline_repair\ROOT_CAUSE_BY_SESSION.csv
+Best-profile mismatches: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2_baseline_repair\BEST_PROFILE_MISMATCHES.csv
+Geometry audit: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2_baseline_repair\GEOMETRY_LEVEL_AUDIT.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3f2\FLIP_FLOP_STAGE3F2_BASELINE_REPAIR.json
+
+GATES
+Source integrity: PASS
+Repair tournament: PASS
+Baseline repair: FAIL
+Stage 3F BE verdict: SUSPENDED
+Stage 3F.3 BE rerun: BLOCKED
+Pine modification: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+============================================================================================================

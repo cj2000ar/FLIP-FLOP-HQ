@@ -1,0 +1,227 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE4C-PREENTRY-CLASSIFIER-TOURNAMENT",
+  "created_utc": "2026-08-07T01:33:06.530503+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "dna_rows": 2583
+  },
+  "time_split": {
+    "development": "2020-01 through 2023-12",
+    "development_rows": 1550,
+    "validation": "2024-01 through 2025-12",
+    "validation_rows": 788,
+    "holdout": "2026-01 through 2026-07",
+    "holdout_rows": 240,
+    "holdout_status": "LOCKED_UNSCORED",
+    "partial_august_rows_excluded": 5
+  },
+  "features": {
+    "categorical": [
+      "route_class",
+      "s60",
+      "day_of_week",
+      "month_number"
+    ],
+    "numeric": [
+      "q",
+      "tp",
+      "risk",
+      "r1",
+      "r2",
+      "r60",
+      "rg60",
+      "ef60",
+      "al",
+      "wc",
+      "cp",
+      "pdl",
+      "pwl",
+      "dh",
+      "dl",
+      "wh",
+      "wl",
+      "pdr",
+      "pwr",
+      "r30",
+      "gate"
+    ],
+    "forbidden": [
+      "clock",
+      "trade",
+      "ref",
+      "entry price",
+      "exit information",
+      "MFE",
+      "MAE",
+      "future bars"
+    ]
+  },
+  "tournament": {
+    "model_families": [
+      "LOGIT_C001",
+      "LOGIT_C005",
+      "LOGIT_C01",
+      "RF_D4",
+      "RF_D8",
+      "EXTRA_D6",
+      "GB_STUMP",
+      "GB_D2"
+    ],
+    "edge_thresholds": [
+      0.0,
+      20.0,
+      40.0,
+      60.0
+    ],
+    "development_stress_extra_ticks": 1,
+    "validation_stress_extra_ticks": [
+      0,
+      1,
+      2
+    ],
+    "development_folds": [
+      2021,
+      2022,
+      2023
+    ],
+    "validation_candidates_frozen_before_validation": [
+      "GB_STUMP_EDGE_0",
+      "GB_STUMP_EDGE_20",
+      "GB_D2_EDGE_20",
+      "RF_D8_EDGE_60",
+      "GB_D2_EDGE_0"
+    ]
+  },
+  "best_static_baseline_1t": {
+    "policy": "ALWAYS_SELL",
+    "extra_ticks": 1,
+    "sessions": 788,
+    "trades_taken": 788,
+    "skips": 0,
+    "buy_actions": 0,
+    "sell_actions": 788,
+    "net": 37730.0,
+    "profit_factor": 1.9460408204202397,
+    "max_drawdown": -2505.0,
+    "worst_session": -69.0,
+    "best_session": 621.0,
+    "average_month": 1572.0833333333333,
+    "median_month": 1301.75,
+    "worst_month": -1134.5,
+    "positive_months": 19,
+    "negative_months": 5,
+    "year_nets": {
+      "2024": 12212.5,
+      "2025": 25517.5
+    }
+  },
+  "champion": {
+    "status": "CHAMPION_FROZEN_HOLDOUT_LOCKED",
+    "candidate_id": "RF_D8_EDGE_60",
+    "model_name": "RF_D8",
+    "edge_threshold": 60.0,
+    "development_oos_net": 50216.0,
+    "development_minimum_fold": 10928.5,
+    "validation_0t_net": 50799.5,
+    "validation_1t_net": 43854.5,
+    "validation_2t_net": 36909.5,
+    "validation_1t_pf": 2.202596904007788,
+    "validation_1t_max_drawdown": -1035.0,
+    "validation_1t_trades": 699,
+    "validation_1t_year_nets": {
+      "2024": 15665.5,
+      "2025": 28189.0
+    },
+    "all_gates_pass": true,
+    "gate_detail": {
+      "development_all_folds_positive": true,
+      "validation_0t_positive": true,
+      "validation_1t_positive": true,
+      "validation_2t_positive": true,
+      "validation_2024_2025_positive": true,
+      "validation_pf_1t": true,
+      "beats_best_static_1t_by_5pct": true,
+      "drawdown_within_150pct_static": true,
+      "minimum_trade_coverage": true
+    },
+    "best_static_policy_1t": "ALWAYS_SELL",
+    "best_static_net_1t": 37730.0,
+    "best_static_pf_1t": 1.9460408204202397,
+    "best_static_max_drawdown_1t": -2505.0,
+    "warning": "The 2026 holdout was not predicted or scored. This result authorizes only a locked holdout audit."
+  },
+  "frozen_model": {
+    "status": "FROZEN_NOT_HOLDOUT_TESTED",
+    "created_utc": "2026-08-07T01:33:06.481725+00:00",
+    "candidate_id": "RF_D8_EDGE_60",
+    "model_name": "RF_D8",
+    "edge_threshold": 60.0,
+    "training_start": "2020-01-02 09:30:00",
+    "training_end": "2025-12-31 09:30:00",
+    "training_rows": 2338,
+    "categorical_features": [
+      "route_class",
+      "s60",
+      "day_of_week",
+      "month_number"
+    ],
+    "numeric_features": [
+      "q",
+      "tp",
+      "risk",
+      "r1",
+      "r2",
+      "r60",
+      "rg60",
+      "ef60",
+      "al",
+      "wc",
+      "cp",
+      "pdl",
+      "pwl",
+      "dh",
+      "dl",
+      "wh",
+      "wl",
+      "pdr",
+      "pwr",
+      "r30",
+      "gate"
+    ],
+    "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "model_path": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\frozen_model\\FROZEN_PREENTRY_CHAMPION.joblib",
+    "model_sha256": "4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e",
+    "holdout_start": "2026-01-01 00:00:00",
+    "holdout_end_exclusive": "2026-08-01 00:00:00",
+    "holdout_rows": 240,
+    "holdout_identity_sha256": "a1c6ea4e36d88e1a87bd7f492d81736f4f064aa7112dac887c74f38eae06f0d5",
+    "holdout_predictions_created": false,
+    "live_routing": "LOCKED",
+    "freeze_manifest": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\frozen_model\\CHAMPION_FREEZE_MANIFEST.json",
+    "feature_importance": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\frozen_model\\CHAMPION_FEATURE_IMPORTANCE.csv"
+  },
+  "gates": {
+    "control_integrity": "PASS",
+    "preentry_only_schema": "PASS",
+    "chronological_development": "PASS",
+    "fixed_validation_candidate_set": "PASS",
+    "holdout_lock": "PASS",
+    "classifier_result": "CHAMPION_FROZEN_HOLDOUT_LOCKED",
+    "holdout_test": "BLOCKED_UNTIL_STAGE4D",
+    "pine_execution_change": "NONE",
+    "quantity_change": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "development_detail": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\DEVELOPMENT_WALK_FORWARD_DETAIL.csv",
+    "development_summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\DEVELOPMENT_CANDIDATE_SUMMARY.csv",
+    "validation_baselines": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\VALIDATION_STATIC_BASELINES.csv",
+    "validation_results": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\VALIDATION_CANDIDATE_RESULTS.csv",
+    "validation_predictions": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\VALIDATION_SESSION_PREDICTIONS.csv",
+    "promotion_comparison": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\PROMOTION_GATE_COMPARISON.csv",
+    "holdout_lock": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4c_tournament\\HOLDOUT_LOCK_MANIFEST.json"
+  }
+}

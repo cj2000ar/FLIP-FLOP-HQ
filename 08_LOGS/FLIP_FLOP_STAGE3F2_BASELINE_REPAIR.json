@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "text_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3f2\\FLIP_FLOP_STAGE3F2_BASELINE_REPAIR.txt",
+  "json_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3f2\\FLIP_FLOP_STAGE3F2_BASELINE_REPAIR.json",
+  "verdict": "BASELINE_REPAIR_INCOMPLETE_STAGE3F_REMAINS_SUSPENDED",
+  "live_routing": "LOCKED"
+}

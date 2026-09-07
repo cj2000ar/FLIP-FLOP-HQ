@@ -1,0 +1,9 @@
+FLIP FLOP PROVISIONAL SHADOW CHAMPION
+====================================
+Status: NO_RULE_PASSED_ALL_GATES_BEST_DIAGNOSTIC_ONLY
+Rule: FIXED_85_ARM_5R
+Family: FIXED
+Discovery delta: $-580.00
+Validation delta: $-310.00
+
+This result is research-only. Pine workers, quantity, and live routing remain unchanged.

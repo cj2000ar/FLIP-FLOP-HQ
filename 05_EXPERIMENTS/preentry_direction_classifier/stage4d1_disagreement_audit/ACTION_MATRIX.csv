@@ -1,0 +1,6 @@
+rf_action,static_action,sessions,rf_net,static_net,delta
+SELL,BUY,30,1530.0,2880.0,-1350.0
+SKIP,SELL,34,0.0,1077.0,-1077.0
+BUY,SELL,80,13144.5,14059.5,-915.0
+BUY,BUY,23,4263.0,4263.0,0.0
+SELL,SELL,73,14352.0,14352.0,0.0

@@ -1,0 +1,5 @@
+selection_class,sessions,control_net,candidate_net,delta_vs_control
+FAST_WINNER_SKIPPED,2,738.0,0.0,-738.0
+LOSER_SKIPPED,9,-944.0,0.0,944.0
+LOSER_TAKEN,7,-826.0,-283.0,543.0
+WINNER_TAKEN,4,2048.0,-236.0,-2284.0

@@ -1,0 +1,12 @@
+/* Sampled from the satin faces of flipflop-hq-mark-v2.png. */
+:root {
+  --brand-green: #2a7d3c;
+  --brand-red: #dd281c;
+  /* The same pigments with a light lift for readable text on black. */
+  --brand-green-ink: #62b676;
+  --brand-red-ink: #f14234;
+  --brand-green-hover: #267036;
+  --brand-red-hover: #c72419;
+  --brand-green-soft: #0d1710;
+  --brand-red-soft: #1e0c0b;
+}

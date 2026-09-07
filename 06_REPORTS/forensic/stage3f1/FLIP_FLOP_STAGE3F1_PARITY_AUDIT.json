@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3F1-DEFAULT-VS-TBBO-PARITY",
+  "created_utc": "2026-08-07T03:09:18.114707+00:00",
+  "sources": {
+    "buy_export": "C:\\Users\\cj200\\Downloads\\FF_DNA_BUY_CME_MINI_NQ1!_2026-08-06.csv",
+    "buy_sha256": "08760a992a5c55281079723d45b546f97a2c12a709ef61103be5a8ba50049b73",
+    "sell_export": "C:\\Users\\cj200\\Downloads\\FF_DNA_SELL_CME_MINI_NQ1!_2026-08-06.csv",
+    "sell_sha256": "af05cf5de65e559d0067ada6029dc0a0d2dd1a6a7d333381a406ed2c1b52d765",
+    "raw_baseline": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\RAW_24_SESSION_ORIGINAL_BASELINES.csv",
+    "raw_baseline_sha256": "09c61d04b9278154dddd5e9c1ad5a802362515ca71f50b45bb793aca543215aa"
+  },
+  "clean_summary": {
+    "sessions": 22,
+    "default_outcomes": {
+      "DOUBLE_STOP": 16,
+      "SELL_TARGET": 6
+    },
+    "raw_outcomes": {
+      "DOUBLE_STOP": 19,
+      "UNRESOLVED": 2,
+      "BUY_TARGET": 1
+    },
+    "parity_classes": {
+      "OUTCOME_MATCH": 14,
+      "TV_TARGET_TO_RAW_DOUBLE_STOP": 5,
+      "RAW_UNRESOLVED": 2,
+      "TV_DOUBLE_STOP_TO_RAW_TARGET": 1
+    },
+    "outcome_match_rate": 0.6363636363636364,
+    "target_preservation_rate": 0.0,
+    "default_net": 1016.0,
+    "raw_baseline_net": -2127.0
+  },
+  "degraded_sessions": [
+    {
+      "trade_number": 2226,
+      "entry_time": "2025-09-17T09:30:00",
+      "tv_outcome": "BUY_TARGET",
+      "raw_outcome_clean": "BUY_TARGET"
+    },
+    {
+      "trade_number": 2227,
+      "entry_time": "2025-09-17T18:00:00",
+      "tv_outcome": "DOUBLE_STOP",
+      "raw_outcome_clean": "DOUBLE_STOP"
+    }
+  ],
+  "verdict": "BASELINE_PARITY_FAIL_STAGE3F_BE_VERDICT_SUSPENDED",
+  "interpretation": [
+    "Default-bar MFE and outcome labels are not exact intrabar sequencing.",
+    "Raw TBBO may legitimately alter fills, but the original-strategy baseline must first reproduce target/stop geometry before a protection rule can be judged.",
+    "A failed baseline parity suspends the Stage 3F breakeven conclusion; it does not promote breakeven.",
+    "The next repair must identify whether entry anchoring, target geometry, contract mapping, quote-side logic, or raw-window boundaries caused each mismatch."
+  ],
+  "gates": {
+    "same_date_overlap": "PASS",
+    "entry_timestamp_parity": "PASS",
+    "baseline_outcome_parity": "FAIL",
+    "stage3f_breakeven_verdict": "SUSPENDED",
+    "pine_modification": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "full_parity": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f1_default_vs_tbbo\\DEFAULT_VS_TBBO_SESSION_PARITY.csv",
+    "mismatches": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f1_default_vs_tbbo\\OUTCOME_MISMATCH_SESSIONS.csv",
+    "target_audit": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f1_default_vs_tbbo\\DEFAULT_TARGET_SESSION_AUDIT.csv",
+    "owned_double_stop_mfe": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f1_default_vs_tbbo\\OWNED_DATE_DOUBLE_STOP_MFE_CASES.csv",
+    "summary": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f1_default_vs_tbbo\\PARITY_SUMMARY.csv"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H0-PREOPEN60-COVERAGE-AUDIT",
+  "created_utc": "2026-08-07T23:22:17.991774+00:00",
+  "protocol": {
+    "observe_start": "T_MINUS_60_MINUTES",
+    "freeze": "T_MINUS_5_MINUTES",
+    "max_edge_lag_seconds": 60.0,
+    "max_internal_gap_seconds": 60.0,
+    "ordered_tbbo_only": true,
+    "default_bars_used": false
+  },
+  "counts": {
+    "all_sessions": 24,
+    "clean_sessions": 22,
+    "clean_windows_pass": 0,
+    "degraded_sessions": 2,
+    "degraded_windows_pass": 0
+  },
+  "verdict": "OWNED_RAW_PREOPEN60_COVERAGE_INSUFFICIENT_OBSERVER_UNTESTED",
+  "gates": {
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_change": "BLOCKED",
+    "new_data_purchase": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "catalog": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preopen60_observer\\stage3h0\\PARQUET_TIME_CATALOG.csv",
+    "coverage_audit": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preopen60_observer\\stage3h0\\PREOPEN60_COVERAGE_AUDIT.csv"
+  }
+}

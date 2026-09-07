@@ -1,0 +1,172 @@
+﻿================================================================================================================
+FLIP FLOP X10.2 FROZEN FORWARD DECISION PROTOCOL
+================================================================================================================
+
+STATUS: FROZEN
+
+DECISION-PROTOCOL FREEZE TIME
+2026-08-08T00:23:57-04:00
+
+PARENT FORWARD PROTOCOL SHA256
+F14D59DB4F401E7E7A275249D2F50BBB4231669D8D9FBE93DA085387C865D23B
+
+FORWARD SESSION CUTOFF REMAINS
+2026-08-08T00:08:00-04:00
+
+The decision rules below were frozen while cumulative eligible forward sessions = 0.
+
+----------------------------------------------------------------------------------------------------------------
+ARCHITECTURE UNDER TEST
+----------------------------------------------------------------------------------------------------------------
+
+A_CURRENT
+NY / WEEKLY / PREMIUM = Q/Q
+WEAK = 1/1
+
+B_CORE_TIER
+NY / WEEKLY = Q/Q
+PREMIUM = 1/1
+WEAK = SKIP
+
+C_SIGNAL_SCALE
+NY = BUY 1 / SELL Q
+WEEKLY = BUY Q / SELL 1
+PREMIUM = BUY Q / SELL 1
+WEAK = 1/1
+
+Frozen signal map:
+NY = SELL
+WEEKLY = BUY
+PREMIUM = BUY
+WEAK = NO DIRECTIONAL SCALING
+
+----------------------------------------------------------------------------------------------------------------
+QUANTITIES JUDGED
+----------------------------------------------------------------------------------------------------------------
+
+Q2
+Q3
+Q4
+Q5
+Q6
+
+Q1 is recorded but excluded from the architecture championship because it does not materially test directional scaling.
+
+----------------------------------------------------------------------------------------------------------------
+MINIMUM FORWARD SAMPLE
+----------------------------------------------------------------------------------------------------------------
+
+No architecture decision before ALL are satisfied:
+
+TOTAL eligible sessions >= 90
+NY                    >= 30
+WEEKLY                >= 8
+PREMIUM               >= 8
+WEAK                  >= 8
+
+Before this gate:
+STATUS = ACCUMULATING
+No winner may be declared.
+
+----------------------------------------------------------------------------------------------------------------
+PRIMARY EXECUTION-STRESS GATE
+----------------------------------------------------------------------------------------------------------------
+
+Primary stress:
+alpha = 0.35 NQ tick/fill of added degradation per additional contract
+
+For C_SIGNAL_SCALE:
+
+1. Net PnL must be >  at EVERY quantity Q2-Q6.
+
+2. Profit Factor must be >= 1.30 at EVERY quantity Q2-Q6.
+
+3. C_SIGNAL_SCALE must have HIGHER PF than BOTH A_CURRENT and B_CORE_TIER
+   at least 4 of the 5 quantities Q2-Q6.
+
+4. C_SIGNAL_SCALE must have LOWER closed-equity drawdown than BOTH controls
+   at least 4 of the 5 quantities Q2-Q6.
+
+5. C_SIGNAL_SCALE must have HIGHER Net/Closed-DD efficiency than BOTH controls
+   at least 4 of the 5 quantities Q2-Q6.
+
+6. C_SIGNAL_SCALE must retain at least 70% of the highest stressed Net PnL
+   produced by either control at least 4 of the 5 quantities Q2-Q6.
+
+----------------------------------------------------------------------------------------------------------------
+SECONDARY HOSTILE-STRESS GATE
+----------------------------------------------------------------------------------------------------------------
+
+At:
+
+alpha = 0.50
+
+C_SIGNAL_SCALE Q6 must satisfy:
+
+Net PnL > 
+Profit Factor >= 1.20
+
+----------------------------------------------------------------------------------------------------------------
+ROLLING WINDOWS
+----------------------------------------------------------------------------------------------------------------
+
+Worst rolling:
+
+25-session
+50-session
+100-session
+
+results must be reported for all challengers.
+
+Rolling windows are diagnostic during the 90-session checkpoint.
+
+A negative rolling window alone does NOT permit changing these frozen rules.
+
+----------------------------------------------------------------------------------------------------------------
+DECISION STATES
+----------------------------------------------------------------------------------------------------------------
+
+ACCUMULATING
+Minimum forward sample not reached.
+
+SIGNAL_SCALE_EARNED_CANDIDATE
+All minimum-sample and primary/secondary gates PASS.
+
+INCONCLUSIVE
+Minimum sample reached but all promotion gates do not pass and no catastrophic failure exists.
+Continue accumulating forward evidence.
+
+REJECT_SIGNAL_SCALE
+C_SIGNAL_SCALE produces negative stressed total Net at alpha 0.35
+or PF < 1.00 after the minimum sample is satisfied.
+
+----------------------------------------------------------------------------------------------------------------
+AUTHORITY OF A PASS
+----------------------------------------------------------------------------------------------------------------
+
+SIGNAL_SCALE_EARNED_CANDIDATE means ONLY:
+
+Permission to build a new SIDE-BY-SIDE Pine research candidate.
+
+It does NOT authorize:
+
+Live routing
+Live Q6
+Live Q10
+Modification of frozen V3.6.72
+Deletion of losing forward sessions
+Retuning of the frozen signal map
+
+----------------------------------------------------------------------------------------------------------------
+GOVERNANCE
+----------------------------------------------------------------------------------------------------------------
+
+Frozen V3.6.72 modified: NO
+Pine promotion before gate: BLOCKED
+Capacity live routing: LOCKED
+Historical retuning: PROHIBITED
+Forward ledger deletion: PROHIBITED
+
+The market, not historical retuning, decides this tournament.
+
+================================================================================================================

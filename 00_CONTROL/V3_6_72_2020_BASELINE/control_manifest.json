@@ -1,0 +1,140 @@
+{
+  "status": "PASS",
+  "baseline": "FLIP FLOP V3.6.72 NQ1! 30m 2020-01-01 through 2026-08-05",
+  "created_utc": "2026-08-06T02:03:46.184536+00:00",
+  "immutable_control": true,
+  "files": [
+    {
+      "name": "BUY_V3.6.72_2020_CONTROL.pine",
+      "path": "C:\\FLIP_FLOP_HQ\\00_CONTROL\\V3_6_72_2020_BASELINE\\BUY_V3.6.72_2020_CONTROL.pine",
+      "bytes": 54136,
+      "sha256": "657f9c62d2e6f12547632c34c6a755ee56bb475b3d012cf548ee19acfb616452"
+    },
+    {
+      "name": "SELL_V3.6.72_2020_CONTROL.pine",
+      "path": "C:\\FLIP_FLOP_HQ\\00_CONTROL\\V3_6_72_2020_BASELINE\\SELL_V3.6.72_2020_CONTROL.pine",
+      "bytes": 54191,
+      "sha256": "836c39fa5892b410b3f986cb40b8b917e353713e074ac235d7712ac3e1fa00c6"
+    },
+    {
+      "name": "BUY_Strategy_Report_2020_2026.csv",
+      "path": "C:\\FLIP_FLOP_HQ\\00_CONTROL\\V3_6_72_2020_BASELINE\\BUY_Strategy_Report_2020_2026.csv",
+      "bytes": 589706,
+      "sha256": "a33a7325f9f4046be22389183121dc508bdf7a6b80f30c20d57e3d42187a8151"
+    },
+    {
+      "name": "SELL_Strategy_Report_2020_2026.csv",
+      "path": "C:\\FLIP_FLOP_HQ\\00_CONTROL\\V3_6_72_2020_BASELINE\\SELL_Strategy_Report_2020_2026.csv",
+      "bytes": 600344,
+      "sha256": "db7796f454b2f2bb35421fd78ef6c02c7e4d307b95b56f27456f55b5a0237593"
+    }
+  ],
+  "pine_checks": {
+    "BUY": {
+      "pine_v6": true,
+      "worker_side": true,
+      "worker_variable": true,
+      "start_2020": true,
+      "end_2099": true,
+      "initial_capital_250000": true,
+      "commission_2_25": true,
+      "slippage_1": true,
+      "bar_magnifier_on": true,
+      "thirty_minute_lock": true,
+      "smart_2_1_profile": true,
+      "paper_default": true
+    },
+    "SELL": {
+      "pine_v6": true,
+      "worker_side": true,
+      "worker_variable": true,
+      "start_2020": true,
+      "end_2099": true,
+      "initial_capital_250000": true,
+      "commission_2_25": true,
+      "slippage_1": true,
+      "bar_magnifier_on": true,
+      "thirty_minute_lock": true,
+      "smart_2_1_profile": true,
+      "paper_default": true
+    }
+  },
+  "results": {
+    "buy_closed_trades": 2583,
+    "sell_closed_trades": 2583,
+    "matched_pair_sessions": 2583,
+    "buy_net": 148888.0,
+    "sell_net": 145388.0,
+    "combined_pair_net": 294276.0,
+    "buy_profit_factor": 2.281705175441617,
+    "sell_profit_factor": 2.3000281666212126,
+    "pair_profit_factor": 2.8766285528438695,
+    "buy_profitable_trades": 595,
+    "sell_profitable_trades": 561,
+    "positive_years": 7,
+    "tested_years": 7,
+    "buy_same_bar_trades": 2581,
+    "sell_same_bar_trades": 2580,
+    "buy_closed_equity_drawdown": 7043.5,
+    "sell_closed_equity_drawdown": 2297.5,
+    "first_trade": "2020-01-02 09:30",
+    "last_trade": "2026-08-05 09:30"
+  },
+  "yearly_results": [
+    {
+      "year": 2020,
+      "buy_net": 10466.5,
+      "sell_net": 19406.5,
+      "pair_net": 29873.0,
+      "sessions": 412
+    },
+    {
+      "year": 2021,
+      "buy_net": 12539.5,
+      "sell_net": 12009.5,
+      "pair_net": 24549.0,
+      "sessions": 405
+    },
+    {
+      "year": 2022,
+      "buy_net": 34298.5,
+      "sell_net": 22558.5,
+      "pair_net": 56857.0,
+      "sessions": 371
+    },
+    {
+      "year": 2023,
+      "buy_net": 14152.5,
+      "sell_net": 10612.5,
+      "pair_net": 24765.0,
+      "sessions": 362
+    },
+    {
+      "year": 2024,
+      "buy_net": 16152.5,
+      "sell_net": 15937.5,
+      "pair_net": 32090.0,
+      "sessions": 394
+    },
+    {
+      "year": 2025,
+      "buy_net": 27062.5,
+      "sell_net": 29192.5,
+      "pair_net": 56255.0,
+      "sessions": 394
+    },
+    {
+      "year": 2026,
+      "buy_net": 34216.0,
+      "sell_net": 35671.0,
+      "pair_net": 69887.0,
+      "sessions": 245
+    }
+  ],
+  "warnings": [
+    "Closed-equity drawdown is not TradingView intrabar max drawdown.",
+    "High-detail historical fills are not exchange-level tick or bid/ask truth.",
+    "No live-routing approval is granted by this audit.",
+    "No quantity above the frozen 2/1 profile is approved by this audit."
+  ]
+}

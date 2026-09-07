@@ -1,0 +1,1285 @@
+====================================================================================================================================
+FLIP FLOP X10.3C-R1.3 FILE-LEVEL AUTHORITY PROBE
+====================================================================================================================================
+STATUS: PASS
+
+INPUTS
+X10.3A inventory: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\x10_3a_data_scout\X10_3A_DATA_INVENTORY.csv
+X10.3B audit:     C:\FLIP_FLOP_HQ\06_REPORTS\forensic\x10_3b_quant_core\runs\X10_3B_FILE_SCHEMA_AUDIT_20260808_062211.csv
+
+COUNTS
+X10.3B rank>=2 authority files:       60
+Known-block candidates from X10.3A:   99
+Known-block files with rank>=2:       60
+Possible schema-alias gaps:            29
+Reported rank2 overlaps with blocks:   5
+
+RANK>=2 AUTHORITY WINDOWS
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250803.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-03T22:00:00+00:00 -> 2025-08-03T23:59:58.554857505+00:00
+  reported ET:      2025-08-03 18:00:00-04:00 -> 2025-08-03 19:59:58.554857505-04:00
+  filename dates:   2025-08-03|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250804.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-04T00:00:00.035161229+00:00 -> 2025-08-04T23:59:54.763546381+00:00
+  reported ET:      nan -> 2025-08-04 19:59:54.763546381-04:00
+  filename dates:   2025-08-03|2025-08-04|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250805.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-05T00:00:00.006165429+00:00 -> 2025-08-05T23:59:59.422599571+00:00
+  reported ET:      nan -> 2025-08-05 19:59:59.422599571-04:00
+  filename dates:   2025-08-03|2025-08-05|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250806.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-06T00:00:00.051736401+00:00 -> 2025-08-06T23:59:59.134410529+00:00
+  reported ET:      nan -> 2025-08-06 19:59:59.134410529-04:00
+  filename dates:   2025-08-03|2025-08-06|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250807.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-07T00:00:00.000847487+00:00 -> 2025-08-07T23:59:49.920580369+00:00
+  reported ET:      nan -> 2025-08-07 19:59:49.920580369-04:00
+  filename dates:   2025-08-03|2025-08-07|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250808.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-08T00:00:00.028349757+00:00 -> 2025-08-08T20:59:58.477286871+00:00
+  reported ET:      nan -> 2025-08-08 16:59:58.477286871-04:00
+  filename dates:   2025-08-03|2025-08-08|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250810.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-10T22:00:00+00:00 -> 2025-08-10T23:59:55.124086645+00:00
+  reported ET:      2025-08-10 18:00:00-04:00 -> 2025-08-10 19:59:55.124086645-04:00
+  filename dates:   2025-08-03|2025-08-10|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250811.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-11T00:00:00.103140575+00:00 -> 2025-08-11T23:59:54.804105753+00:00
+  reported ET:      nan -> 2025-08-11 19:59:54.804105753-04:00
+  filename dates:   2025-08-03|2025-08-11|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250812.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-12T00:00:00.037241223+00:00 -> 2025-08-12T23:59:57.481830393+00:00
+  reported ET:      nan -> 2025-08-12 19:59:57.481830393-04:00
+  filename dates:   2025-08-03|2025-08-12|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250813.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-13T00:00:00.004277899+00:00 -> 2025-08-13T23:59:58.836156381+00:00
+  reported ET:      nan -> 2025-08-13 19:59:58.836156381-04:00
+  filename dates:   2025-08-03|2025-08-13|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250814.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-14T00:00:00.120158321+00:00 -> 2025-08-14T23:59:56.602032743+00:00
+  reported ET:      nan -> 2025-08-14 19:59:56.602032743-04:00
+  filename dates:   2025-08-03|2025-08-14|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250815.tbbo.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-08-15T00:00:00.052814871+00:00 -> 2025-08-15T20:59:59.613213185+00:00
+  reported ET:      nan -> 2025-08-15 16:59:59.613213185-04:00
+  filename dates:   2025-08-03|2025-08-15|2025-08
+  path block hint:  AUG_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-14T22:13:03.913630455+00:00 -> 2025-09-14T22:13:03.913630455+00:00
+  reported ET:      nan -> 2025-09-14 18:13:03.913630455-04:00
+  filename dates:   2025-09-14|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-14T22:00:00+00:00 -> 2025-09-14T23:57:15.324508021+00:00
+  reported ET:      2025-09-14 18:00:00-04:00 -> 2025-09-14 19:57:15.324508021-04:00
+  filename dates:   2025-09-14|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-14T22:00:00+00:00 -> 2025-09-14T23:59:53.989700227+00:00
+  reported ET:      2025-09-14 18:00:00-04:00 -> 2025-09-14 19:59:53.989700227-04:00
+  filename dates:   2025-09-14|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-14T22:00:00+00:00 -> 2025-09-14T23:59:53.989416597+00:00
+  reported ET:      2025-09-14 18:00:00-04:00 -> 2025-09-14 19:59:53.989416597-04:00
+  filename dates:   2025-09-14|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T03:24:44.839969711+00:00 -> 2025-09-15T23:49:21.921800487+00:00
+  reported ET:      nan -> 2025-09-15 19:49:21.921800487-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T08:23:13.185801431+00:00 -> 2025-09-15T19:19:46.416851685+00:00
+  reported ET:      nan -> 2025-09-15 15:19:46.416851685-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T00:00:01.365485533+00:00 -> 2025-09-15T23:58:52.972542497+00:00
+  reported ET:      nan -> 2025-09-15 19:58:52.972542497-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T00:00:00.844056937+00:00 -> 2025-09-15T23:59:41.929284347+00:00
+  reported ET:      nan -> 2025-09-15 19:59:41.929284347-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T03:24:44.839973859+00:00 -> 2025-09-15T23:49:21.922089683+00:00
+  reported ET:      nan -> 2025-09-15 19:49:21.922089683-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T00:00:00.845084915+00:00 -> 2025-09-15T23:59:52.147680009+00:00
+  reported ET:      nan -> 2025-09-15 19:59:52.147680009-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ7.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-15T18:56:26.338746159+00:00 -> 2025-09-15T18:56:26.338746159+00:00
+  reported ET:      nan -> 2025-09-15 14:56:26.338746159-04:00
+  filename dates:   2025-09-14|2025-09-15|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T00:33:16.170385003+00:00 -> 2025-09-16T19:59:32.910843421+00:00
+  reported ET:      nan -> 2025-09-16 15:59:32.910843421-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T08:57:35.647804617+00:00 -> 2025-09-16T18:05:39.748688473+00:00
+  reported ET:      nan -> 2025-09-16 14:05:39.748688473-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T00:01:47.045918255+00:00 -> 2025-09-16T23:53:10.408786005+00:00
+  reported ET:      nan -> 2025-09-16 19:53:10.408786005-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T00:00:01.046166575+00:00 -> 2025-09-16T23:59:51.036327247+00:00
+  reported ET:      nan -> 2025-09-16 19:59:51.036327247-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQZ5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T06:00:35.918859489+00:00 -> 2025-09-16T14:50:16.194084277+00:00
+  reported ET:      nan -> 2025-09-16 10:50:16.194084277-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-16T00:00:00.113187137+00:00 -> 2025-09-16T23:59:51.036309499+00:00
+  reported ET:      nan -> 2025-09-16 19:59:51.036309499-04:00
+  filename dates:   2025-09-14|2025-09-16|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T00:00:34.863905755+00:00 -> 2025-09-17T23:46:01.035871237+00:00
+  reported ET:      nan -> 2025-09-17 19:46:01.035871237-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T15:39:56.646610545+00:00 -> 2025-09-17T16:31:36.660740781+00:00
+  reported ET:      nan -> 2025-09-17 12:31:36.660740781-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T00:02:23.010299311+00:00 -> 2025-09-17T23:59:45.638253041+00:00
+  reported ET:      nan -> 2025-09-17 19:59:45.638253041-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T00:00:00.499088521+00:00 -> 2025-09-17T23:59:56.992775631+00:00
+  reported ET:      nan -> 2025-09-17 19:59:56.992775631-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQZ5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T13:37:47.467464789+00:00 -> 2025-09-17T19:05:00.242776955+00:00
+  reported ET:      nan -> 2025-09-17 15:05:00.242776955-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-17T00:00:00.497708661+00:00 -> 2025-09-17T23:59:44.187053281+00:00
+  reported ET:      nan -> 2025-09-17 19:59:44.187053281-04:00
+  filename dates:   2025-09-14|2025-09-17|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T00:06:22.523671705+00:00 -> 2025-09-18T23:13:32.713566645+00:00
+  reported ET:      nan -> 2025-09-18 19:13:32.713566645-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T12:45:23.796977797+00:00 -> 2025-09-18T15:33:16.379737767+00:00
+  reported ET:      nan -> 2025-09-18 11:33:16.379737767-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T00:00:11.552288041+00:00 -> 2025-09-18T23:58:32.006645691+00:00
+  reported ET:      nan -> 2025-09-18 19:58:32.006645691-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T00:00:00.511025783+00:00 -> 2025-09-18T23:59:57.472882843+00:00
+  reported ET:      nan -> 2025-09-18 19:59:57.472882843-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQZ5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T04:32:11.188929285+00:00 -> 2025-09-18T20:36:57.065908779+00:00
+  reported ET:      nan -> 2025-09-18 16:36:57.065908779-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-18T00:00:00.054296839+00:00 -> 2025-09-18T23:59:59.736483905+00:00
+  reported ET:      nan -> 2025-09-18 19:59:59.736483905-04:00
+  filename dates:   2025-09-14|2025-09-18|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T01:02:51.330426475+00:00 -> 2025-09-19T20:53:11.359608663+00:00
+  reported ET:      nan -> 2025-09-19 16:53:11.359608663-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQM6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T18:01:24.538430901+00:00 -> 2025-09-19T18:01:24.538430901+00:00
+  reported ET:      nan -> 2025-09-19 14:01:24.538430901-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQU5-NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T00:03:22.084580513+00:00 -> 2025-09-19T13:29:58.011511121+00:00
+  reported ET:      nan -> 2025-09-19 09:29:58.011511121-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQU5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T00:02:22.927917377+00:00 -> 2025-09-19T13:29:54.643817769+00:00
+  reported ET:      nan -> 2025-09-19 09:29:54.643817769-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5-NQH6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T05:06:03.441655629+00:00 -> 2025-09-19T20:36:40.278265909+00:00
+  reported ET:      nan -> 2025-09-19 16:36:40.278265909-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5-NQM6.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T20:33:27.164091925+00:00 -> 2025-09-19T20:33:27.164091925+00:00
+  reported ET:      nan -> 2025-09-19 16:33:27.164091925-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2025-09-19T00:00:00.052952529+00:00 -> 2025-09-19T20:59:59.698146129+00:00
+  reported ET:      nan -> 2025-09-19 16:59:59.698146129-04:00
+  filename dates:   2025-09-14|2025-09-19|2025-09
+  path block hint:  SEP_2025
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0-NQM0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T00:03:59.557972357+00:00 -> 2020-03-16T23:59:23.610166781+00:00
+  reported ET:      nan -> 2020-03-16 19:59:23.610166781-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0-NQU0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T14:13:11.040624879+00:00 -> 2020-03-16T16:50:00.162234343+00:00
+  reported ET:      nan -> 2020-03-16 12:50:00.162234343-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T00:01:25.720418855+00:00 -> 2020-03-16T23:59:58.650835447+00:00
+  reported ET:      nan -> 2020-03-16 19:59:58.650835447-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQM0-NQU0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T13:56:28.487019741+00:00 -> 2020-03-16T20:36:26.669934727+00:00
+  reported ET:      nan -> 2020-03-16 16:36:26.669934727-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T00:01:00.030733251+00:00 -> 2020-03-16T23:59:58.624015667+00:00
+  reported ET:      nan -> 2020-03-16 19:59:58.624015667-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQU0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-16T13:50:09.045880229+00:00 -> 2020-03-16T22:53:39.919043555+00:00
+  reported ET:      nan -> 2020-03-16 18:53:39.919043555-04:00
+  filename dates:   2020-03-16|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQH0-NQM0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T00:01:35.953730651+00:00 -> 2020-03-17T23:59:28.462008283+00:00
+  reported ET:      nan -> 2020-03-17 19:59:28.462008283-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQH0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T00:00:00.011624105+00:00 -> 2020-03-17T23:59:58.369495131+00:00
+  reported ET:      nan -> 2020-03-17 19:59:58.369495131-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0-NQU0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T13:50:15.379422069+00:00 -> 2020-03-17T20:44:08.996582695+00:00
+  reported ET:      nan -> 2020-03-17 16:44:08.996582695-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0-NQZ0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T09:53:58.529254497+00:00 -> 2020-03-17T14:43:06.600022219+00:00
+  reported ET:      nan -> 2020-03-17 10:43:06.600022219-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T00:00:00.011432283+00:00 -> 2020-03-17T23:59:59.448129923+00:00
+  reported ET:      nan -> 2020-03-17 19:59:59.448129923-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQU0.dbn.zst
+  schema/type/rank: tbbo | TBBO | 2
+  reported UTC:     2020-03-17T12:55:12.300453819+00:00 -> 2020-03-17T23:28:21.580404223+00:00
+  reported ET:      nan -> 2020-03-17 19:28:21.580404223-04:00
+  filename dates:   2020-03-16|2020-03-17|2020-03
+  path block hint:  COVID_2020
+
+KNOWN-BLOCK FILES / AUTHORITY
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\condition.json
+  block:            AUG_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250803.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-03T22:00:00+00:00 -> 2025-08-03T23:59:58.554857505+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250804.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-04T00:00:00.035161229+00:00 -> 2025-08-04T23:59:54.763546381+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250805.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-05T00:00:00.006165429+00:00 -> 2025-08-05T23:59:59.422599571+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250806.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-06T00:00:00.051736401+00:00 -> 2025-08-06T23:59:59.134410529+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250807.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-07T00:00:00.000847487+00:00 -> 2025-08-07T23:59:49.920580369+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250808.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-08T00:00:00.028349757+00:00 -> 2025-08-08T20:59:58.477286871+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250810.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-10T22:00:00+00:00 -> 2025-08-10T23:59:55.124086645+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250811.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-11T00:00:00.103140575+00:00 -> 2025-08-11T23:59:54.804105753+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250812.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-12T00:00:00.037241223+00:00 -> 2025-08-12T23:59:57.481830393+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250813.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-13T00:00:00.004277899+00:00 -> 2025-08-13T23:59:58.836156381+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250814.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-14T00:00:00.120158321+00:00 -> 2025-08-14T23:59:56.602032743+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\glbx-mdp3-20250815.tbbo.dbn.zst
+  block:            AUG_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-08-15T00:00:00.052814871+00:00 -> 2025-08-15T20:59:59.613213185+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\manifest.json
+  block:            AUG_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_08_03_TO_08_15\EXTRACTED_78af6a3aea7e\metadata.json
+  block:            AUG_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\condition.json
+  block:            SEP_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-14T22:13:03.913630455+00:00 -> 2025-09-14T22:13:03.913630455+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-14T22:00:00+00:00 -> 2025-09-14T23:57:15.324508021+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-14T22:00:00+00:00 -> 2025-09-14T23:59:53.989700227+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250914.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-14T22:00:00+00:00 -> 2025-09-14T23:59:53.989416597+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T03:24:44.839969711+00:00 -> 2025-09-15T23:49:21.921800487+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T08:23:13.185801431+00:00 -> 2025-09-15T19:19:46.416851685+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T00:00:01.365485533+00:00 -> 2025-09-15T23:58:52.972542497+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T00:00:00.844056937+00:00 -> 2025-09-15T23:59:41.929284347+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T03:24:44.839973859+00:00 -> 2025-09-15T23:49:21.922089683+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T00:00:00.845084915+00:00 -> 2025-09-15T23:59:52.147680009+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250915.tbbo.NQZ7.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-15T18:56:26.338746159+00:00 -> 2025-09-15T18:56:26.338746159+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T00:33:16.170385003+00:00 -> 2025-09-16T19:59:32.910843421+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T08:57:35.647804617+00:00 -> 2025-09-16T18:05:39.748688473+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T00:01:47.045918255+00:00 -> 2025-09-16T23:53:10.408786005+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T00:00:01.046166575+00:00 -> 2025-09-16T23:59:51.036327247+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQZ5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T06:00:35.918859489+00:00 -> 2025-09-16T14:50:16.194084277+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250916.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-16T00:00:00.113187137+00:00 -> 2025-09-16T23:59:51.036309499+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T00:00:34.863905755+00:00 -> 2025-09-17T23:46:01.035871237+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T15:39:56.646610545+00:00 -> 2025-09-17T16:31:36.660740781+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T00:02:23.010299311+00:00 -> 2025-09-17T23:59:45.638253041+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T00:00:00.499088521+00:00 -> 2025-09-17T23:59:56.992775631+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQZ5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T13:37:47.467464789+00:00 -> 2025-09-17T19:05:00.242776955+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250917.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-17T00:00:00.497708661+00:00 -> 2025-09-17T23:59:44.187053281+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T00:06:22.523671705+00:00 -> 2025-09-18T23:13:32.713566645+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T12:45:23.796977797+00:00 -> 2025-09-18T15:33:16.379737767+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T00:00:11.552288041+00:00 -> 2025-09-18T23:58:32.006645691+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T00:00:00.511025783+00:00 -> 2025-09-18T23:59:57.472882843+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQZ5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T04:32:11.188929285+00:00 -> 2025-09-18T20:36:57.065908779+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250918.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-18T00:00:00.054296839+00:00 -> 2025-09-18T23:59:59.736483905+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T01:02:51.330426475+00:00 -> 2025-09-19T20:53:11.359608663+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQM6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T18:01:24.538430901+00:00 -> 2025-09-19T18:01:24.538430901+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQU5-NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T00:03:22.084580513+00:00 -> 2025-09-19T13:29:58.011511121+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQU5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T00:02:22.927917377+00:00 -> 2025-09-19T13:29:54.643817769+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5-NQH6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T05:06:03.441655629+00:00 -> 2025-09-19T20:36:40.278265909+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5-NQM6.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T20:33:27.164091925+00:00 -> 2025-09-19T20:33:27.164091925+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\glbx-mdp3-20250919.tbbo.NQZ5.dbn.zst
+  block:            SEP_2025
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2025-09-19T00:00:00.052952529+00:00 -> 2025-09-19T20:59:59.698146129+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\manifest.json
+  block:            SEP_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\BLOCK_2025_09_14_TO_09_19\EXTRACTED_696a2d5ed7ad\metadata.json
+  block:            SEP_2025
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\condition.json
+  block:            COVID_2020
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0-NQM0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T00:03:59.557972357+00:00 -> 2020-03-16T23:59:23.610166781+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0-NQU0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T14:13:11.040624879+00:00 -> 2020-03-16T16:50:00.162234343+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQH0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T00:01:25.720418855+00:00 -> 2020-03-16T23:59:58.650835447+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQM0-NQU0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T13:56:28.487019741+00:00 -> 2020-03-16T20:36:26.669934727+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T00:01:00.030733251+00:00 -> 2020-03-16T23:59:58.624015667+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200316.tbbo.NQU0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-16T13:50:09.045880229+00:00 -> 2020-03-16T22:53:39.919043555+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQH0-NQM0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T00:01:35.953730651+00:00 -> 2020-03-17T23:59:28.462008283+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQH0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T00:00:00.011624105+00:00 -> 2020-03-17T23:59:58.369495131+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0-NQU0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T13:50:15.379422069+00:00 -> 2020-03-17T20:44:08.996582695+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0-NQZ0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T09:53:58.529254497+00:00 -> 2020-03-17T14:43:06.600022219+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQM0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T00:00:00.011432283+00:00 -> 2020-03-17T23:59:59.448129923+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\glbx-mdp3-20200317.tbbo.NQU0.dbn.zst
+  block:            COVID_2020
+  class/parser:     DBN_HIGH_DETAIL | DATABENTO_DBN
+  X3B rank/type:    2 | TBBO
+  decoded schema:   tbbo
+  decoded UTC:      2020-03-17T12:55:12.300453819+00:00 -> 2020-03-17T23:28:21.580404223+00:00
+  market columns:   ts_recv|ts_event|instrument_id|action|side|price|size|ts_in_delta|sequence|bid_px_00|ask_px_00|bid_sz_00|ask_sz_00|bid_ct_00|ask_ct_00|symbol
+  alias flag:       
+  note:             clock=ts_event
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\manifest.json
+  block:            COVID_2020
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\EXTRACTED_c77e649a361f\metadata.json
+  block:            COVID_2020
+  class/parser:     MARKET_DATA_OTHER | NONE
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   
+  alias flag:       
+  note:             UNSUPPORTED_FOR_PROBE
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\NQH0_TBBO.parquet
+  block:            COVID_2020
+  class/parser:     TBBO_HIGH_DETAIL | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event|symbol|price|size|bid|ask
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\NQM0_TBBO.parquet
+  block:            COVID_2020
+  class/parser:     TBBO_HIGH_DETAIL | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event|symbol|price|size|bid|ask
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\NQU0_TBBO.parquet
+  block:            COVID_2020
+  class/parser:     TBBO_HIGH_DETAIL | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event|symbol|price|size|bid|ask
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\COVID_FILL_SCENARIOS_2NQ.csv
+  block:            COVID_2020
+  class/parser:     MARKET_DATA_OTHER | CSV_HEADER
+  X3B rank/type:    -1 | NOT_IN_X3B
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   exit_price|timestamp
+  alias flag:       
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\NQM0_1320_TO_1400_TBBO.parquet
+  block:            COVID_2020
+  class/parser:     TBBO_HIGH_DETAIL | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|ts_recv_utc|price|size|bid|ask|action|side|sequence|instrument_id
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\NQM0_1344_TO_1347_RAW_EVENTS.csv
+  block:            COVID_2020
+  class/parser:     TBBO_LIKE_CSV | CSV_HEADER
+  X3B rank/type:    0 | OTHER
+  decoded schema:   
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|ts_recv_utc|price|size|bid|ask|action|side|sequence|instrument_id
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250803_1800_WEEKLY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250804_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250804_1800_WEEKDAY_PREMIUM_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250805_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250805_1800_WEEKDAY_PREMIUM_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250806_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250807_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250807_1800_WEEKDAY_WEAK_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250808_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250810_1800_WEEKLY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250811_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250812_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250812_1800_WEEKDAY_WEAK_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250813_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250814_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250814_1800_WEEKDAY_WEAK_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250815_0930_NY_NQU5.parquet
+  block:            AUG_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250914_1800_WEEKLY_NQU5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250915_0930_NY_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250916_0930_NY_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250917_0930_NY_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250917_1800_WEEKDAY_WEAK_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250918_0930_NY_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+FILE: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025\20250919_0930_NY_NQZ5.parquet
+  block:            AUG_2025|SEP_2025
+  class/parser:     COLUMNAR_MARKET_DATA | PARQUET_META
+  X3B rank/type:    0 | OTHER
+  decoded schema:   PARQUET
+  decoded UTC:       -> 
+  market columns:   ts_event_utc|symbol|instrument_id|price|size|bid|ask|side|sequence
+  alias flag:       POSSIBLE_SCHEMA_ALIAS_GAP
+  note:             
+
+DIAGNOSIS: RANK2_WINDOWS_DO_OVERLAP_KNOWN_BLOCKS_MAPPING_LAYER_NEEDS_RECHECK
+
+INTERPRETATION
+If known-block files exist but rank>=2 files are different, X10.3B authority detection is selecting the wrong subset.
+If a known-block file exposes bid/ask/time/size columns but rank<2, the schema detector needs an alias-aware patch.
+If decoded event dates differ from filename/block dates, timestamp decoding must be corrected before replay.
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Replay performed: NO
+Live routing: LOCKED
+====================================================================================================================================

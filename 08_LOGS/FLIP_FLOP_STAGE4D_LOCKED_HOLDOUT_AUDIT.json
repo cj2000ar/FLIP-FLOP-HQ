@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "text_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage4d\\FLIP_FLOP_STAGE4D_LOCKED_HOLDOUT_AUDIT.txt",
+  "json_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\promotion_gates\\stage4d\\FLIP_FLOP_STAGE4D_LOCKED_HOLDOUT_AUDIT.json",
+  "holdout_result": "HOLDOUT_MIXED_RESEARCH_ONLY",
+  "live_routing": "LOCKED"
+}

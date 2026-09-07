@@ -1,0 +1,62 @@
+========================================================================
+FLIP FLOP STAGE 2 - INTRABAR REPLAY PREFLIGHT
+========================================================================
+STATUS: PASS
+
+IMMUTABLE CONTROL
+Baseline: FLIP FLOP V3.6.72 NQ1! 30m 2020-01-01 through 2026-08-05
+Control hashes verified: 4 / 4
+Matched pair sessions: 2,583
+Combined control net: $294,276.00
+
+WHY STAGE 2 IS REQUIRED
+BUY same-bar trades:  2,581 / 2,583 (99.92%)
+SELL same-bar trades: 2,580 / 2,583 (99.88%)
+
+The 30-minute control proves historical strategy behavior under TradingView's
+broker emulator. It does not prove exact tick order, bid/ask execution,
+queue position, latency, or extreme stop slippage.
+
+MARKET DATA STATUS
+Raw files found: 0
+Status: WAITING_FOR_DATA
+
+DATA QUALITY LADDER
+TIER A - PROMOTION QUALITY
+- Contract-specific NQ trade ticks
+- UTC timestamps
+- Trade price and size
+- Bid and ask quotes
+- Verified contract and rollover mapping
+
+TIER B - STRONG RESEARCH
+- Contract-specific NQ trade ticks
+- UTC timestamps
+- Trade price and size
+- No bid/ask; spread must be stress-modeled
+
+TIER C - APPROXIMATE ONLY
+- One-second contract-specific bars
+- Cannot prove exact within-second ordering
+- Not enough for final live-execution approval
+
+REJECTED FOR PULL TRUTH
+- 30-minute bars alone
+- Unknown synthetic tick reconstruction
+- Unmapped continuous series
+- Missing timestamps
+
+CURRENT GATES
+Control hashes:         PASS
+Control database:       PASS
+Live routing:           LOCKED
+Pull tournament:        BLOCKED UNTIL MARKET DATA VALIDATION
+Large-size scaling:     BLOCKED
+
+NEXT ACTION
+Choose and acquire the NQ historical-data source. Put raw files in:
+C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw
+
+Do not rename provider columns or alter the raw files. The importer will make
+normalized copies and preserve source hashes.
+========================================================================

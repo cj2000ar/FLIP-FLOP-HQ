@@ -1,0 +1,64 @@
+========================================================================================================================
+FLIP FLOP X10.3A DATA SCOUT + INTEGRITY SCANNER + ALGORITHM-AGENT SHELL
+========================================================================================================================
+STATUS: PASS
+
+NUMERIC SUMMARY
+Market-data roots found:          5
+Candidate files found:            100
+High-detail/columnar candidates:   89
+TBBO/DBN candidates:               65
+TBBO-like CSV candidates:          1
+Known inspectable event/data rows: 1,719,237
+Total candidate bytes:             166,284,805 (158.58 MB)
+Duplicate-content hash groups:     0
+Integrity hard failures:           0
+First known timestamp:             1584316800000000000
+Last known timestamp:              1758326400000000000
+
+ROOTS
+  C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw
+  C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025
+  C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical
+  C:\FLIP_FLOP_HQ\01_INBOX\market_data
+  C:\FLIP_FLOP_HQ\02_VALIDATED\market_data
+
+CLASSIFICATION COUNTS
+  COLUMNAR_MARKET_DATA         24
+  DBN_HIGH_DETAIL              60
+  MARKET_DATA_OTHER            11
+  TBBO_HIGH_DETAIL             4
+  TBBO_LIKE_CSV                1
+
+ALGORITHM / SCANNER AGENTS
+  DATA_SCOUT             ACTIVE      filesystem/schema/date/hash inventory
+  INTEGRITY_SCANNER      ACTIVE      zero-byte/hash/duplicate/basic time sanity
+  CLOCK_AUDITOR          ARMED_NEXT  ordered timestamp/session-anchor validation
+  BOOK_RECONSTRUCTOR     ARMED_NEXT  ordered bid/ask/depth state
+  FILL_ENGINE            ARMED_NEXT  Q1-Q10 VWAP/partial-fill simulation
+  LATENCY_SCANNER        ARMED_NEXT  +25/+50/+100/+250/+500ms replay
+  CAPACITY_BEND          ARMED_NEXT  nonlinear Q deterioration detector
+  SIGNAL_SCALE_AGENT     ARMED_NEXT  Current/Core-Tier/Signal-Scale footprint compare
+  TOXICITY_AGENT         ARMED_NEXT  spread/depth/velocity/structure quality score
+  ANOMALY_HUNTER         ARMED_NEXT  worst depth/spread/gap/fill divergence
+  RED_TEAM               ARMED_NEXT  depth haircuts/latency/spread shock
+  GOVERNOR               ACTIVE      no Pine changes/no live authority
+
+READINESS
+DATA_DISCOVERY:                  PASS
+HIGH_DETAIL_DISCOVERY:           PASS
+TBBO_DISCOVERY:                  PASS
+INTEGRITY_NO_HARD_FAILURES:      PASS
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+X10.2 forward championship modified: NO
+Entry/exit logic modified: NO
+Live routing: LOCKED
+X10.3A authority: INVENTORY / FORENSIC RESEARCH ONLY
+
+NEXT NUMERIC OUTPUT AFTER THIS SCOUT
+X10.3B will only be built against files this scout proves exist.
+Targets: Q1-Q10 fill tax, edge retention, latency sensitivity, route capacity,
+Signal-Scale footprint advantage, capacity-bend quantity, and red-team survival.
+========================================================================================================================

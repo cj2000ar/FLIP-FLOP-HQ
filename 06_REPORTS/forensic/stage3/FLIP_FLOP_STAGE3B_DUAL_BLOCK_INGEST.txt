@@ -1,0 +1,56 @@
+==============================================================================================
+FLIP FLOP STAGE 3B - DUAL GIVEBACK BLOCK INGEST
+==============================================================================================
+STATUS: PASS
+NO NEW DATA PURCHASED BY THIS TOOL
+NO API KEY USED
+LIVE ROUTING LOCKED
+
+SOURCE JOBS
+GLBX-20260806-EY5G86Y3QG | BLOCK_2025_08_03_TO_08_15
+  ZIP SHA-256: 78af6a3aea7edbb0661716c483f447131a18d8a90a10bd5fc5a24748ce3efc9c
+  DBN files: 12
+  Split by instrument: NO
+  Manifest hashes: 14/14 PASS
+  Degraded dates: NONE
+GLBX-20260806-3QVEUHYTEV | BLOCK_2025_09_14_TO_09_19
+  ZIP SHA-256: 696a2d5ed7ad1aeb601d30ee973d34a4f7a3df9b0a6ded9171584b9ec100bcf8
+  DBN files: 36
+  Split by instrument: YES
+  Manifest hashes: 38/38 PASS
+  Degraded dates: ['2025-09-17']
+
+SESSION COVERAGE
+Pair sessions analyzed: 24
+Worker trades represented: 48
+August sessions: 17
+September sessions: 7
+Promotion-eligible clean sessions: 22
+Diagnostic-only degraded sessions: 2
+Route counts: {'NY': 15, 'WEEKDAY_WEAK': 4, 'WEEKLY': 3, 'WEEKDAY_PREMIUM': 2}
+Active contract counts: {'NQU5': 18, 'NQZ5': 6}
+
+SEPTEMBER 17 QUALITY QUARANTINE
+Databento marked 2025-09-17 as degraded.
+Its sessions are retained for diagnosis but excluded from parameter selection,
+promotion scoring, and final holdout claims.
+  Trade 2226: 2025-09-17 09:30 | NY | NQZ5
+  Trade 2227: 2025-09-17 18:00 | WEEKDAY_WEAK | NQZ5
+
+OUTPUTS
+Session registry: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3\GIVEBACK_2025_SESSION_REGISTRY.csv
+Active-contract ranking: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3\GIVEBACK_2025_ACTIVE_CONTRACT_RANKING.csv
+Raw session Parquets: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\GIVEBACK_BLOCKS_2025
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3\FLIP_FLOP_STAGE3B_DUAL_BLOCK_INGEST.json
+
+GATES
+Control integrity: PASS
+Manifest verification: PASS
+Mixed August instrument mapping: PASS
+Split September instrument mapping: PASS
+24-session extraction: PASS
+September 17: QUARANTINED DIAGNOSTIC ONLY
+Protection tournament: READY FOR SHADOW BUILD
+Large-size scaling: BLOCKED
+Live routing: LOCKED
+==============================================================================================

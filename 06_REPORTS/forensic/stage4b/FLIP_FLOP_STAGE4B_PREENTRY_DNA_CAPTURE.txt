@@ -1,0 +1,54 @@
+====================================================================================================
+FLIP FLOP STAGE 4B - PRE-ENTRY DNA CAPTURE
+====================================================================================================
+STATUS: PASS
+NO EXECUTION RULE CHANGED
+NO QUANTITY CHANGED
+LIVE ROUTING LOCKED
+
+SOURCE EXPORTS
+BUY: C:\Users\cj200\Downloads\FF_DNA_BUY_CME_MINI_NQ1!_2026-08-06.csv
+BUY SHA-256: 08760a992a5c55281079723d45b546f97a2c12a709ef61103be5a8ba50049b73
+SELL: C:\Users\cj200\Downloads\FF_DNA_SELL_CME_MINI_NQ1!_2026-08-06.csv
+SELL SHA-256: af05cf5de65e559d0067ada6029dc0a0d2dd1a6a7d333381a406ed2c1b52d765
+
+PAIR INTEGRITY
+Paired sessions: 2583
+Entry timestamp match: PASS
+BUY/SELL pre-entry feature parity: PASS
+Label counts: {'SKIP': 1427, 'BUY': 595, 'SELL': 561}
+
+FEATURE CAPTURE
+Feature columns audited: 25
+Features present: 21
+Features unavailable: 4
+
+LOCKED TIME SPLIT
+Development: 2020-01 through 2023-12
+Validation: 2024-01 through 2025-12
+Locked holdout: 2026-01 through 2026-07
+Random split: FORBIDDEN
+
+NEXT MODEL RULES
+Actions: BUY, SELL, or SKIP
+Inputs: information available before entry only
+Objective: net P&L after costs, not classification accuracy
+Uncertain prediction: SKIP
+2026 holdout remains unseen until a champion is frozen
+
+OUTPUTS
+Pre-entry DNA: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4b_dna_capture\PREENTRY_DNA_2583.csv
+Feature audit: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4b_dna_capture\FEATURE_AVAILABILITY_AUDIT.csv
+Route-label matrix: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4b_dna_capture\ROUTE_LABEL_MATRIX.csv
+Year-label matrix: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4b_dna_capture\YEAR_LABEL_MATRIX.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage4b\FLIP_FLOP_STAGE4B_PREENTRY_DNA_CAPTURE.json
+
+GATES
+Control integrity: PASS
+Telemetry capture: PASS
+Feature parity: PASS
+Classifier training: READY FOR STAGE 4C
+Pine execution change: NONE
+Quantity change: BLOCKED
+Live routing: LOCKED
+====================================================================================================

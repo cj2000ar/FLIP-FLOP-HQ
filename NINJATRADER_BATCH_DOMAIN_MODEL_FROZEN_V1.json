@@ -1,0 +1,485 @@
+{
+  "schema_version": "1.0",
+  "phase": "PHASE_2_FROZEN",
+  "domain": "NinjaTrader Batch Execution Engine",
+  "authority_invariant": {
+    "authority": "ZERO",
+    "live_enabled": false,
+    "broker_orders_allowed": false,
+    "control_mutation_allowed": false,
+    "failure_policy": "FAIL_CLOSED",
+    "status": "LOCKED_IMMUTABLE"
+  },
+  "entities": {
+    "BatchRun": {
+      "id": "batch_id",
+      "name": "string",
+      "description": "End-of-day batch execution session. Spans market close → NinjaTrader export → alerts → summary → archive.",
+      "fields": {
+        "batch_id": {"type": "uuid", "required": true, "description": "Unique batch identifier"},
+        "run_date": {"type": "date", "required": true, "description": "Date of batch execution (YYYY-MM-DD)"},
+        "market_open_time": {"type": "timestamp", "required": true, "description": "Market open time (UTC)"},
+        "market_close_time": {"type": "timestamp", "required": true, "description": "Market close time (UTC)"},
+        "mode": {"type": "enum(PAPER|SHADOW|ANALYSIS)", "required": true, "description": "Execution mode: paper-only (PAPER), shadow-mode (SHADOW), or post-analysis (ANALYSIS)"},
+        "correlation_id": {"type": "uuid", "required": true, "description": "Links batch to deployment candidate + Guardian verdicts"},
+        "batch_status": {"type": "enum(PENDING|PROCESSING|CLOSED|ARCHIVED)", "required": true, "default": "PENDING", "description": "Batch lifecycle state"},
+        "initiated_at": {"type": "timestamp", "required": true, "description": "When batch was created"},
+        "closed_at": {"type": "timestamp", "description": "When batch closed (marks immutability)"},
+        "created_at": {"type": "timestamp", "required": true},
+        "modified_at": {"type": "timestamp", "required": true}
+      },
+      "constraints": [
+        "batch_id must be globally unique",
+        "run_date must be trading day (no weekends/holidays)",
+        "market_open_time < market_close_time",
+        "mode immutable after creation",
+        "correlation_id must match a deployment candidate",
+        "batch_status transitions: PENDING → PROCESSING → CLOSED → ARCHIVED",
+        "closed_at marks data immutability: no further modifications allowed"
+      ]
+    },
+    "BatchVerdict": {
+      "id": "verdict_id",
+      "description": "Final authorization verdict for batch execution. Aggregates Guardian 8-gate verdicts + compliance + tax + archive checks.",
+      "fields": {
+        "verdict_id": {"type": "uuid", "required": true, "description": "Unique verdict identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "guardian_gate_results": {"type": "array<GateDecisionTuple>", "required": true, "description": "All 8 Guardian gate verdicts (PASS|BLOCKED|NOT_PROVEN)"},
+        "compliance_passed": {"type": "boolean", "required": true, "description": "Compliance verification result"},
+        "tax_verified": {"type": "boolean", "required": true, "description": "Tax data accuracy verified"},
+        "archive_verified": {"type": "boolean", "required": true, "description": "Archive integrity verified"},
+        "batch_status": {"type": "enum(APPROVED|BLOCKED|NOT_PROVEN)", "required": true, "description": "Final batch verdict"},
+        "verdict_reasoning": {"type": "string", "description": "Human-readable explanation"},
+        "authority_used": {"type": "enum(ZERO)", "required": true, "description": "Authority level at verdict"},
+        "event_time": {"type": "timestamp", "required": true, "description": "When verdict was issued"},
+        "knowledge_time": {"type": "timestamp", "required": true, "description": "When all evidence was known"},
+        "policy_hash": {"type": "sha256", "description": "Hash of applied policy"}
+      },
+      "constraints": [
+        "verdict_id must be globally unique",
+        "batch_id foreign key must exist",
+        "guardian_gate_results array must contain exactly 8 GateDecisionTuple entries",
+        "batch_status = APPROVED IFF all gates PASS AND compliance_passed AND tax_verified AND archive_verified",
+        "batch_status = BLOCKED if ANY gate BLOCKED or compliance/tax/archive verification failed",
+        "batch_status = NOT_PROVEN if ANY gate NOT_PROVEN",
+        "verdict immutable after creation (audit-only append)",
+        "authority_used must be ZERO (hard-locked)",
+        "event_time <= knowledge_time"
+      ]
+    },
+    "DayReport": {
+      "id": "report_id",
+      "description": "End-of-day summary report. Aggregates trading activity, P&L, risk metrics, and alert counts.",
+      "fields": {
+        "report_id": {"type": "uuid", "required": true, "description": "Unique report identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "report_date": {"type": "date", "required": true, "description": "Report date (YYYY-MM-DD)"},
+        "trade_count": {"type": "int", "required": true, "default": 0, "description": "Total trades processed in batch"},
+        "pnl_summary": {"type": "json", "required": true, "description": "P&L data: {gross_pnl, net_pnl, currency, timestamp}"},
+        "risk_metrics": {"type": "json", "required": true, "description": "Risk data: {max_drawdown, var_95, sharpe_ratio, win_rate, avg_win, avg_loss}"},
+        "alert_count": {"type": "int", "required": true, "default": 0, "description": "Number of alerts generated"},
+        "alert_summary": {"type": "json", "description": "Count by severity: {critical, high, medium, low}"},
+        "export_time": {"type": "timestamp", "required": true, "description": "When NinjaTrader export completed"},
+        "report_status": {"type": "enum(DRAFT|FINALIZED|ARCHIVED)", "required": true, "default": "DRAFT"},
+        "created_at": {"type": "timestamp", "required": true},
+        "finalized_at": {"type": "timestamp", "description": "When report was locked"}
+      },
+      "constraints": [
+        "report_id must be globally unique",
+        "batch_id foreign key must exist",
+        "report_date = batch.run_date",
+        "trade_count >= 0",
+        "pnl_summary must contain gross_pnl, net_pnl, currency, timestamp",
+        "risk_metrics must contain max_drawdown, var_95, sharpe_ratio, win_rate, avg_win, avg_loss",
+        "alert_count = sum of alert_summary counts",
+        "export_time must be after batch.market_close_time",
+        "report_status transitions: DRAFT → FINALIZED → ARCHIVED",
+        "finalized_at marks immutability: no further modifications"
+      ]
+    },
+    "AlertRecord": {
+      "id": "alert_id",
+      "description": "Trade alert or anomaly detection. Generated during batch processing; sources: risk monitors, compliance checks, anomaly detection.",
+      "fields": {
+        "alert_id": {"type": "uuid", "required": true, "description": "Unique alert identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "report_id": {"type": "uuid", "description": "Foreign key to DayReport (optional, if alert tied to report)"},
+        "severity": {"type": "enum(CRITICAL|HIGH|MEDIUM|LOW)", "required": true, "description": "Alert severity level"},
+        "alert_type": {"type": "string", "required": true, "description": "Category: e.g., RISK_LIMIT_BREACH, DRAWDOWN_WARNING, ANOMALY, COMPLIANCE_FLAG, TAX_DISCREPANCY"},
+        "message": {"type": "string", "required": true, "description": "Human-readable alert text"},
+        "context": {"type": "json", "description": "Alert-specific context: {symbol, quantity, price, threshold, actual_value}"},
+        "timestamp": {"type": "timestamp", "required": true, "description": "When alert was generated"},
+        "escalation_flag": {"type": "boolean", "required": true, "default": false, "description": "If true, alert requires manual review"},
+        "escalated_to": {"type": "string", "description": "User/role alert was escalated to"},
+        "resolved": {"type": "boolean", "required": true, "default": false, "description": "If true, alert acknowledged/resolved"},
+        "resolved_at": {"type": "timestamp", "description": "When alert was resolved"},
+        "created_at": {"type": "timestamp", "required": true}
+      },
+      "constraints": [
+        "alert_id must be globally unique",
+        "batch_id foreign key must exist",
+        "severity immutable after creation",
+        "alert_type immutable after creation",
+        "timestamp must be within [batch.initiated_at, batch.closed_at]",
+        "escalation_flag = true requires escalated_to be set",
+        "resolved = true requires resolved_at to be set",
+        "resolved_at >= timestamp"
+      ]
+    },
+    "ComplianceBundle": {
+      "id": "bundle_id",
+      "description": "Immutable compliance package. Locks tax summary, receipt hashes, and audit trail at batch close.",
+      "fields": {
+        "bundle_id": {"type": "uuid", "required": true, "description": "Unique bundle identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "tax_summary": {"type": "json", "required": true, "description": "Tax data: {gains, losses, wash_sales, adjustments, total_taxable_income}"},
+        "receipt_hashes": {"type": "array<string>", "required": true, "description": "SHA256 hashes of all receipts/executions"},
+        "audit_trail": {"type": "array<json>", "required": true, "description": "Chronological log of compliance checks performed"},
+        "certification_time": {"type": "timestamp", "required": true, "description": "When bundle was certified/locked"},
+        "certifying_authority": {"type": "string", "required": true, "description": "System/role that certified bundle"},
+        "bundle_hash": {"type": "sha256", "required": true, "description": "Hash of entire bundle (immutability seal)"},
+        "bundle_status": {"type": "enum(DRAFT|CERTIFIED|ARCHIVED)", "required": true, "default": "DRAFT"},
+        "created_at": {"type": "timestamp", "required": true},
+        "certified_at": {"type": "timestamp", "description": "When bundle was locked"}
+      },
+      "constraints": [
+        "bundle_id must be globally unique",
+        "batch_id foreign key must exist",
+        "tax_summary must contain: gains, losses, wash_sales, adjustments, total_taxable_income",
+        "receipt_hashes array must not be empty",
+        "receipt_hashes are immutable (array is copy-on-write)",
+        "audit_trail is immutable (append-only log)",
+        "certification_time marks immutability: no further modifications",
+        "bundle_hash must match cryptographic hash of all fields",
+        "bundle_status transitions: DRAFT → CERTIFIED → ARCHIVED",
+        "certified_at = certification_time"
+      ]
+    },
+    "TaxDataArchive": {
+      "id": "archive_id",
+      "description": "Write-once, append-only tax data archive. Sourced from ComplianceBundle. Retained per regulatory requirements.",
+      "fields": {
+        "archive_id": {"type": "uuid", "required": true, "description": "Unique archive identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "bundle_id": {"type": "uuid", "required": true, "description": "Foreign key to ComplianceBundle"},
+        "archive_date": {"type": "date", "required": true, "description": "Archive creation date"},
+        "tax_year": {"type": "int", "required": true, "description": "Fiscal year for tax data"},
+        "taxable_events": {"type": "array<json>", "required": true, "description": "List of taxable events: {type, date, quantity, basis, proceeds, gain_loss}"},
+        "total_gain_loss": {"type": "decimal", "required": true, "description": "Sum of all gains/losses"},
+        "retention_years": {"type": "int", "required": true, "default": 7, "description": "Years to retain (regulatory minimum)"},
+        "retention_until": {"type": "date", "required": true, "description": "Date after which archive can be purged"},
+        "archive_status": {"type": "enum(ACTIVE|ARCHIVED|PURGED)", "required": true, "default": "ACTIVE"},
+        "created_at": {"type": "timestamp", "required": true}
+      },
+      "constraints": [
+        "archive_id must be globally unique",
+        "batch_id foreign key must exist",
+        "bundle_id foreign key must exist",
+        "archive_date = batch.run_date",
+        "tax_year immutable after creation",
+        "taxable_events immutable (write-once)",
+        "retention_years >= 7 (regulatory minimum)",
+        "retention_until = archive_date + retention_years",
+        "archive_status transitions: ACTIVE → ARCHIVED → PURGED",
+        "No purge allowed before retention_until date"
+      ]
+    },
+    "ArchiveRecord": {
+      "id": "archive_record_id",
+      "description": "Immutable archive entry in HP durable storage. Sourced from ComplianceBundle + DayReport. Read-only retrieval only.",
+      "fields": {
+        "archive_record_id": {"type": "uuid", "required": true, "description": "Unique archive record identifier"},
+        "batch_id": {"type": "uuid", "required": true, "description": "Foreign key to BatchRun"},
+        "report_id": {"type": "uuid", "description": "Foreign key to DayReport"},
+        "bundle_id": {"type": "uuid", "description": "Foreign key to ComplianceBundle"},
+        "storage_path": {"type": "string", "required": true, "description": "Path in HP durable storage (immutable)"},
+        "storage_tier": {"type": "enum(HOT|WARM|COLD)", "required": true, "default": "WARM", "description": "Storage access tier"},
+        "retention_years": {"type": "int", "required": true, "default": 7, "description": "Regulatory retention requirement"},
+        "immutable_hash": {"type": "sha256", "required": true, "description": "SHA256 of archived data (immutability seal)"},
+        "retrieval_metadata": {"type": "json", "required": true, "description": "Metadata for retrieval: {format, size_bytes, created_date, archived_date}"},
+        "hp_receipt": {"type": "json", "description": "HP storage receipt: {receipt_id, timestamp, confirmation_hash}"},
+        "archive_status": {"type": "enum(WRITTEN|VERIFIED|RETRIEVED|PURGED)", "required": true, "default": "WRITTEN"},
+        "created_at": {"type": "timestamp", "required": true},
+        "verified_at": {"type": "timestamp", "description": "When HP verified write"}
+      },
+      "constraints": [
+        "archive_record_id must be globally unique",
+        "batch_id foreign key must exist",
+        "storage_path immutable after creation",
+        "immutable_hash immutable (write-once integrity seal)",
+        "archive_status transitions: WRITTEN → VERIFIED → RETRIEVED → PURGED",
+        "verified_at set only when archive_status = VERIFIED",
+        "No updates allowed after creation (INSERT only)",
+        "retrieval_metadata contains: format, size_bytes, created_date, archived_date"
+      ]
+    }
+  },
+  "frozen_tuples": {
+    "BatchRunTuple": {
+      "fields": ["batch_id", "run_date", "market_open_time", "market_close_time", "mode", "correlation_id"],
+      "description": "Immutable snapshot of batch identity + timing",
+      "example": "(uuid-batch-001, 2026-09-07, 2026-09-07T13:30:00Z, 2026-09-07T20:00:00Z, PAPER, uuid-corr-001)",
+      "constraints": ["All fields immutable", "Hashable for audit trail"]
+    },
+    "DayReportTuple": {
+      "fields": ["report_id", "batch_id", "trade_count", "pnl_summary", "risk_metrics", "alert_count", "export_time"],
+      "description": "Immutable snapshot of end-of-day summary",
+      "example": "(uuid-report-001, uuid-batch-001, 42, {gross_pnl: 1500.00, net_pnl: 1350.00, ...}, {max_drawdown: 0.05, var_95: 2000, ...}, 3, 2026-09-07T20:15:00Z)",
+      "constraints": ["All fields immutable after FINALIZED", "Hashable for audit trail"]
+    },
+    "AlertRecordTuple": {
+      "fields": ["alert_id", "batch_id", "severity", "alert_type", "message", "timestamp", "escalation_flag"],
+      "description": "Immutable snapshot of alert + context",
+      "example": "(uuid-alert-001, uuid-batch-001, HIGH, RISK_LIMIT_BREACH, 'Drawdown exceeded 5%', 2026-09-07T16:45:00Z, true)",
+      "constraints": ["All fields immutable", "Hashable for audit trail"]
+    },
+    "ComplianceBundleTuple": {
+      "fields": ["bundle_id", "batch_id", "tax_summary", "receipt_hashes", "audit_trail", "certification_time"],
+      "description": "Immutable snapshot of compliance data at certification",
+      "example": "(uuid-bundle-001, uuid-batch-001, {gains: 5000, losses: 2000, ...}, [hash1, hash2, ...], [{check: WASH_SALE, result: PASS, timestamp: ...}, ...], 2026-09-07T20:30:00Z)",
+      "constraints": ["All fields immutable after CERTIFIED", "Hashable for regulatory audit"]
+    },
+    "ArchiveRecordTuple": {
+      "fields": ["archive_record_id", "batch_id", "storage_path", "retention_years", "immutable_hash", "retrieval_metadata"],
+      "description": "Immutable snapshot of archived data in HP storage",
+      "example": "(uuid-arch-001, uuid-batch-001, /durable/2026-09-07/batch-001.tar.gz, 7, sha256-hash-here, {format: tarball, size_bytes: 5242880, created_date: 2026-09-07, archived_date: 2026-09-07})",
+      "constraints": ["All fields immutable", "Write-once to HP durable storage"]
+    },
+    "BatchVerdictTuple": {
+      "fields": ["verdict_id", "batch_id", "guardian_gate_results", "compliance_passed", "tax_verified", "archive_verified", "batch_status"],
+      "description": "Immutable snapshot of batch authorization verdict",
+      "example": "(uuid-verdict-001, uuid-batch-001, [GateDecisionTuple(...), ...], true, true, true, APPROVED)",
+      "constraints": [
+        "All fields immutable after creation",
+        "guardian_gate_results must contain exactly 8 GateDecisionTuple entries",
+        "batch_status = APPROVED IFF all gates PASS AND compliance_passed AND tax_verified AND archive_verified",
+        "Hashable for audit trail"
+      ]
+    }
+  },
+  "relationships": {
+    "batch_to_verdict": {
+      "from": "BatchRun",
+      "to": "BatchVerdict",
+      "cardinality": "1:1",
+      "description": "Each batch has one final verdict",
+      "constraints": ["verdict must exist before batch closes", "verdict references all 8 Guardian gates"]
+    },
+    "batch_to_report": {
+      "from": "BatchRun",
+      "to": "DayReport",
+      "cardinality": "1:1",
+      "description": "Each batch produces one end-of-day report",
+      "constraints": ["report created after market close", "report finalized before archive"]
+    },
+    "batch_to_alerts": {
+      "from": "BatchRun",
+      "to": "AlertRecord",
+      "cardinality": "1:N",
+      "description": "Batch generates zero or more alerts",
+      "constraints": ["alerts timestamped during [market open, batch close]", "alert_count in report matches count of AlertRecords"]
+    },
+    "batch_to_compliance": {
+      "from": "BatchRun",
+      "to": "ComplianceBundle",
+      "cardinality": "1:1",
+      "description": "Each batch has one compliance bundle",
+      "constraints": ["bundle certified before archive", "bundle_hash immutable after certification"]
+    },
+    "batch_to_tax_archive": {
+      "from": "BatchRun",
+      "to": "TaxDataArchive",
+      "cardinality": "1:1",
+      "description": "Each batch links to tax archive for retention",
+      "constraints": ["archive created from compliance bundle", "retention_until enforced by retention_years"]
+    },
+    "compliance_to_archive_record": {
+      "from": "ComplianceBundle",
+      "to": "ArchiveRecord",
+      "cardinality": "1:1",
+      "description": "Compliance bundle archived in HP durable storage",
+      "constraints": ["storage_path immutable", "immutable_hash seals data integrity"]
+    },
+    "report_to_archive_record": {
+      "from": "DayReport",
+      "to": "ArchiveRecord",
+      "cardinality": "1:1",
+      "description": "Report archived in HP durable storage",
+      "constraints": ["storage_path immutable", "immutable_hash seals data integrity"]
+    },
+    "verdict_to_guardian_gates": {
+      "from": "BatchVerdict",
+      "to": "Guardian.GateDecisionTuple",
+      "cardinality": "1:8",
+      "description": "Verdict aggregates results from all 8 Guardian gates",
+      "constraints": [
+        "guardian_gate_results array contains exactly 8 GateDecisionTuple",
+        "batch_status = APPROVED only if ALL gates PASS",
+        "batch_status = BLOCKED if ANY gate BLOCKED",
+        "batch_status = NOT_PROVEN if ANY gate NOT_PROVEN"
+      ]
+    }
+  },
+  "data_flow": {
+    "source": "Guardian Enforcement Domain",
+    "flow_steps": [
+      {
+        "step": 1,
+        "name": "Guardian Gate Verdicts",
+        "input": "GateDecisionTuple (8 verdicts from Guardian gates 1-8)",
+        "output": "guardian_gate_results array in BatchVerdict",
+        "constraint": "All 8 gates must complete before batch can close"
+      },
+      {
+        "step": 2,
+        "name": "Market Close → Export",
+        "input": "NinjaTrader trade log, account state, risk metrics",
+        "output": "DayReport (trade_count, pnl_summary, risk_metrics)",
+        "constraint": "Export timestamp after market close"
+      },
+      {
+        "step": 3,
+        "name": "Alert Generation",
+        "input": "Risk monitors, compliance checks, anomaly detection",
+        "output": "AlertRecord array, alert_count in DayReport",
+        "constraint": "Alerts timestamped during batch window"
+      },
+      {
+        "step": 4,
+        "name": "Compliance Verification",
+        "input": "Trade executions, account statements, tax calculations",
+        "output": "ComplianceBundle (tax_summary, receipt_hashes, audit_trail)",
+        "constraint": "Bundle certified before archive write"
+      },
+      {
+        "step": 5,
+        "name": "Batch Verdict Issuance",
+        "input": "Guardian verdicts, compliance verification, tax verification, archive verification",
+        "output": "BatchVerdict (APPROVED|BLOCKED|NOT_PROVEN)",
+        "constraint": "APPROVED only if ALL conditions met, authority=ZERO throughout"
+      },
+      {
+        "step": 6,
+        "name": "Archive Write (HP Durable Storage)",
+        "input": "ComplianceBundle, DayReport, ArchiveRecordTuple",
+        "output": "ArchiveRecord (immutable storage path, hash, HP receipt)",
+        "constraint": "Write-once, append-only; HP receipt confirms durable write"
+      },
+      {
+        "step": 7,
+        "name": "Batch Close",
+        "input": "All prior steps complete",
+        "output": "batch_status = CLOSED, closed_at timestamp set",
+        "constraint": "After close, all batch data immutable"
+      },
+      {
+        "step": 8,
+        "name": "Archive Final",
+        "input": "All batch data finalized",
+        "output": "batch_status = ARCHIVED, ArchiveRecord status = VERIFIED",
+        "constraint": "Final step completes retention lifecycle"
+      }
+    ],
+    "integration_points": [
+      {
+        "domain": "Guardian Enforcement",
+        "receives": "GateDecisionTuple (8 verdicts)",
+        "provides": "BatchVerdictTuple (final verdict for batch approval)",
+        "constraint": "Batch cannot execute without Guardian PASS on all 8 gates"
+      },
+      {
+        "domain": "HP 24/7 Infrastructure",
+        "receives": "MachineRoleTuple (health, heartbeat, truth_age), DurableReceiptTuple (storage confirmation)",
+        "provides": "ArchiveRecordTuple (immutable storage path + hash)",
+        "constraint": "Archive must be accepted by HP durable storage before batch closes"
+      },
+      {
+        "domain": "UI Control Center",
+        "receives": "BatchStatusSnapshot (batch_id, verdict, alerts, report summary)",
+        "provides": "AlertRecordTuple → dashboard display, DayReportTuple → summary view",
+        "constraint": "Authority=ZERO must be visible; alerts are read-only on UI"
+      }
+    ]
+  },
+  "constraint_gates": {
+    "authority_lock": {
+      "id": "CG01",
+      "name": "NO_AUTHORITY_ESCALATION",
+      "enforcement": "BatchRun.mode and BatchVerdict.authority_used must be ZERO at all times",
+      "test_case": "If guardian_gate_results contain ANY authority!=ZERO, batch_status = BLOCKED"
+    },
+    "batch_immutability": {
+      "id": "CG02",
+      "name": "BATCH_DATA_IMMUTABLE_AFTER_CLOSE",
+      "enforcement": "After BatchRun.closed_at is set, no updates allowed to batch, report, alerts, compliance, or archive records",
+      "test_case": "Any update attempt after batch.closed_at throws immutability violation"
+    },
+    "verdict_dependency": {
+      "id": "CG03",
+      "name": "VERDICT_REQUIRES_ALL_GATES_PASS",
+      "enforcement": "BatchVerdict.batch_status = APPROVED only if ALL 8 guardian_gate_results = PASS AND compliance_passed AND tax_verified AND archive_verified",
+      "test_case": "If any guardian gate = BLOCKED or NOT_PROVEN, batch_status must be BLOCKED or NOT_PROVEN"
+    },
+    "guardian_gates_required": {
+      "id": "CG04",
+      "name": "GUARDIAN_GATES_MUST_COMPLETE",
+      "enforcement": "BatchRun cannot transition to CLOSED without BatchVerdict containing all 8 GateDecisionTuple",
+      "test_case": "Attempting to close batch without complete BatchVerdict throws required_verdict_missing error"
+    },
+    "compliance_lock": {
+      "id": "CG05",
+      "name": "COMPLIANCE_BUNDLE_IMMUTABLE_AFTER_CERTIFICATION",
+      "enforcement": "After ComplianceBundle.certified_at is set, no updates allowed",
+      "test_case": "Any update to tax_summary or receipt_hashes after certified_at throws immutability violation"
+    },
+    "archive_write_once": {
+      "id": "CG06",
+      "name": "ARCHIVE_WRITE_ONCE_APPEND_ONLY",
+      "enforcement": "ArchiveRecord can only be created (INSERT), never updated or deleted. HP durable storage confirms write.",
+      "test_case": "Attempting to UPDATE or DELETE ArchiveRecord throws write_once_violation error"
+    },
+    "hp_durable_receipt": {
+      "id": "CG07",
+      "name": "HP_STORAGE_RECEIPT_REQUIRED",
+      "enforcement": "ArchiveRecord.hp_receipt must be populated before ArchiveRecord.archive_status = VERIFIED",
+      "test_case": "Attempting to verify archive without hp_receipt throws missing_receipt error"
+    },
+    "retention_enforcement": {
+      "id": "CG08",
+      "name": "TAX_ARCHIVE_RETENTION_ENFORCED",
+      "enforcement": "TaxDataArchive cannot be purged before retention_until date",
+      "test_case": "Attempting to purge before retention_until throws retention_not_met error"
+    }
+  },
+  "version_control": {
+    "frozen_documents": [
+      "NINJATRADER_BATCH_DOMAIN_MODEL_FROZEN_V1.json",
+      "NINJATRADER_BATCH_DOMAIN_SPEC_FROZEN_V1.md"
+    ],
+    "change_control": {
+      "bugs_discovered": "File issue, patch in PATCH release (V1.1)",
+      "clarifications": "Add appendix, don't modify frozen sections",
+      "new_requirements": "Wait for Phase 3, new major version (V2)",
+      "authority_invariant_changes": "Owner approval + Domain Architect review (unlikely)"
+    }
+  },
+  "integration_with_guardian": {
+    "input_from_guardian": {
+      "type": "GateDecisionTuple",
+      "count": 8,
+      "description": "One verdict from each of the 8 Guardian gates",
+      "required_fields": ["gate_id", "correlation_id", "verdict", "event_time", "knowledge_time"],
+      "constraint": "All 8 must PASS for batch APPROVED status"
+    },
+    "output_to_ui": {
+      "type": "AlertRecordTuple + DayReportTuple",
+      "description": "Alerts and summary for dashboard display",
+      "constraint": "Read-only on UI; Authority=ZERO visible"
+    },
+    "output_to_archive": {
+      "type": "ArchiveRecordTuple",
+      "description": "Immutable record for HP durable storage",
+      "constraint": "Write-once; HP receipt required before verification"
+    }
+  }
+}

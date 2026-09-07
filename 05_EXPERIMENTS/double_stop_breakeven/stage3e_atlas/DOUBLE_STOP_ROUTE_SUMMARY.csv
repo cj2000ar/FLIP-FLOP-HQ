@@ -1,0 +1,5 @@
+route,double_stop_sessions,contracts,current_pair_loss,median_max_mfe_points,average_max_mfe_points,two_point_eligible,four_point_eligible,eight_point_eligible
+NY,981,1962,-115758.0,6.25,6.4181957186544345,828,668,369
+WEEKLY,126,252,-14868.0,3.75,3.9285714285714284,99,59,5
+WEEKDAY_PREMIUM,123,246,-14514.0,3.75,3.977642276422764,99,60,3
+WEEKDAY_WEAK,197,197,-11623.0,3.5,3.684010152284264,143,83,8

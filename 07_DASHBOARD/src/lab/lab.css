@@ -1,0 +1,347 @@
+/* Lab workspace — research surface. Authority: ZERO. */
+.lab {
+  display: grid;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  min-width: 0;
+}
+
+.lab-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--brand-red-soft);
+  background: var(--brand-red-soft);
+  border-radius: 12px;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: var(--brand-red-ink);
+}
+
+.lab-banner span:last-child {
+  color: var(--hq-muted);
+  font-family: var(--font-geist-sans);
+  letter-spacing: 0;
+}
+
+.lab-subnav {
+  display: flex;
+  gap: var(--spacing-2);
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.lab-subnav button {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--hq-muted-2);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+
+.lab-subnav button:hover {
+  background: #ffffff06;
+  color: #e6ebe8;
+}
+
+.lab-subnav button[aria-pressed='true'] {
+  background: var(--hq-surface-3);
+  border-color: #ffffff12;
+  color: #ffffff;
+  box-shadow: inset 0 1px #ffffff07;
+}
+
+.lab-head {
+  display: grid;
+  gap: 6px;
+}
+
+.lab-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 640;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+}
+
+.lab-head p {
+  color: var(--hq-muted);
+  font-size: 13px;
+  max-width: 78ch;
+}
+
+.lab-grid {
+  display: grid;
+  gap: var(--spacing-4);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  min-width: 0;
+}
+
+.lab-grid > * {
+  min-width: 0;
+}
+
+.lab-card {
+  padding: var(--spacing-4) var(--spacing-5);
+  display: grid;
+  gap: var(--spacing-3);
+  align-content: start;
+}
+
+.lab-card h3 {
+  font-size: 15px;
+  font-weight: 640;
+  letter-spacing: -0.2px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.lab-card p,
+.lab-card li {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--hq-muted);
+}
+
+.lab-card ul {
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.lab-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid #ffffff14;
+  background: #ffffff06;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--hq-muted);
+  white-space: nowrap;
+}
+
+.lab-badge--ok {
+  color: var(--brand-green-ink);
+  border-color: #2a7d3c55;
+  background: var(--brand-green-soft);
+}
+
+.lab-badge--warn {
+  color: #e0b33a;
+  border-color: #e0b33a44;
+  background: #1c170a;
+}
+
+.lab-badge--bad {
+  color: var(--brand-red-ink);
+  border-color: #dd281c55;
+  background: var(--brand-red-soft);
+}
+
+.lab-badge--info {
+  color: #6aa5d8;
+  border-color: #6aa5d844;
+  background: #0b1219;
+}
+
+.lab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lab-chip {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #ffffff08;
+  border: 1px solid #ffffff0e;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  color: var(--hq-muted);
+}
+
+.lab-kv {
+  display: grid;
+  gap: 0;
+}
+
+.lab-kv > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: 7px 0;
+  border-bottom: 1px solid #ffffff0a;
+  font-size: 12.5px;
+}
+
+.lab-kv > div:last-child {
+  border-bottom: 0;
+}
+
+.lab-kv span:first-child {
+  color: var(--hq-muted-2);
+}
+
+.lab-kv span:last-child {
+  font-family: var(--font-geist-mono);
+  color: var(--hq-fg);
+  text-align: right;
+}
+
+.lab-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--hq-panel-radius);
+}
+
+.lab-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.lab-table th,
+.lab-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ffffff0a;
+}
+
+.lab-table th {
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--hq-muted-2);
+  font-weight: 500;
+}
+
+.lab-table td {
+  color: var(--hq-muted);
+}
+
+.lab-table td:first-child {
+  color: var(--hq-fg);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lab-kanban {
+  display: flex;
+  gap: var(--spacing-3);
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.lab-col {
+  flex: 0 0 236px;
+  display: grid;
+  gap: var(--spacing-2);
+  align-content: start;
+  padding: var(--spacing-3);
+  border-radius: 14px;
+  background: var(--hq-surface-2);
+  border: 1px solid #ffffff0c;
+}
+
+.lab-col-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  color: var(--hq-muted-2);
+}
+
+.lab-col-head b {
+  font-family: var(--font-geist-mono);
+  font-weight: 500;
+  color: var(--hq-muted);
+}
+
+.lab-ticket {
+  padding: 10px 11px;
+  border-radius: 10px;
+  background: #0f0f0f;
+  border: 1px solid #ffffff0c;
+  display: grid;
+  gap: 5px;
+}
+
+.lab-ticket strong {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hq-fg);
+}
+
+.lab-ticket span {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--hq-muted-2);
+}
+
+.lab-empty {
+  font-size: 11px;
+  color: var(--hq-muted-2);
+  padding: 8px 4px;
+  font-style: italic;
+}
+
+.lab-verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-5);
+}
+
+.lab-verdict strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.lab-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: #ffffff0c;
+  overflow: hidden;
+}
+
+.lab-progress > i {
+  display: block;
+  height: 100%;
+  background: var(--brand-green);
+}
+
+@media (max-width: 767px) {
+  .lab {
+    padding: var(--spacing-3) var(--spacing-2);
+  }
+
+  .lab-card {
+    padding: var(--spacing-4);
+  }
+}

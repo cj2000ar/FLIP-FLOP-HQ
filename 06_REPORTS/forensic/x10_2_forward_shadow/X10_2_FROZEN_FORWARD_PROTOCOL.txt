@@ -1,0 +1,147 @@
+﻿================================================================================================================
+FLIP FLOP X10.2 FROZEN FORWARD SHADOW PROTOCOL
+================================================================================================================
+
+STATUS: FROZEN
+
+FREEZE CUTOFF
+2026-08-08T00:08:00-04:00
+
+Only sessions with entry timestamps STRICTLY AFTER this cutoff have forward authority.
+
+----------------------------------------------------------------------------------------------------------------
+SIGNAL MAP
+----------------------------------------------------------------------------------------------------------------
+
+Signal directions were derived from the 2020-2023 DEVELOPMENT partition and are now immutable:
+
+NY        = SELL
+WEEKLY    = BUY
+PREMIUM   = BUY
+WEAK      = NO DIRECTIONAL SCALING SIGNAL
+
+These directions may NOT be changed based on 2024-2026 history or future results.
+
+----------------------------------------------------------------------------------------------------------------
+CHALLENGER A - CURRENT STRONG-Q / WEAK-1
+----------------------------------------------------------------------------------------------------------------
+
+NY:
+BUY  = Q
+SELL = Q
+
+WEEKLY:
+BUY  = Q
+SELL = Q
+
+PREMIUM:
+BUY  = Q
+SELL = Q
+
+WEAK:
+BUY  = 1
+SELL = 1
+
+----------------------------------------------------------------------------------------------------------------
+CHALLENGER B - CORE-TIER
+----------------------------------------------------------------------------------------------------------------
+
+NY:
+BUY  = Q
+SELL = Q
+
+WEEKLY:
+BUY  = Q
+SELL = Q
+
+PREMIUM:
+BUY  = 1
+SELL = 1
+
+WEAK:
+BUY  = 0
+SELL = 0
+
+----------------------------------------------------------------------------------------------------------------
+CHALLENGER C - SIGNAL-SCALE
+----------------------------------------------------------------------------------------------------------------
+
+NY:
+BUY  = 1
+SELL = Q
+
+WEEKLY:
+BUY  = Q
+SELL = 1
+
+PREMIUM:
+BUY  = Q
+SELL = 1
+
+WEAK:
+BUY  = 1
+SELL = 1
+
+----------------------------------------------------------------------------------------------------------------
+SHADOW QUANTITY GRID
+----------------------------------------------------------------------------------------------------------------
+
+Q1
+Q2
+Q3
+Q4
+Q5
+Q6
+
+These quantities are SHADOW SIMULATIONS ONLY.
+
+No quantity is authorized for live trading.
+
+----------------------------------------------------------------------------------------------------------------
+FORWARD SCORECARD
+----------------------------------------------------------------------------------------------------------------
+
+For every eligible future session record:
+
+Entry timestamp
+Route
+BUY result
+SELL result
+Challenger A Q1-Q6
+Challenger B Q1-Q6
+Challenger C Q1-Q6
+
+Net PnL
+Profit factor
+Closed-equity drawdown
+Worst session
+Rolling 25-session result
+Rolling 50-session result
+Rolling 100-session result when available
+
+Execution-stress sensitivity:
+alpha 0.00
+alpha 0.10
+alpha 0.25
+alpha 0.35
+alpha 0.50
+alpha 0.75
+
+----------------------------------------------------------------------------------------------------------------
+GOVERNANCE
+----------------------------------------------------------------------------------------------------------------
+
+Frozen V3.6.72 modified: NO
+
+Pine promotion: BLOCKED
+Capacity live routing: LOCKED
+Historical retuning after cutoff: PROHIBITED
+Forward sessions may not be deleted because they hurt a challenger.
+
+The historical X10.1 primary kill gate produced NO WINNER.
+
+Therefore X10.2 has SHADOW authority only.
+
+A challenger must earn promotion using genuinely new sessions after the freeze cutoff.
+
+================================================================================================================

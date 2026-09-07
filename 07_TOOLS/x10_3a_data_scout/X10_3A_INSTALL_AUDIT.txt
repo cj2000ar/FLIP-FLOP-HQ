@@ -1,0 +1,21 @@
+﻿================================================================================================================
+FLIP FLOP X10.3A DATA SCOUT INSTALL
+================================================================================================================
+STATUS: PASS
+Installed to: C:\FLIP_FLOP_HQ\07_TOOLS\x10_3a_data_scout
+Scanner SHA256: 9F52036D7DFB8D3F98BD2C81B0B8DED32B820CF3907ADAEED55E02C22CC82E84
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Live routing: LOCKED
+Notepad auto-open: ENABLED
+
+SCANNERS
+Data Scout: ACTIVE
+Integrity Scanner: ACTIVE
+Algorithm-Agent Shell: INSTALLED
+Book/Fill/Latency/Capacity/Signal/Red-Team Agents: ARMED NEXT
+
+NEXT
+Run:
+C:\FLIP_FLOP_HQ\07_TOOLS\x10_3a_data_scout\RUN_X10_3A_DATA_SCOUT.ps1
+================================================================================================================

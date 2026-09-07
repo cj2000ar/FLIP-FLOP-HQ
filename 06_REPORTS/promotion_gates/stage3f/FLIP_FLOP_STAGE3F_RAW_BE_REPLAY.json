@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3F-RAW-BREAKEVEN-REPLAY",
+  "created_utc": "2026-08-07T02:59:29.758306+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "raw_sessions": 24,
+    "clean_sessions": 22,
+    "degraded_sessions": 2
+  },
+  "raw_baseline_1t": {
+    "outcomes": {
+      "DOUBLE_STOP": 19,
+      "nan": 2,
+      "BUY_TARGET": 1
+    },
+    "unresolved_sessions": 2
+  },
+  "tournament": {
+    "arm_points": [
+      0.5,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      8.0
+    ],
+    "be_modes": {
+      "PRICE_BE": 0.0,
+      "COST_COVER_BE": 0.5
+    },
+    "extra_ticks": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "rule": "After the first worker stop, arm the surviving worker only after a strictly later event reaches the favorable arm. Then protect at price BE or +0.50-point cost-cover BE. Original target remains unchanged."
+  },
+  "candidate": {
+    "status": "NO_BREAKEVEN_RULE_PASSED_RAW_GATES",
+    "arm_points": 8.0,
+    "be_mode": "PRICE_BE",
+    "delta_0t": 0.0,
+    "delta_1t": 0.0,
+    "delta_2t": 0.0,
+    "delta_4t": 0.0,
+    "rescues_1t": 0,
+    "scratched_targets_1t": 0,
+    "august_delta_1t": 0.0,
+    "september_delta_1t": 0.0,
+    "all_gates_pass": false,
+    "gate_detail": {
+      "zero_unresolved_all_stress": false,
+      "positive_delta_0t": false,
+      "positive_delta_1t": false,
+      "nonnegative_delta_2t": true,
+      "nonnegative_delta_4t": true,
+      "august_nonnegative_1t": true,
+      "september_nonnegative_1t": true,
+      "rescues_exist_1t": false,
+      "net_rescue_exceeds_target_damage_1t": false
+    },
+    "warning": "Twenty-two clean raw sessions can reject unsafe rules and identify a provisional mechanism. They cannot establish full-history expectancy."
+  },
+  "covid_diagnostic": [
+    {
+      "status": "DIAGNOSTIC_ONLY",
+      "case_id": "FF-STRESS-COVID-2020-03-16",
+      "max_event_gap_seconds": 851.849619136,
+      "decision": "BREAKEVEN_CANNOT_GUARANTEE_EXIT_THROUGH_HALT"
+    }
+  ],
+  "july_23_2026_status": "MFE_ONLY_NOT_RAW_REPLAYED_NO_OWNED_TBBO",
+  "interpretation": [
+    "This exact raw screen includes both double-stop savings and target-winner damage.",
+    "Same-event proof/arm and target/BE ambiguities are unresolved, not guessed.",
+    "The July 23, 2026 case is not represented in the owned raw blocks.",
+    "No additional data should be purchased unless a rule passes the owned-data gates."
+  ],
+  "gates": {
+    "control_integrity": "PASS",
+    "raw_order_reconstruction": "PASS",
+    "target_winner_damage_included": "PASS",
+    "breakeven_result": "NO_BREAKEVEN_RULE_PASSED_RAW_GATES",
+    "new_data_purchase": "BLOCKED",
+    "pine_modification": "BLOCKED",
+    "quantity_change": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "session_results": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\RAW_24_SESSION_BE_RULE_RESULTS.csv",
+    "raw_baselines": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\RAW_24_SESSION_ORIGINAL_BASELINES.csv",
+    "leaderboard": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\RAW_22_CLEAN_BE_LEADERBOARD.csv",
+    "promotion_gates": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\BREAKEVEN_PROMOTION_GATES.csv",
+    "covid_diagnostic": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\COVID_BREAKEVEN_DIAGNOSTIC.csv",
+    "unresolved_events": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f_raw_replay\\RAW_UNRESOLVED_BE_EVENTS.csv"
+  }
+}

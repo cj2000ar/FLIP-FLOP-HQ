@@ -1,0 +1,94 @@
+========================================================================================================
+FLIP FLOP STAGE 4A - SINGLE-LEG SURVIVOR ROUTER BASELINE
+========================================================================================================
+STATUS: PASS
+NO NEW DATA PURCHASED
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+ARCHITECTURE
+Virtual BUY + virtual SELL remain inside the research brain.
+The first virtual native stop proves one survivor direction.
+Only one real-style position is modeled.
+The original absolute route target remains unchanged.
+Primary stop: the original survivor virtual stop.
+Secondary stress stop: one point from the actual fill.
+
+FULL-HISTORY CONTROL-DERIVED ECONOMIC SCREEN
+This section is a transformed replay, not an independent intrabar backtest.
+Control net, all available: $294,276.00
+0-tick transformed net: $389,278.00 | delta $95,002.00
+1-tick transformed net: $365,048.00 | delta $70,772.00
+2-tick transformed net: $340,818.00 | delta $46,542.00
+4-tick transformed net: $292,358.00 | delta $-1,918.00
+Control average completed month: $3,699.84
+1-tick transformed average month: $4,594.03
+2-tick transformed average month: $4,287.89
+Control worst completed month: $-1,066.00
+1-tick transformed worst month: $-210.50
+2-tick transformed worst month: $-505.50
+
+RAW EXECUTION SCREEN
+Clean sessions scored: 22
+Degraded diagnostic-only sessions: 2
+Execution profiles: broker OCO stop-limit and controller market with chase caps.
+Cost stress: 0, 1, 2, and 4 adverse ticks.
+Stop modes: original survivor stop and one point from actual fill.
+
+PROVISIONAL RAW RESULT
+Status: NO_PROFILE_PASSED_0_1_2T_GATES
+Profile: CTRL_500MS_CAP_1P0
+Stop mode: ONE_POINT_FROM_FILL
+0-tick delta: $-1,535.00
+1-tick delta: $-1,627.00
+2-tick delta: $-1,707.00
+COVID continuity guard safe: True
+
+TOP RAW PROFILES AT ZERO EXTRA TICKS
+CTRL_1S_CAP_2P0            | ORIGINAL_SURVIVOR_STOP    | net $  -305.00 | delta $-1,321.00 | trades 15 | skips  7 | unresolved  0
+CTRL_500MS_CAP_1P0         | ONE_POINT_FROM_FILL       | net $  -519.00 | delta $-1,535.00 | trades 11 | skips 11 | unresolved  0
+CTRL_100MS_CAP_0P5         | ONE_POINT_FROM_FILL       | net $  -559.00 | delta $-1,575.00 | trades 11 | skips 11 | unresolved  0
+CTRL_100MS_CAP_0P5         | ORIGINAL_SURVIVOR_STOP    | net $  -559.00 | delta $-1,575.00 | trades 11 | skips 11 | unresolved  0
+CTRL_500MS_CAP_1P0         | ORIGINAL_SURVIVOR_STOP    | net $  -559.00 | delta $-1,575.00 | trades 11 | skips 11 | unresolved  0
+CTRL_250MS_CAP_1P0         | ONE_POINT_FROM_FILL       | net $  -638.00 | delta $-1,654.00 | trades 12 | skips 10 | unresolved  0
+CTRL_250MS_CAP_1P0         | ORIGINAL_SURVIVOR_STOP    | net $  -698.00 | delta $-1,714.00 | trades 12 | skips 10 | unresolved  0
+CTRL_1S_CAP_2P0            | ONE_POINT_FROM_FILL       | net $  -935.00 | delta $-1,951.00 | trades 15 | skips  7 | unresolved  0
+
+COVID 2020-03-16 CONTINUITY RULE
+STOP_MARKET_NO_CHASE_CAP     | chase   76.50 pts | target passed True | REJECT_ENTRY_TARGET_ALREADY_PASSED
+STOP_LIMIT_BAND_0.5P         | chase   76.50 pts | target passed True | SKIP_GAP_OUTSIDE_LIMIT_BAND
+STOP_LIMIT_BAND_1P           | chase   76.50 pts | target passed True | SKIP_GAP_OUTSIDE_LIMIT_BAND
+STOP_LIMIT_BAND_2P           | chase   76.50 pts | target passed True | SKIP_GAP_OUTSIDE_LIMIT_BAND
+STOP_LIMIT_BAND_4P           | chase   76.50 pts | target passed True | SKIP_GAP_OUTSIDE_LIMIT_BAND
+
+NON-NEGOTIABLE INTERPRETATION
+Full-history transformed results are an economic screen, not live proof.
+The 22 clean TBBO sessions decide whether this architecture deserves Stage 4B.
+A target already passed before entry means SKIP, never chase.
+Degraded September 17 sessions cannot select a winner.
+No Pine or router code is promoted from Stage 4A alone.
+
+OUTPUTS
+Full transformed replay: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\FULL_HISTORY_TRANSFORMED_REPLAY.csv
+Full scenario summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\FULL_HISTORY_SCENARIO_SUMMARY.csv
+Monthly summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\MONTHLY_SCENARIO_SUMMARY.csv
+Yearly summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\YEARLY_SCENARIO_SUMMARY.csv
+Route summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\ROUTE_SCENARIO_SUMMARY.csv
+Raw session scenarios: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\RAW_24_SESSION_SCENARIOS.csv
+Raw clean leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\RAW_22_CLEAN_LEADERBOARD.csv
+COVID stress: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a_baseline\COVID_CONTINUITY_STRESS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage4a\FLIP_FLOP_STAGE4A_SINGLE_LEG_BASELINE.json
+
+GATES
+Control integrity: PASS
+Stage 3D giveback branch closed: PASS
+Full-history economic screen: PASS
+Raw 22-clean execution screen: PASS
+Degraded-source exclusion: PASS
+Single-leg architecture: NO_PROFILE_PASSED_0_1_2T_GATES
+Pine modification: BLOCKED PENDING STAGE 4A REVIEW
+New data purchase: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+========================================================================================================

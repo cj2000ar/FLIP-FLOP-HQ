@@ -1,0 +1,9 @@
+agent,state,job
+QUANT_MATH_AGENT,ACTIVE,"ceiling frequency, bps compression, route/year math"
+RESULTS_ORGANIZER,ACTIVE,append-only run ledger + immutable CSV outputs
+TARGET_CEILING_AGENT,ACTIVE,hard-cap saturation and recurring max-win audit
+TV_PATH_AUTHORITY_AGENT,ACTIVE,blocks false post-target claims from closed Trade List
+HIGH_DETAIL_OVERLAP_AGENT,ACTIVE,maps target exits to owned L1 authority windows
+POST_TARGET_REPLAY_AGENT,ARMED_NEXT,ordered TBBO replay only on covered target winners
+SIGNAL_SCALE_AGENT,UNCHANGED,capacity research remains separate
+GOVERNOR,ACTIVE,no Pine/X10.2/live modifications

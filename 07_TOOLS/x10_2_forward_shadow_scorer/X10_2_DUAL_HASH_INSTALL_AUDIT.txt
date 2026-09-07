@@ -1,0 +1,24 @@
+﻿================================================================================================================
+FLIP FLOP X10.2 DUAL-HASH CHAMPIONSHIP SCORER INSTALL
+================================================================================================================
+STATUS: PASS
+Parent SHA256: F14D59DB4F401E7E7A275249D2F50BBB4231669D8D9FBE93DA085387C865D23B
+Decision SHA256: 3747EC5B12535E3F7EE0E24C57D8DCD07143F4EA17943840BF2E13F2393BC000
+Scorer SHA256: 294B8998B448BEC8F9AF3687695361E2DE105E49E935A9649B4E1EAC90C2CCDB
+Self-test: PASS
+Frozen V3.6.72 modified: NO
+Pine promotion before gate: BLOCKED
+Capacity live routing: LOCKED
+Forward ledger: APPEND-ONLY
+Notepad auto-open: ENABLED
+
+DECISION STATES
+ACCUMULATING
+SIGNAL_SCALE_EARNED_CANDIDATE
+INCONCLUSIVE
+REJECT_SIGNAL_SCALE
+
+NEXT
+Run:
+C:\FLIP_FLOP_HQ\07_TOOLS\x10_2_forward_shadow_scorer\RUN_X10_2_FORWARD_SHADOW.ps1
+================================================================================================================

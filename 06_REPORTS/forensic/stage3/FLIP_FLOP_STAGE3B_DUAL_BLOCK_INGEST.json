@@ -1,0 +1,296 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3B-DUAL-BLOCK-INGEST",
+  "created_utc": "2026-08-06T06:24:35.454436+00:00",
+  "control_hashes_verified": 4,
+  "jobs": [
+    {
+      "job_id": "GLBX-20260806-EY5G86Y3QG",
+      "label": "BLOCK_2025_08_03_TO_08_15",
+      "source_zip": "C:\\Users\\cj200\\Downloads\\GLBX-20260806-EY5G86Y3QG.zip",
+      "canonical_zip": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\GLBX-20260806-EY5G86Y3QG_78af6a3aea7e.zip",
+      "zip_sha256": "78af6a3aea7edbb0661716c483f447131a18d8a90a10bd5fc5a24748ce3efc9c",
+      "extract_root": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e",
+      "metadata": {
+        "version": 1,
+        "job_id": "GLBX-20260806-EY5G86Y3QG",
+        "query": {
+          "dataset": "GLBX.MDP3",
+          "schema": "tbbo",
+          "symbols": [
+            "NQ.FUT"
+          ],
+          "stype_in": "parent",
+          "stype_out": "instrument_id",
+          "start": 1754179200000000000,
+          "end": 1755302400000000000,
+          "limit": null,
+          "encoding": "dbn",
+          "compression": "zstd"
+        },
+        "customizations": {
+          "pretty_px": false,
+          "pretty_ts": false,
+          "map_symbols": false,
+          "split_symbols": false,
+          "split_duration": "day",
+          "split_size": null,
+          "packaging": null,
+          "delivery": "download"
+        }
+      },
+      "condition": [
+        {
+          "date": "2025-08-03",
+          "condition": "available",
+          "last_modified_date": "2025-08-04"
+        },
+        {
+          "date": "2025-08-04",
+          "condition": "available",
+          "last_modified_date": "2025-08-05"
+        },
+        {
+          "date": "2025-08-05",
+          "condition": "available",
+          "last_modified_date": "2025-08-06"
+        },
+        {
+          "date": "2025-08-06",
+          "condition": "available",
+          "last_modified_date": "2025-08-07"
+        },
+        {
+          "date": "2025-08-07",
+          "condition": "available",
+          "last_modified_date": "2025-08-08"
+        },
+        {
+          "date": "2025-08-08",
+          "condition": "available",
+          "last_modified_date": "2025-08-09"
+        },
+        {
+          "date": "2025-08-10",
+          "condition": "available",
+          "last_modified_date": "2025-08-11"
+        },
+        {
+          "date": "2025-08-11",
+          "condition": "available",
+          "last_modified_date": "2025-08-12"
+        },
+        {
+          "date": "2025-08-12",
+          "condition": "available",
+          "last_modified_date": "2025-08-13"
+        },
+        {
+          "date": "2025-08-13",
+          "condition": "available",
+          "last_modified_date": "2025-08-14"
+        },
+        {
+          "date": "2025-08-14",
+          "condition": "available",
+          "last_modified_date": "2025-08-15"
+        },
+        {
+          "date": "2025-08-15",
+          "condition": "available",
+          "last_modified_date": "2025-08-16"
+        }
+      ],
+      "manifest_verified": 14,
+      "manifest_total": 14,
+      "dbn_file_count": 12,
+      "dbn_files": [
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250803.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250804.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250805.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250806.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250807.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250808.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250810.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250811.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250812.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250813.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250814.tbbo.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_08_03_TO_08_15\\EXTRACTED_78af6a3aea7e\\glbx-mdp3-20250815.tbbo.dbn.zst"
+      ],
+      "degraded_dates": []
+    },
+    {
+      "job_id": "GLBX-20260806-3QVEUHYTEV",
+      "label": "BLOCK_2025_09_14_TO_09_19",
+      "source_zip": "C:\\Users\\cj200\\Downloads\\GLBX-20260806-3QVEUHYTEV.zip",
+      "canonical_zip": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\GLBX-20260806-3QVEUHYTEV_696a2d5ed7ad.zip",
+      "zip_sha256": "696a2d5ed7ad1aeb601d30ee973d34a4f7a3df9b0a6ded9171584b9ec100bcf8",
+      "extract_root": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad",
+      "metadata": {
+        "version": 1,
+        "job_id": "GLBX-20260806-3QVEUHYTEV",
+        "query": {
+          "dataset": "GLBX.MDP3",
+          "schema": "tbbo",
+          "symbols": [
+            "NQ.FUT"
+          ],
+          "stype_in": "parent",
+          "stype_out": "instrument_id",
+          "start": 1757808000000000000,
+          "end": 1758326400000000000,
+          "limit": null,
+          "encoding": "dbn",
+          "compression": "zstd"
+        },
+        "customizations": {
+          "pretty_px": false,
+          "pretty_ts": false,
+          "map_symbols": false,
+          "split_symbols": true,
+          "split_duration": "day",
+          "split_size": null,
+          "packaging": null,
+          "delivery": "download"
+        }
+      },
+      "condition": [
+        {
+          "date": "2025-09-14",
+          "condition": "available",
+          "last_modified_date": "2025-09-15"
+        },
+        {
+          "date": "2025-09-15",
+          "condition": "available",
+          "last_modified_date": "2025-09-16"
+        },
+        {
+          "date": "2025-09-16",
+          "condition": "available",
+          "last_modified_date": "2025-09-17"
+        },
+        {
+          "date": "2025-09-17",
+          "condition": "degraded",
+          "last_modified_date": "2025-09-18"
+        },
+        {
+          "date": "2025-09-18",
+          "condition": "available",
+          "last_modified_date": "2025-09-19"
+        },
+        {
+          "date": "2025-09-19",
+          "condition": "available",
+          "last_modified_date": "2025-09-20"
+        }
+      ],
+      "manifest_verified": 38,
+      "manifest_total": 38,
+      "dbn_file_count": 36,
+      "dbn_files": [
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250914.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250914.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250914.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250914.tbbo.NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQU5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQZ5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250915.tbbo.NQZ7.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQU5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQZ5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250916.tbbo.NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQU5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQZ5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250917.tbbo.NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQU5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQZ5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250918.tbbo.NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQM6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQU5-NQZ5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQU5.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQZ5-NQH6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQZ5-NQM6.dbn.zst",
+        "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\BLOCK_2025_09_14_TO_09_19\\EXTRACTED_696a2d5ed7ad\\glbx-mdp3-20250919.tbbo.NQZ5.dbn.zst"
+      ],
+      "degraded_dates": [
+        "2025-09-17"
+      ]
+    }
+  ],
+  "manifest_hashes": {
+    "verified": 52,
+    "total": 52,
+    "status": "PASS"
+  },
+  "sessions": {
+    "total_pair_sessions": 24,
+    "total_worker_trades": 48,
+    "august_pair_sessions": 17,
+    "september_pair_sessions": 7,
+    "clean_promotion_eligible_sessions": 22,
+    "degraded_diagnostic_only_sessions": 2,
+    "route_counts": {
+      "NY": 15,
+      "WEEKDAY_WEAK": 4,
+      "WEEKLY": 3,
+      "WEEKDAY_PREMIUM": 2
+    },
+    "active_contract_counts": {
+      "NQU5": 18,
+      "NQZ5": 6
+    }
+  },
+  "degraded_source_quarantine": {
+    "dates": [
+      "2025-09-17"
+    ],
+    "affected_sessions": [
+      {
+        "trade_number": 2226,
+        "entry_time_et": "2025-09-17 09:30",
+        "route": "NY",
+        "active_symbol": "NQZ5"
+      },
+      {
+        "trade_number": 2227,
+        "entry_time_et": "2025-09-17 18:00",
+        "route": "WEEKDAY_WEAK",
+        "active_symbol": "NQZ5"
+      }
+    ],
+    "policy": "Analyze for diagnostics, but exclude from parameter selection, promotion scoring, and final holdout claims."
+  },
+  "outputs": {
+    "session_registry_csv": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3\\GIVEBACK_2025_SESSION_REGISTRY.csv",
+    "active_contract_ranking_csv": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3\\GIVEBACK_2025_ACTIVE_CONTRACT_RANKING.csv",
+    "session_parquet_directory": "C:\\FLIP_FLOP_HQ\\02_VALIDATED\\market_data\\GIVEBACK_BLOCKS_2025"
+  },
+  "gates": {
+    "control_integrity": "PASS",
+    "both_zip_jobs_identified": "PASS",
+    "manifest_hash_verification": "PASS",
+    "mixed_instrument_mapping": "PASS",
+    "split_instrument_mapping": "PASS",
+    "24_session_extraction": "PASS",
+    "september_17_quality": "QUARANTINED_DIAGNOSTIC_ONLY",
+    "protection_tournament": "READY_FOR_SHADOW_BUILD",
+    "large_size_scaling": "BLOCKED",
+    "live_routing": "LOCKED"
+  }
+}

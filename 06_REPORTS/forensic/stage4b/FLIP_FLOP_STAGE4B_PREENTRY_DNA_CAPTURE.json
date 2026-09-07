@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE4B-PREENTRY-DNA-CAPTURE",
+  "created_utc": "2026-08-07T00:39:58.113562+00:00",
+  "control_hashes_verified": 4,
+  "source_exports": {
+    "BUY": {
+      "path": "C:\\Users\\cj200\\Downloads\\FF_DNA_BUY_CME_MINI_NQ1!_2026-08-06.csv",
+      "sha256": "08760a992a5c55281079723d45b546f97a2c12a709ef61103be5a8ba50049b73",
+      "entries": 2583
+    },
+    "SELL": {
+      "path": "C:\\Users\\cj200\\Downloads\\FF_DNA_SELL_CME_MINI_NQ1!_2026-08-06.csv",
+      "sha256": "af05cf5de65e559d0067ada6029dc0a0d2dd1a6a7d333381a406ed2c1b52d765",
+      "entries": 2583
+    }
+  },
+  "pair_integrity": {
+    "paired_sessions": 2583,
+    "entry_timestamp_match": "PASS",
+    "buy_sell_feature_parity": "PASS",
+    "labels": {
+      "SKIP": 1427,
+      "BUY": 595,
+      "SELL": 561
+    }
+  },
+  "research_split_policy": {
+    "development": "2020-01 through 2023-12",
+    "validation": "2024-01 through 2025-12",
+    "locked_holdout": "2026-01 through 2026-07",
+    "rule": "No random split. No holdout inspection during classifier design."
+  },
+  "classifier_policy": {
+    "allowed_actions": [
+      "BUY",
+      "SELL",
+      "SKIP"
+    ],
+    "features": "PRE-ENTRY ONLY",
+    "objective": "NET PNL AFTER COSTS, NOT RAW ACCURACY",
+    "first_model_family": "INTERPRETABLE REGULARIZED OR MEMORY-BASED",
+    "route_specific_scoring": true,
+    "uncertainty_action": "SKIP"
+  },
+  "gates": {
+    "control_integrity": "PASS",
+    "telemetry_capture": "PASS",
+    "pair_feature_parity": "PASS",
+    "post_entry_feature_leakage": "BLOCKED_BY_SCHEMA",
+    "classifier_training": "READY_FOR_STAGE4C",
+    "pine_execution_change": "NONE",
+    "quantity_change": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "preentry_dna": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4b_dna_capture\\PREENTRY_DNA_2583.csv",
+    "feature_audit": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4b_dna_capture\\FEATURE_AVAILABILITY_AUDIT.csv",
+    "route_label_matrix": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4b_dna_capture\\ROUTE_LABEL_MATRIX.csv",
+    "year_label_matrix": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4b_dna_capture\\YEAR_LABEL_MATRIX.csv"
+  }
+}

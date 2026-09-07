@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "installed_to": "C:\\FLIP_FLOP_HQ\\07_TOOLS\\cap10_sync_reports_v2",
+  "frozen_v3672_modified": false,
+  "capacity_live_routing": "HARD_BLOCKED",
+  "q1_q10_shadow_matrix": "ENABLED",
+  "history_coverage_detector": "ENABLED",
+  "sync_profile_tag": "ENABLED",
+  "files": [
+    {
+      "file": "Flip_Flop_BUY_V3_6_72_CAP10_SYNC_REPORTS_V2.pine",
+      "sha256": "a0303688ea88f942c696c3ab98e932a1d085814237583c2b7cbcf843f9bc8d48"
+    },
+    {
+      "file": "Flip_Flop_SELL_V3_6_72_CAP10_SYNC_REPORTS_V2.pine",
+      "sha256": "4ab65ba8ae13ca75c2fe3803ef0fce50d0e9b3ffbcd36c40ef7d044781384243"
+    },
+    {
+      "file": "cap10_strategy_reporter.py",
+      "sha256": "6532957fbc9deba109fd97bda1c0634332ce622df28fdcef7f53a130c0d96b41"
+    }
+  ]
+}

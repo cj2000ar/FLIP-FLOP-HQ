@@ -1,0 +1,68 @@
+========================================================================================================
+FLIP FLOP STAGE 4D - LOCKED 2026 HOLDOUT AUDIT
+========================================================================================================
+STATUS: PASS
+HOLDOUT OPENED AND SCORED ONCE
+NO MODEL RETUNING
+NO PINE EXECUTION CHANGE
+NO QUANTITY CHANGE
+NO NEW DATA PURCHASE
+LIVE ROUTING LOCKED
+
+FROZEN INPUTS
+Candidate: RF_D8_EDGE_60
+Model: RF_D8
+Edge threshold: $60.00
+DNA SHA-256: f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c
+Model SHA-256: 4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e
+Holdout rows: 240
+Holdout identity SHA-256: a1c6ea4e36d88e1a87bd7f492d81736f4f064aa7112dac887c74f38eae06f0d5
+
+HOLDOUT RESULTS
+0 extra ticks | net $ 35,334.50 | PF 5.660621249093188 | DD $  -531.00 | trades 206 | positive months 7/7
+1 extra ticks | net $ 33,289.50 | PF 4.754525461004906 | DD $  -621.00 | trades 206 | positive months 7/7
+2 extra ticks | net $ 31,244.50 | PF 4.0778210116731515 | DD $  -711.00 | trades 206 | positive months 7/7
+4 extra ticks | net $ 27,154.50 | PF 3.134536021695555 | DD $  -891.00 | trades 206 | positive months 7/7
+
+BEST STATIC SINGLE-LEG BASELINE AT ONE EXTRA TICK
+Policy: ROUTE_STATIC
+Net: $36,631.50
+PF: 4.903612531969309
+Max drawdown: $-552.00
+
+FINAL HOLDOUT DECISION
+Status: HOLDOUT_MIXED_RESEARCH_ONLY
+
+GATE DETAIL
+holdout_0t_positive: PASS
+holdout_1t_positive: PASS
+holdout_2t_positive: PASS
+holdout_4t_positive: PASS
+holdout_pf_1t: PASS
+minimum_positive_months: PASS
+beats_best_static_1t_by_5pct: FAIL
+drawdown_within_150pct_static: PASS
+minimum_trade_coverage: PASS
+
+DECISION
+The frozen model remained profitable but did not repeat every promotion advantage.
+No retuning and no live promotion. Research branch remains shadow-only.
+
+OUTPUTS
+Session predictions: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\LOCKED_HOLDOUT_SESSION_PREDICTIONS.csv
+Champion results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\LOCKED_HOLDOUT_CHAMPION_RESULTS.csv
+Static baselines: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\LOCKED_HOLDOUT_BASELINES.csv
+Monthly results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\LOCKED_HOLDOUT_MONTHLY.csv
+Route results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\LOCKED_HOLDOUT_ROUTE.csv
+Result manifest: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4d_locked_holdout\HOLDOUT_RESULT_MANIFEST.json
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage4d\FLIP_FLOP_STAGE4D_LOCKED_HOLDOUT_AUDIT.json
+
+GATES
+Frozen input integrity: PASS
+Holdout scored once: PASS
+Holdout result: HOLDOUT_MIXED_RESEARCH_ONLY
+Pine execution change: NONE
+Quantity change: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+========================================================================================================

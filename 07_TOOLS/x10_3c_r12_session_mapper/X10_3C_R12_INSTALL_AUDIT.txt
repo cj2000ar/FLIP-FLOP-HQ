@@ -1,0 +1,17 @@
+﻿================================================================================================================
+FLIP FLOP X10.3C-R1.2 SESSION MAPPER INSTALL
+================================================================================================================
+STATUS: PASS
+SHA256: 8717A0FFD7D6FA319B9D4EA1BFF51A1E63B434B603ED91F230DF0DC6B4AB0561
+
+PURPOSE
+Audit the suspicious 0-overlap result.
+Treat TradingView timestamps as ET 30-minute session anchors.
+Do NOT treat them as exact target-hit timestamps.
+Map target winners to owned high-detail event windows.
+
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+================================================================================================================

@@ -1,0 +1,15 @@
+agent,state,job
+QUANT_MATH_AGENT,ACTIVE,"robust quantiles, Q1-Q10 L1 coverage, dataset fingerprint"
+RESULTS_ORGANIZER,ACTIVE,"append-only run ledger, LATEST reports, run manifests"
+SCHEMA_AUTHORITY_AGENT,ACTIVE,TBBO vs MBP-1 vs MBP-10/MBO authority
+CLOCK_AUDITOR,ACTIVE,"timestamps, gaps, monotonicity, feed receive/event latency"
+BBO_RECONSTRUCTOR,ACTIVE,BBO state metrics within actual schema authority
+FULL_BOOK_RECONSTRUCTOR,BLOCKED,requires MBP-10/MBO/deeper levels
+FILL_ENGINE_L1_PROXY,READY,top-of-book Q1-Q10 coverage only
+FILL_ENGINE_MULTI_LEVEL,BLOCKED,multi-level VWAP fill walk
+LATENCY_AGENT,READY,ordered event repricing after session anchors are mapped
+CAPACITY_BEND_AGENT,READY,Q curve from valid fill/coverage metrics
+SIGNAL_SCALE_AGENT,WAIT_SESSION_MAP,needs FLIP FLOP entry anchors joined to market events
+TOXICITY_AGENT,READY_FEATURES,spread/depth/velocity/gap feature generation
+RED_TEAM,WAIT_FILL_MODEL,depth haircut/latency/spread shock after fill authority selected
+GOVERNOR,ACTIVE,no Pine/X10.2/live modifications

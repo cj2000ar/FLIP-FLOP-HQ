@@ -1,0 +1,73 @@
+============================================================================================================================
+FLIP FLOP X10.3B QUANT-MATH + SCHEMA-AUTHORITY CORE
+============================================================================================================================
+STATUS: PASS
+
+DATASET
+X10.3A high-detail candidates attempted: 89
+Decode PASS / FAIL / SKIP:             89 / 0 / 0
+Decoded rows:                          7,627,921
+Valid BBO rows:                        5,856,860
+Dataset SHA256:                        7D026E920879E5DB27BF9177723E91B46ED3972967807E698224FBF06C9CD425
+
+SCHEMA AUTHORITY
+Best authority rank:                   2/4
+Best authority:                        L1 TRADE-SPACE AUTHORITY
+L1 trade-space/BBO metrics ready:      YES
+L1 book-update authority ready:        NO
+Exact multi-level depth fill ready:    NO
+
+GLOBAL QUANT-MATH (sampled robust aggregates)
+Spread median / P90 / P99 ticks:       2.000 / 6.000 / 14.000
+Top BBO depth median / P10:             4.00 / 2.00 contracts
+Event gap median / P95 ms:              28.947 / 4,332.884
+Receive-event latency median/P95 us:    302.190 / 2,402.644
+
+Q1-Q10 TOP-OF-BOOK CAPACITY PROXY
+This is L1 size coverage only. It is NOT an exact multi-level fill claim.
+Q1  | BUY top-size coverage   100.00% | SELL   100.00% | BOTH   100.00% | mean shortfall B/S 0.000/0.000
+Q2  | BUY top-size coverage    59.47% | SELL    59.41% | BOTH    37.13% | mean shortfall B/S 0.405/0.406
+Q3  | BUY top-size coverage    34.69% | SELL    34.48% | BOTH    15.39% | mean shortfall B/S 1.058/1.061
+Q4  | BUY top-size coverage    20.05% | SELL    19.73% | BOTH     6.42% | mean shortfall B/S 1.858/1.864
+Q5  | BUY top-size coverage    11.57% | SELL    11.20% | BOTH     2.59% | mean shortfall B/S 2.742/2.752
+Q6  | BUY top-size coverage     6.85% | SELL     6.51% | BOTH     1.23% | mean shortfall B/S 3.674/3.687
+Q7  | BUY top-size coverage     4.37% | SELL     4.12% | BOTH     0.79% | mean shortfall B/S 4.630/4.646
+Q8  | BUY top-size coverage     3.16% | SELL     3.01% | BOTH     0.63% | mean shortfall B/S 5.598/5.615
+Q9  | BUY top-size coverage     2.53% | SELL     2.43% | BOTH     0.54% | mean shortfall B/S 6.573/6.591
+Q10 | BUY top-size coverage     2.15% | SELL     2.08% | BOTH     0.49% | mean shortfall B/S 7.552/7.570
+
+AGENT BOARD
+QUANT_MATH_AGENT           ACTIVE           robust quantiles, Q1-Q10 L1 coverage, dataset fingerprint
+RESULTS_ORGANIZER          ACTIVE           append-only run ledger, LATEST reports, run manifests
+SCHEMA_AUTHORITY_AGENT     ACTIVE           TBBO vs MBP-1 vs MBP-10/MBO authority
+CLOCK_AUDITOR              ACTIVE           timestamps, gaps, monotonicity, feed receive/event latency
+BBO_RECONSTRUCTOR          ACTIVE           BBO state metrics within actual schema authority
+FULL_BOOK_RECONSTRUCTOR    BLOCKED          requires MBP-10/MBO/deeper levels
+FILL_ENGINE_L1_PROXY       READY            top-of-book Q1-Q10 coverage only
+FILL_ENGINE_MULTI_LEVEL    BLOCKED          multi-level VWAP fill walk
+LATENCY_AGENT              READY            ordered event repricing after session anchors are mapped
+CAPACITY_BEND_AGENT        READY            Q curve from valid fill/coverage metrics
+SIGNAL_SCALE_AGENT         WAIT_SESSION_MAP needs FLIP FLOP entry anchors joined to market events
+TOXICITY_AGENT             READY_FEATURES   spread/depth/velocity/gap feature generation
+RED_TEAM                   WAIT_FILL_MODEL  depth haircut/latency/spread shock after fill authority selected
+GOVERNOR                   ACTIVE           no Pine/X10.2/live modifications
+
+AUTHORITY RULE
+TBBO = top-of-book in trade space. It cannot prove hidden/multi-level Q1-Q10 fills.
+MBP-1 = top-level book-update authority, still L1 only.
+MBP-10/MBO/deeper levels = candidate authority for multi-level VWAP fill walking.
+
+NEXT
+If MBP-10/MBO exists: X10.3C may build a true multi-level fill walker.
+If only TBBO/MBP-1 exists: X10.3C will use honest L1 execution proxies + latency/toxicity analysis,
+and will not fabricate deeper-book liquidity.
+
+RESULT KEEPING
+Append-only results ledger: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\x10_3b_quant_core\state\X10_3B_RESULTS_LEDGER.csv
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+X10.2 championship modified: NO
+Entry/exit logic modified: NO
+Live routing: LOCKED
+============================================================================================================================

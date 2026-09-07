@@ -1,0 +1,63 @@
+==========================================================================================================
+FLIP FLOP STAGE 3F.1 - DEFAULT BAR VS HIGH-DETAIL TBBO BASELINE PARITY
+==========================================================================================================
+STATUS: PASS
+NO PINE CHANGE
+NO DATA PURCHASE
+LIVE ROUTING LOCKED
+
+EXACT OVERLAP
+Owned raw sessions matched: 24
+Clean sessions: 22
+Degraded diagnostic sessions: 2
+
+CLEAN DEFAULT-BAR OUTCOMES
+{'DOUBLE_STOP': 16, 'SELL_TARGET': 6}
+
+CLEAN HIGH-DETAIL RAW BASELINE OUTCOMES
+{'DOUBLE_STOP': 19, 'UNRESOLVED': 2, 'BUY_TARGET': 1}
+
+PARITY
+Outcome matches: 14/22 (63.64%)
+Default target sessions preserved exactly: 0/6 (0.00%)
+Raw unresolved clean sessions: 2
+Default clean net: $1,016.00
+Raw reconstructed clean net: $-2,127.00
+
+MISMATCH CLASSIFICATION
+OUTCOME_MATCH: 14
+TV_TARGET_TO_RAW_DOUBLE_STOP: 5
+RAW_UNRESOLVED: 2
+TV_DOUBLE_STOP_TO_RAW_TARGET: 1
+
+VERDICT
+BASELINE_PARITY_FAIL_STAGE3F_BE_VERDICT_SUSPENDED
+
+The Stage 3F breakeven rejection is suspended.
+This does not approve breakeven.
+It means the raw original-strategy baseline must be repaired before the BE rule can be judged.
+
+REQUIRED NEXT REPAIR TARGETS
+1. Exact raw-event start anchor relative to the TradingView entry.
+2. Raw contract and continuous-contract level alignment.
+3. Frozen target and stop price parity.
+4. Bid/ask versus trade-price trigger logic.
+5. Raw session window ending before the frozen target.
+
+OUTPUTS
+Full parity map: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f1_default_vs_tbbo\DEFAULT_VS_TBBO_SESSION_PARITY.csv
+Mismatch sessions: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f1_default_vs_tbbo\OUTCOME_MISMATCH_SESSIONS.csv
+Default target audit: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f1_default_vs_tbbo\DEFAULT_TARGET_SESSION_AUDIT.csv
+Owned-date double-stop MFE cases: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f1_default_vs_tbbo\OWNED_DATE_DOUBLE_STOP_MFE_CASES.csv
+Summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f1_default_vs_tbbo\PARITY_SUMMARY.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3f1\FLIP_FLOP_STAGE3F1_PARITY_AUDIT.json
+
+GATES
+Same-date overlap: PASS
+Entry timestamp parity: PASS
+Baseline outcome parity: FAIL
+Stage 3F BE verdict: SUSPENDED
+Pine modification: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+==========================================================================================================

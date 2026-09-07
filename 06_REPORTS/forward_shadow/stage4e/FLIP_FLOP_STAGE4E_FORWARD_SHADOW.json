@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE4E-FROZEN-FORWARD-SHADOW",
+  "created_utc": "2026-08-07T02:02:08.906550+00:00",
+  "protocol": {
+    "status": "FROZEN_FORWARD_PROTOCOL",
+    "created_utc": "2026-08-07T02:02:06.366144+00:00",
+    "protocol_cutoff_local": "2026-08-07T00:00:00",
+    "model_sha256": "4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e",
+    "base_dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+    "rf_candidate": "RF_D8_EDGE_60",
+    "rf_edge_threshold": 60.0,
+    "route_static_map": {
+      "NY": "SELL",
+      "WEEKLY": "BUY",
+      "WEEKDAY_PREMIUM": "BUY",
+      "WEEKDAY_WEAK": "SELL"
+    },
+    "comparison_candidates": [
+      "RF_D8_EDGE_60",
+      "ROUTE_STATIC",
+      "ALWAYS_SELL"
+    ],
+    "minimum_forward_sessions": 90,
+    "minimum_route_counts": {
+      "NY": 30,
+      "WEEKLY": 8,
+      "WEEKDAY_PREMIUM": 8,
+      "WEEKDAY_WEAK": 8
+    },
+    "primary_cost_stress_ticks": 1,
+    "retuning": "FORBIDDEN",
+    "live_routing": "LOCKED"
+  },
+  "source_exports": {
+    "buy_path": "C:\\Users\\cj200\\Downloads\\FF_DNA_BUY_CME_MINI_NQ1!_2026-08-06.csv",
+    "buy_sha256": "08760a992a5c55281079723d45b546f97a2c12a709ef61103be5a8ba50049b73",
+    "buy_entries": 2583,
+    "sell_path": "C:\\Users\\cj200\\Downloads\\FF_DNA_SELL_CME_MINI_NQ1!_2026-08-06.csv",
+    "sell_sha256": "af05cf5de65e559d0067ada6029dc0a0d2dd1a6a7d333381a406ed2c1b52d765",
+    "sell_entries": 2583
+  },
+  "ledger": {
+    "total_post_holdout_rows": 5,
+    "new_rows_this_run": 5,
+    "pre_protocol_seed_rows": 5,
+    "eligible_forward_rows": 0,
+    "route_counts": {},
+    "coverage_ready": false
+  },
+  "candidate_summaries": {
+    "RF_D8_EDGE_60": null,
+    "ROUTE_STATIC": null,
+    "ALWAYS_SELL": null
+  },
+  "decision": "FORWARD_COLLECTION_IN_PROGRESS",
+  "gates": {
+    "frozen_model_integrity": "PASS",
+    "route_map_integrity": "PASS",
+    "historical_prefix_integrity": "PASS",
+    "forward_session_immutability": "PASS",
+    "retuning": "FORBIDDEN",
+    "stage4f_controller_simulation": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "ledger": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4e_forward_shadow\\FROZEN_FORWARD_SHADOW_LEDGER.csv",
+    "canonical_forward_dna": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4e_forward_shadow\\FORWARD_DNA_CANONICAL.csv",
+    "session_hashes": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4e_forward_shadow\\FROZEN_FORWARD_SESSION_HASHES.json",
+    "protocol_manifest": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\preentry_direction_classifier\\stage4e_forward_shadow\\FORWARD_PROTOCOL_MANIFEST.json"
+  }
+}

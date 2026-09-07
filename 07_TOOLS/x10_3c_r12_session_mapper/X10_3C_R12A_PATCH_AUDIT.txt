@@ -1,0 +1,20 @@
+﻿================================================================================================================
+FLIP FLOP X10.3C-R1.2A NAMING-COLLISION PATCH
+================================================================================================================
+STATUS: PASS
+Patched: C:\FLIP_FLOP_HQ\07_TOOLS\x10_3c_r12_session_mapper\x10_3c_r12_session_mapper.py
+SHA256: B8D830546F5CECFB5E1D37736D4D908DACF8DE4D3A053649F0C01F28E20F24ED
+
+BUG FIXED
+Python helper function name 'latest' was shadowed by a local variable also named 'latest'.
+R1.2A renames:
+  helper -> latest_file
+  report variable -> latest_report
+
+Research logic changed: NO
+Session mapping rules changed: NO
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+================================================================================================================

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "installed_to": "C:\\FLIP_FLOP_HQ\\07_TOOLS\\cap10_research",
+  "files": [
+    {
+      "file": "Flip_Flop_BUY_V3_6_72_CAP10_RESEARCH.pine",
+      "sha256": "abf3cd03c5fd7b5a183b1d7381666ec283f1fa0d124bffaa3332f919ba6c4aac",
+      "status": "PASS"
+    },
+    {
+      "file": "Flip_Flop_SELL_V3_6_72_CAP10_RESEARCH.pine",
+      "sha256": "7af7fc435d7092f1f216df538a7060926c39e457736e279cccf6ca15bffa160c",
+      "status": "PASS"
+    }
+  ],
+  "frozen_control_modified": false,
+  "live_routing": "BLOCKED_IN_CAPACITY_MODES"
+}

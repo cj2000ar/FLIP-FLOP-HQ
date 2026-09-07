@@ -1,0 +1,5 @@
+extra_ticks,clean_manifest_events,observer_resolved_clean_events,raw_session_resolved_events,buy_signals,sell_signals,skip_signals,whipsaw_events,observer_selected_net,always_buy_net,always_sell_net,paired_net,positive_selected_events,negative_selected_events,flat_selected_events,average_trigger_slippage_points,maximum_trigger_slippage_points
+0,5,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0,0,0,,
+1,5,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0,0,0,,
+2,5,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0,0,0,,
+4,5,0,0,0,0,0,0,0.0,0.0,0.0,0.0,0,0,0,,

@@ -1,0 +1,11 @@
+{
+  "run": "20260808_062211",
+  "dataset_sha256": "7D026E920879E5DB27BF9177723E91B46ED3972967807E698224FBF06C9CD425",
+  "summary": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_QUANT_CORE_SUMMARY_20260808_062211.txt",
+  "file_audit": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_FILE_SCHEMA_AUDIT_20260808_062211.csv",
+  "schema_authority": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_SCHEMA_AUTHORITY_20260808_062211.csv",
+  "capacity_proxy": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_L1_Q1_Q10_CAPACITY_PROXY_20260808_062211.csv",
+  "math_registry": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_QUANT_MATH_REGISTRY_20260808_062211.csv",
+  "agent_board": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\runs\\X10_3B_AGENT_BOARD_20260808_062211.csv",
+  "results_ledger": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3b_quant_core\\state\\X10_3B_RESULTS_LEDGER.csv"
+}

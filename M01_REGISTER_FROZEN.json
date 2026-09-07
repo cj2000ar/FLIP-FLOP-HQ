@@ -1,0 +1,924 @@
+{
+  "metadata": {
+    "register_version": "1.0",
+    "phase": "PHASE_2_M01",
+    "freeze_date": "2026-09-07T23:59:59Z",
+    "authority": "ZERO",
+    "classification": "Frozen Evidence Register",
+    "owner": "Technical Architect",
+    "distribution": "Internal (FlipFlop HQ Phase 2 Team)"
+  },
+  "authority_invariant": {
+    "status": "LOCKED_IMMUTABLE",
+    "values": {
+      "authority": "ZERO",
+      "live": false,
+      "broker_orders": false,
+      "control_mutation": false,
+      "failure_policy": "FAIL_CLOSED"
+    },
+    "verification": {
+      "gate_3_check": "HARDCODED",
+      "gate_8_check": "HARDCODED",
+      "batch_cg01_check": "HARDCODED",
+      "ui_display": "MANDATORY_ON_ALL_SCREENS",
+      "no_escalation_paths": "VERIFIED"
+    },
+    "evidence": "Authority invariant frozen at M01. No code path may escalate authority, enable live trading, permit broker orders, or mutate control artifacts."
+  },
+  "domain_models": {
+    "guardian_enforcement": {
+      "status": "PASS",
+      "entity_count": 7,
+      "tuple_count": 4,
+      "gate_count": 8,
+      "constraint_count": 8,
+      "entities": [
+        "ReleaseGate",
+        "GateVerdict",
+        "EvidenceRecord",
+        "AuthorityPolicy",
+        "DecisionCartridge",
+        "CanaryRun",
+        "DeploymentCandidate"
+      ],
+      "tuples": [
+        "AuthorityTuple",
+        "StrategyIdentityTuple",
+        "GateDecisionTuple",
+        "DeploymentCandidateTuple"
+      ],
+      "gates": [
+        "SCHEMA_AND_IDENTITY",
+        "HASH_INTEGRITY",
+        "AUTHORITY_POLICY_COMPLIANCE",
+        "MACHINE_HEALTH_AND_READINESS",
+        "CANARY_EXECUTION",
+        "EVIDENCE_CONSISTENCY",
+        "FRESHNESS_AND_STALENESS",
+        "FINAL_ARBITER"
+      ],
+      "constraints": [
+        "FC01_NO_AUTHORITY_ESCALATION",
+        "FC02_STALE_EVIDENCE_BLOCKS",
+        "FC03_CONTRADICTED_EVIDENCE_BLOCKS",
+        "FC04_MISSING_REQUIRED_EVIDENCE_BLOCKS",
+        "FC05_CANARY_FAILURE_BLOCKS",
+        "FC06_HASH_MISMATCH_BLOCKS",
+        "FC07_ALL_GATES_MUST_PASS",
+        "FC08_NO_MANUAL_OVERRIDE"
+      ],
+      "frozen_documents": [
+        "GUARDIAN_DOMAIN_MODEL_FROZEN_V1.json",
+        "GUARDIAN_DOMAIN_SPEC_FROZEN_V1.md",
+        "GUARDIAN_GATE_IMPLEMENTATION_GUIDE.md",
+        "GUARDIAN_CONSTRAINT_VERIFICATION_CHECKLIST.md",
+        "GUARDIAN_PHASE2_FROZEN_DELIVERABLES.md"
+      ],
+      "integration_points": {
+        "hp_24x7": "Gate 4 (MACHINE_HEALTH_AND_READINESS) receives MachineRoleTuple",
+        "ninjatrader_batch": "GateDecisionTuple array (all 8 gates) to BatchVerdictTuple",
+        "ui_design": "GuardianStateSnapshot (authority, gates, verdicts) to UI display"
+      },
+      "readiness": "READY_FOR_IMPLEMENTATION"
+    },
+    "hp_24x7_infrastructure": {
+      "status": "PASS",
+      "entity_count": 8,
+      "tuple_count": 5,
+      "constraint_count": 6,
+      "entities": [
+        "MachineRole",
+        "MachineHealth",
+        "FencingToken",
+        "DurableStorage",
+        "HeartbeatRecord",
+        "RestartDetection",
+        "ClockState",
+        "DurableReceipt"
+      ],
+      "tuples": [
+        "MachineRoleTuple",
+        "HeartbeatTuple",
+        "FencingTokenTuple",
+        "DurableStorageTuple",
+        "DurableReceiptTuple"
+      ],
+      "constraints": [
+        "HP01_HEARTBEAT_FRESHNESS",
+        "HP02_CLOCK_SYNC",
+        "HP03_FENCING_TOKEN_VALID",
+        "HP04_RESTART_DETECTED",
+        "HP05_DURABLE_STORAGE_WRITE_ONCE",
+        "HP06_RECEIPT_REQUIRED_BEFORE_VERIFIED"
+      ],
+      "mechanisms": [
+        "Heartbeat < 60 seconds",
+        "Clock offset < 5 seconds (NTP)",
+        "Fencing token validation (expiry + signature)",
+        "Restart/cold-start detection",
+        "Durable storage write-once",
+        "Receipt generation + verification"
+      ],
+      "integration_points": {
+        "guardian": "Provides MachineRoleTuple to Guardian Gate 4",
+        "batch": "Receives ArchiveRecord, issues DurableReceiptTuple",
+        "ui": "Provides MachineHealthSnapshot to UI display"
+      },
+      "readiness": "READY_FOR_IMPLEMENTATION"
+    },
+    "ninjatrader_batch": {
+      "status": "PASS",
+      "entity_count": 7,
+      "tuple_count": 6,
+      "constraint_count": 8,
+      "entities": [
+        "BatchRun",
+        "BatchVerdict",
+        "DayReport",
+        "AlertRecord",
+        "ComplianceBundle",
+        "TaxDataArchive",
+        "ArchiveRecord"
+      ],
+      "tuples": [
+        "BatchRunTuple",
+        "DayReportTuple",
+        "AlertRecordTuple",
+        "ComplianceBundleTuple",
+        "ArchiveRecordTuple",
+        "BatchVerdictTuple"
+      ],
+      "lifecycle": [
+        "PENDING",
+        "PROCESSING",
+        "CLOSED",
+        "ARCHIVED"
+      ],
+      "constraints": [
+        "CG01_NO_AUTHORITY_ESCALATION",
+        "CG02_BATCH_DATA_IMMUTABLE_AFTER_CLOSE",
+        "CG03_VERDICT_REQUIRES_ALL_GATES_PASS",
+        "CG04_GUARDIAN_GATES_MUST_COMPLETE",
+        "CG05_COMPLIANCE_LOCK",
+        "CG06_ARCHIVE_WRITE_ONCE",
+        "CG07_HP_DURABLE_RECEIPT",
+        "CG08_RETENTION_ENFORCED"
+      ],
+      "frozen_documents": [
+        "NINJATRADER_BATCH_DOMAIN_MODEL_FROZEN_V1.json",
+        "NINJATRADER_BATCH_DOMAIN_SPEC_FROZEN_V1.md",
+        "NINJATRADER_BATCH_PHASE2_FROZEN_DELIVERABLES.md",
+        "NINJATRADER_BATCH_FROZEN_SUMMARY.md"
+      ],
+      "integration_points": {
+        "guardian": "Receives GateDecisionTuple array (all 8 gates)",
+        "hp": "Writes ArchiveRecord to HP durable storage, receives DurableReceiptTuple",
+        "ui": "Provides BatchStatusSnapshot to UI display"
+      },
+      "verdict_logic": {
+        "approved": "ALL 8 Guardian gates PASS AND compliance_passed AND tax_verified AND archive_verified",
+        "blocked": "ANY gate BLOCKED OR verification failed",
+        "not_proven": "ANY gate NOT_PROVEN (timeout 5min → BLOCKED)",
+        "fail_closed": true
+      },
+      "readiness": "READY_FOR_IMPLEMENTATION"
+    },
+    "ui_design": {
+      "status": "PASS",
+      "entity_count": 12,
+      "tuple_count": 10,
+      "constraint_count": 7,
+      "entities": [
+        "ControlCenter",
+        "PhoneCockpit",
+        "TabletWorkspace",
+        "DesktopCommand",
+        "GuardianStateDisplay",
+        "TruthBar",
+        "BatchStatusDisplay",
+        "MachineHealthDisplay",
+        "CanaryDisplay",
+        "AlertPanel",
+        "ReportSummary",
+        "OwnerApprovalPanel"
+      ],
+      "tuples": [
+        "GuardianStateSnapshotTuple",
+        "TruthBarTuple",
+        "PhoneCockpitTuple",
+        "TabletWorkspaceTuple",
+        "DesktopCommandTuple",
+        "BatchStatusSnapshotTuple",
+        "MachineHealthSnapshotTuple",
+        "CanaryExecutionDisplayTuple",
+        "AlertPanelTuple",
+        "OwnerApprovalPanelTuple"
+      ],
+      "form_factors": [
+        {
+          "name": "Phone",
+          "width_range": "320-480px",
+          "purpose": "Cockpit (critical alerts, Authority lock)",
+          "displays": ["Critical alerts", "Authority: ZERO", "Truth bar (age, stale warning)", "Promotion status"]
+        },
+        {
+          "name": "Tablet",
+          "width_range": "600-1024px",
+          "purpose": "Workspace (summary + chart, gate status)",
+          "displays": ["Summary chart", "Gate progress (8 gates)", "Batch status", "Machine health"]
+        },
+        {
+          "name": "Desktop",
+          "width_range": "1200px+",
+          "purpose": "Command center (full drill-down, evidence tree)",
+          "displays": ["Full gates display (8)", "Verdicts detailed", "Batch details", "HP metrics", "Evidence drill-down"]
+        }
+      ],
+      "constraints": [
+        "UI01_READ_ONLY",
+        "UI02_AUTHORITY_DISPLAY_LOCK",
+        "UI03_TRUTH_AGE_DISPLAY",
+        "UI04_GATE_STATUS_DISPLAY",
+        "UI05_ADMIN_PUBLIC_TOGGLE",
+        "UI06_NO_MANUAL_OVERRIDE",
+        "UI07_STALE_WARNING_ESCALATION"
+      ],
+      "truth_bar": {
+        "fresh_threshold": "< 60 seconds (green)",
+        "warning_threshold": "60-300 seconds (yellow)",
+        "stale_threshold": "> 300 seconds (red warning)"
+      },
+      "authority_display": {
+        "text": "Authority: ZERO",
+        "visibility": "All screens, all form factors",
+        "emphasis": "Red lock icon, immutable",
+        "read_only": "No buttons to grant authority, approve verdicts, override gates"
+      },
+      "integration_points": {
+        "guardian": "Receives GuardianStateSnapshot (authority, gates, verdicts, truth_age)",
+        "batch": "Receives BatchStatusSnapshot (verdict, alerts, report summary)",
+        "hp": "Receives MachineHealthSnapshot (heartbeat, clock, fencing, truth_age)"
+      },
+      "readiness": "READY_FOR_IMPLEMENTATION"
+    }
+  },
+  "tuples_consolidated": {
+    "total_count": 31,
+    "status": "FROZEN",
+    "immutability": "ENFORCED",
+    "guardian": 4,
+    "hp": 5,
+    "batch": 6,
+    "ui": 10,
+    "all_tuples": [
+      {
+        "name": "AuthorityTuple",
+        "domain": "Guardian",
+        "fields": ["authority", "live", "broker_orders", "mutation", "approval_id"],
+        "immutable": true
+      },
+      {
+        "name": "StrategyIdentityTuple",
+        "domain": "Guardian",
+        "fields": ["side", "sha256", "passport_id", "gate_version", "verification_state"],
+        "immutable": true
+      },
+      {
+        "name": "GateDecisionTuple",
+        "domain": "Guardian",
+        "fields": ["gate_id", "correlation_id", "input_hashes", "evidence_id", "verdict", "event_time", "knowledge_time"],
+        "immutable": true
+      },
+      {
+        "name": "DeploymentCandidateTuple",
+        "domain": "Guardian",
+        "fields": ["candidate_id", "artifact_hashes", "passport_hash", "gate_results", "canary_evidence_id", "authority", "approval_id"],
+        "immutable": true
+      },
+      {
+        "name": "MachineRoleTuple",
+        "domain": "HP",
+        "fields": ["machine_id", "role", "version", "config_hash", "fencing_epoch", "health", "truth_age"],
+        "immutable": true
+      },
+      {
+        "name": "HeartbeatTuple",
+        "domain": "HP",
+        "fields": ["heartbeat_id", "machine_id", "timestamp", "health_status", "clock_offset", "sequence"],
+        "immutable": true
+      },
+      {
+        "name": "FencingTokenTuple",
+        "domain": "HP",
+        "fields": ["token_id", "machine_id", "epoch", "expiry", "signature_hash", "authority_lock"],
+        "immutable": true
+      },
+      {
+        "name": "DurableStorageTuple",
+        "domain": "HP",
+        "fields": ["storage_id", "path", "retention_years", "immutable_hash", "retrieval_metadata", "hp_receipt"],
+        "immutable": true
+      },
+      {
+        "name": "DurableReceiptTuple",
+        "domain": "HP",
+        "fields": ["receipt_id", "timestamp", "storage_path", "confirmation_hash", "archive_status"],
+        "immutable": true
+      },
+      {
+        "name": "BatchRunTuple",
+        "domain": "Batch",
+        "fields": ["batch_id", "run_date", "market_open_time", "market_close_time", "mode", "correlation_id"],
+        "immutable": true
+      },
+      {
+        "name": "DayReportTuple",
+        "domain": "Batch",
+        "fields": ["report_id", "batch_id", "trade_count", "pnl_summary", "risk_metrics", "alert_count", "export_time"],
+        "immutable": true
+      },
+      {
+        "name": "AlertRecordTuple",
+        "domain": "Batch",
+        "fields": ["alert_id", "batch_id", "severity", "alert_type", "message", "timestamp", "escalation_flag"],
+        "immutable": true
+      },
+      {
+        "name": "ComplianceBundleTuple",
+        "domain": "Batch",
+        "fields": ["bundle_id", "batch_id", "tax_summary", "receipt_hashes", "audit_trail", "certification_time"],
+        "immutable": true
+      },
+      {
+        "name": "ArchiveRecordTuple",
+        "domain": "Batch",
+        "fields": ["archive_record_id", "batch_id", "storage_path", "retention_years", "immutable_hash", "retrieval_metadata"],
+        "immutable": true
+      },
+      {
+        "name": "BatchVerdictTuple",
+        "domain": "Batch",
+        "fields": ["verdict_id", "batch_id", "guardian_gate_results", "compliance_passed", "tax_verified", "archive_verified", "batch_status"],
+        "immutable": true
+      },
+      {
+        "name": "GuardianStateSnapshotTuple",
+        "domain": "UI",
+        "fields": ["state_id", "phase", "authority", "gates", "verdicts", "evidence_status", "final_verdict", "promotion_ready", "truth_age_seconds"],
+        "immutable": true
+      },
+      {
+        "name": "TruthBarTuple",
+        "domain": "UI",
+        "fields": ["truth_id", "is_fresh", "age_seconds", "stale_since", "warning_level", "last_update"],
+        "immutable": true
+      },
+      {
+        "name": "PhoneCockpitTuple",
+        "domain": "UI",
+        "fields": ["cockpit_id", "critical_alert_count", "authority_lock", "promotion_status", "truth_bar"],
+        "immutable": true
+      },
+      {
+        "name": "TabletWorkspaceTuple",
+        "domain": "UI",
+        "fields": ["workspace_id", "summary_chart", "gate_progress", "batch_status", "machine_health"],
+        "immutable": true
+      },
+      {
+        "name": "DesktopCommandTuple",
+        "domain": "UI",
+        "fields": ["command_id", "full_gates", "verdicts", "batch_details", "hp_metrics", "evidence_drill_down"],
+        "immutable": true
+      },
+      {
+        "name": "BatchStatusSnapshotTuple",
+        "domain": "UI",
+        "fields": ["batch_snapshot_id", "verdict_status", "alert_array", "report_summary", "guardian_gate_results"],
+        "immutable": true
+      },
+      {
+        "name": "MachineHealthSnapshotTuple",
+        "domain": "UI",
+        "fields": ["health_id", "heartbeat", "clock_offset", "fencing_token_valid", "restart_detected", "truth_age"],
+        "immutable": true
+      },
+      {
+        "name": "CanaryExecutionDisplayTuple",
+        "domain": "UI",
+        "fields": ["canary_display_id", "execution_status", "error_rate", "latency", "rollback_flag"],
+        "immutable": true
+      },
+      {
+        "name": "AlertPanelTuple",
+        "domain": "UI",
+        "fields": ["alert_panel_id", "severity", "alert_type", "message", "escalation_flag", "resolution_status"],
+        "immutable": true
+      },
+      {
+        "name": "OwnerApprovalPanelTuple",
+        "domain": "UI",
+        "fields": ["approval_panel_id", "candidate_id", "promotion_ready", "authority_lock", "signature_placeholder"],
+        "immutable": true
+      }
+    ]
+  },
+  "constraints_consolidated": {
+    "total_count": 29,
+    "status": "LOCKED",
+    "fail_closed_policy": "ENFORCED",
+    "guardian": 8,
+    "hp": 6,
+    "batch": 8,
+    "ui": 7,
+    "by_category": {
+      "authority_lock": ["FC01", "CG01", "UI02"],
+      "immutability": ["FC02", "FC04", "FC08", "CG02", "CG05", "CG06", "CG08", "HP05", "UI01"],
+      "evidence": ["FC03", "FC04", "FC06", "HP01", "HP02", "HP03", "HP04", "UI03", "UI07"],
+      "verdict_logic": ["FC07", "CG03", "CG04", "UI04"],
+      "integration": ["CG07", "HP06", "UI05", "UI06"]
+    }
+  },
+  "gates_and_verdicts": {
+    "guardian_gates": 8,
+    "verdicts": ["PASS", "BLOCKED", "NOT_PROVEN"],
+    "sequential_pipeline": [
+      {
+        "gate_number": 1,
+        "name": "SCHEMA_AND_IDENTITY",
+        "blocks_on": ["Bad schema", "duplicate ID", "missing hash"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 2,
+        "name": "HASH_INTEGRITY",
+        "blocks_on": ["Hash mismatch", "contradiction"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 3,
+        "name": "AUTHORITY_POLICY_COMPLIANCE",
+        "blocks_on": ["authority≠ZERO", "live=true", "mutation=true"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 4,
+        "name": "MACHINE_HEALTH_AND_READINESS",
+        "blocks_on": ["Machine error", "heartbeat stale", "clock drift", "restart"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 5,
+        "name": "CANARY_EXECUTION",
+        "blocks_on": ["error_rate>5%", "latency>200ms", "rollback"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 6,
+        "name": "EVIDENCE_CONSISTENCY",
+        "blocks_on": ["Contradiction", "temporal ordering violation"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 7,
+        "name": "FRESHNESS_AND_STALENESS",
+        "blocks_on": ["Evidence >300s old", "missing evidence"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      },
+      {
+        "gate_number": 8,
+        "name": "FINAL_ARBITER",
+        "blocks_on": ["Prior gate blocked/not_proven", "authority escalation"],
+        "verdict_types": ["PASS", "BLOCKED", "NOT_PROVEN"]
+      }
+    ],
+    "all_gates_must_pass": true,
+    "sequential_execution": true,
+    "no_parallel_evaluation": true
+  },
+  "frozen_claims": {
+    "buy_strategy_hash": {
+      "status": "ASSERTED",
+      "value": "FROZEN_AT_M01_HIDDEN_FOR_SECURITY",
+      "hash_algorithm": "SHA256",
+      "verification": "PENDING_UNTIL_M06",
+      "evidence_required": "Code review + signature verification"
+    },
+    "sell_strategy_hash": {
+      "status": "ASSERTED",
+      "value": "FROZEN_AT_M01_HIDDEN_FOR_SECURITY",
+      "hash_algorithm": "SHA256",
+      "verification": "PENDING_UNTIL_M06",
+      "evidence_required": "Code review + signature verification"
+    },
+    "control_passport": {
+      "status": "ASSERTED",
+      "value": "CONTROL_V2_M01_FROZEN",
+      "verification": "PENDING_UNTIL_M06",
+      "evidence_required": "Authorization chain + signature verification"
+    },
+    "canary_execution_evidence": {
+      "status": "NOT_PROVEN",
+      "requirement": "Gate 5 must produce explicit CanaryRun evidence (timestamped, non-contradicted)",
+      "blocker": "R01 (Canary PASS lacks closure evidence)",
+      "resolution": "PENDING_M03_IMPLEMENTATION",
+      "verification": "REQUIRED_FOR_M06_CERTIFICATION"
+    }
+  },
+  "deployment_readiness": {
+    "status": "BLOCKED",
+    "blockers": [
+      "AWAITING_M03_IMPLEMENTATION (Guardian gates)",
+      "AWAITING_M02_IMPLEMENTATION (HP infrastructure)",
+      "AWAITING_M04_IMPLEMENTATION (Batch engine + UI)",
+      "AWAITING_M05_INTEGRATION_TESTS",
+      "AWAITING_M06_CERTIFICATION"
+    ],
+    "unblock_sequence": [
+      "M02 Complete (HP 24/7 infrastructure, Sep 11)",
+      "M03 Complete (Guardian 8 gates, Sep 12)",
+      "M04 Complete (Batch + UI, Sep 14)",
+      "M05 Complete (Integration tests, Sep 16)",
+      "M06 Complete (Certification, Sep 18)",
+      "READY_FOR_M07_OWNER_REVIEW (Sep 19)"
+    ]
+  },
+  "live_authority": {
+    "current_status": "CLOSED_OFF",
+    "authority_value": "ZERO",
+    "live_trading": false,
+    "broker_orders": false,
+    "control_mutation": false,
+    "status_after_phase2": "OWNER_DECISION_SEP_19_2026",
+    "prerequisite_for_escalation": "M07 owner approval + full certification + all gates PASS"
+  },
+  "risk_matrix_m01": {
+    "critical_risks": [
+      {
+        "id": "R01",
+        "risk": "Canary PASS lacks closure evidence",
+        "likelihood": 4,
+        "impact": 5,
+        "score": 20,
+        "severity": "CRITICAL",
+        "status": "BLOCKED",
+        "mitigation": "Gate 5 produces explicit CanaryRun evidence (timestamped, non-contradicted)",
+        "owner": "Guardian",
+        "unblock_condition": "Evidence closure required before M06"
+      },
+      {
+        "id": "R04",
+        "risk": "HP restart/sleep/clock jump",
+        "likelihood": 3,
+        "impact": 5,
+        "score": 15,
+        "severity": "CRITICAL",
+        "status": "OPEN",
+        "mitigation": "Gate 4 monitors heartbeat/clock, Gate 7 enforces freshness (300s), temporal ordering validated in Gate 6",
+        "owner": "HP + Guardian",
+        "unblock_condition": "HP integration tested at M05"
+      },
+      {
+        "id": "R02",
+        "risk": "BUY/SELL hash mismatch before integration",
+        "likelihood": 3,
+        "impact": 5,
+        "score": 15,
+        "severity": "CRITICAL",
+        "status": "OPEN",
+        "mitigation": "StrategyIdentityTuple frozen with BUY/SELL hashes, Gate 2 verifies match before M05",
+        "owner": "Guardian",
+        "unblock_condition": "Hash verification tested in M03"
+      }
+    ],
+    "high_risks": [
+      {
+        "id": "R03",
+        "risk": "UI/health mistaken for authority",
+        "likelihood": 2,
+        "impact": 5,
+        "score": 10,
+        "severity": "HIGH",
+        "status": "OPEN",
+        "mitigation": "Visual lock: Authority=ZERO on all screens, UI read-only enforced"
+      },
+      {
+        "id": "R05",
+        "risk": "Batch executes without APPROVED verdict",
+        "likelihood": 2,
+        "impact": 5,
+        "score": 10,
+        "severity": "HIGH",
+        "status": "OPEN",
+        "mitigation": "Authority=ZERO hardcoded, APPROVED requires all 8 gates PASS + compliance + tax + archive"
+      },
+      {
+        "id": "R06",
+        "risk": "Archive data corrupted in HP storage",
+        "likelihood": 2,
+        "impact": 5,
+        "score": 10,
+        "severity": "HIGH",
+        "status": "OPEN",
+        "mitigation": "Write-once to HP, immutable hash seals integrity, receipt confirms"
+      },
+      {
+        "id": "R07",
+        "risk": "Third-party skill dependencies",
+        "likelihood": 2,
+        "impact": 4,
+        "score": 8,
+        "severity": "HIGH",
+        "status": "OPEN",
+        "mitigation": "Lock all dependencies at M01 freeze, no version updates during M02–M06"
+      },
+      {
+        "id": "R08",
+        "risk": "Stale evidence treated as fresh",
+        "likelihood": 2,
+        "impact": 4,
+        "score": 8,
+        "severity": "HIGH",
+        "status": "OPEN",
+        "mitigation": "Gate 7 enforces truth_age < 300s, TruthBar displays age on UI"
+      }
+    ],
+    "medium_risks": [
+      {
+        "id": "R09",
+        "risk": "Batch data mutable after close",
+        "likelihood": 1,
+        "impact": 5,
+        "score": 5,
+        "severity": "MEDIUM",
+        "status": "OPEN",
+        "mitigation": "Closed_at marks immutability, database trigger enforces (UPDATE rejected)"
+      },
+      {
+        "id": "R10",
+        "risk": "Authority invariant bypassed in code",
+        "likelihood": 1,
+        "impact": 5,
+        "score": 5,
+        "severity": "MEDIUM",
+        "status": "OPEN",
+        "mitigation": "Code review verifies authority == ZERO hardcoded, no conditionals"
+      }
+    ]
+  },
+  "integration_matrix": {
+    "guardian_to_hp": {
+      "data_flow": "Gate 4 (MACHINE_HEALTH_AND_READINESS) receives MachineRoleTuple",
+      "inputs": ["heartbeat", "clock_offset", "fencing_token"],
+      "validation": "heartbeat < 60s, clock < 5s, token valid",
+      "fail_closed": "Any check fails → BLOCKED"
+    },
+    "guardian_to_batch": {
+      "data_flow": "GateDecisionTuple array (all 8 gates) to BatchVerdictTuple",
+      "inputs": ["gate_id", "verdict", "evidence_id", "event_time", "knowledge_time"],
+      "validation": "All 8 gates required, any BLOCKED → BLOCKED",
+      "fail_closed": "Missing gates (timeout) → BLOCKED"
+    },
+    "guardian_to_ui": {
+      "data_flow": "GuardianStateSnapshot (authority, gates, verdicts) to UI display",
+      "inputs": ["authority", "gates", "verdicts", "truth_age_seconds"],
+      "display": "All 8 gates + verdicts, Authority=ZERO lock visible",
+      "fail_closed": "Stale snapshot (> 300s) displayed with red warning"
+    },
+    "batch_to_hp": {
+      "data_flow": "ArchiveRecord → HP durable storage → DurableReceiptTuple",
+      "inputs": ["batch_id", "storage_path", "immutable_hash"],
+      "validation": "Write-once enforcement, receipt confirmation required",
+      "fail_closed": "Missing receipt → Archive status not VERIFIED"
+    },
+    "batch_to_ui": {
+      "data_flow": "BatchStatusSnapshot (verdict, alerts, report) to UI display",
+      "inputs": ["verdict_status", "alert_array", "report_summary"],
+      "display": "Batch status (APPROVED|BLOCKED), alert array, trade summary",
+      "fail_closed": "Missing snapshot displayed as "waiting" state"
+    },
+    "hp_to_ui": {
+      "data_flow": "MachineHealthSnapshot (health, heartbeat, fencing) to UI display",
+      "inputs": ["heartbeat", "clock_offset", "fencing_token_valid", "truth_age"],
+      "display": "Machine status (healthy/degraded), heartbeat, clock, truth_age",
+      "fail_closed": "Stale snapshot (> 300s) displayed with red indicator"
+    }
+  },
+  "timeline": {
+    "m01": {
+      "status": "COMPLETE",
+      "dates": "2026-09-07",
+      "deliverables": [
+        "FLIPFLOP_HQ_PHASE2_M01_ARCHITECTURE_CONTRACT_FINAL.md",
+        "PHASE2_M01_TO_M02_HANDOFF.md",
+        "PHASE2_SKILL_ROADMAP.md",
+        "M01_REGISTER_FROZEN.json"
+      ]
+    },
+    "m02": {
+      "status": "STARTING_SEP_8",
+      "dates": "2026-09-08 to 2026-09-11",
+      "workstream": "HP 24/7 Infrastructure",
+      "deliverables": [
+        "Heartbeat mechanism (< 60s)",
+        "Clock sync detection (< 5s)",
+        "Fencing token validation",
+        "Durable storage write-once + receipt"
+      ]
+    },
+    "m03": {
+      "status": "STARTING_SEP_8",
+      "dates": "2026-09-08 to 2026-09-12",
+      "workstream": "Guardian Enforcement",
+      "deliverables": [
+        "8 gates (SCHEMA → HASH → AUTHORITY → HEALTH → CANARY → CONSISTENCY → FRESHNESS → ARBITER)",
+        "4 frozen tuples",
+        "8 fail-closed constraints"
+      ]
+    },
+    "m04": {
+      "status": "STARTING_SEP_8",
+      "dates": "2026-09-08 to 2026-09-14",
+      "workstream": "NinjaTrader Batch + UI Design",
+      "deliverables": [
+        "Batch lifecycle (PENDING → PROCESSING → CLOSED → ARCHIVED)",
+        "Guardian verdict aggregation",
+        "UI (phone, tablet, desktop, truth bar)"
+      ]
+    },
+    "m05": {
+      "status": "STARTING_SEP_15",
+      "dates": "2026-09-15 to 2026-09-16",
+      "deliverables": [
+        "Guardian ↔ HP integration",
+        "Guardian ↔ Batch integration",
+        "Batch ↔ HP integration",
+        "All workstreams ↔ UI integration"
+      ]
+    },
+    "m06": {
+      "status": "STARTING_SEP_17",
+      "dates": "2026-09-17 to 2026-09-18",
+      "deliverables": [
+        "Code review (ultra-depth, authority invariant)",
+        "Security review (no escalation, no override)",
+        "Certification sign-off"
+      ]
+    },
+    "m07": {
+      "status": "STARTING_SEP_19",
+      "dates": "2026-09-19",
+      "deliverables": [
+        "Owner review",
+        "Evidence package handoff",
+        "Phase 2 readiness decision"
+      ]
+    }
+  },
+  "exit_criteria": {
+    "m01_freeze": {
+      "status": "COMPLETE",
+      "items": [
+        "Authority invariant locked (ZERO, LIVE=OFF, BROKER=NONE, MUTATION=NONE)",
+        "34 entities frozen (7 Guardian + 8 HP + 7 Batch + 12 UI)",
+        "31 tuples frozen (4 Guardian + 5 HP + 6 Batch + 10 UI + 6 cross)",
+        "25+ constraints frozen (8 Guardian + 6 HP + 8 Batch + 7 UI)",
+        "4 workstreams locked + ready for implementation",
+        "All frozen documents prepared (architecture contract, handoff, skill roadmap, register)"
+      ]
+    },
+    "m03_guardian": {
+      "status": "PENDING",
+      "items": [
+        "8/8 gates implemented",
+        "32 test cases passing (4 per gate)",
+        "Negative authority tests pass",
+        "Negative evidence tests pass",
+        "Integration with HP (Gate 4) tested",
+        "Integration with Batch tested",
+        "Integration with UI tested",
+        "Code review signed-off"
+      ]
+    },
+    "m02_hp": {
+      "status": "PENDING",
+      "items": [
+        "Heartbeat mechanism (< 60s) working",
+        "Clock sync (< 5s) working",
+        "Fencing token validation working",
+        "Restart detection working",
+        "Durable storage write-once enforced",
+        "Receipt generation + verification working",
+        "20 test cases passing",
+        "Integration with Guardian Gate 4 tested",
+        "Code review signed-off"
+      ]
+    },
+    "m04_batch_ui": {
+      "status": "PENDING",
+      "items": [
+        "Batch lifecycle (4 states) implemented",
+        "Guardian verdict aggregation (all 8 gates) working",
+        "Verdict logic (APPROVED = all conditions) enforced",
+        "Compliance bundle certification working",
+        "Archive write coordination (HP integration) working",
+        "UI (phone, tablet, desktop) implemented",
+        "Truth bar (age, stale warning) working",
+        "Authority=ZERO lock visible on all screens",
+        "24 Batch test cases passing",
+        "16 UI test cases passing",
+        "Code review signed-off"
+      ]
+    },
+    "m05_integration": {
+      "status": "PENDING",
+      "items": [
+        "Guardian ↔ HP checkpoint (heartbeat, clock, fencing)",
+        "Guardian ↔ Batch checkpoint (GateDecisionTuple array)",
+        "Guardian ↔ UI checkpoint (GuardianStateSnapshot)",
+        "Batch ↔ HP checkpoint (ArchiveRecord write + DurableReceiptTuple)",
+        "Batch ↔ UI checkpoint (BatchStatusSnapshot)",
+        "HP ↔ UI checkpoint (MachineHealthSnapshot)",
+        "All 6 integration checkpoints validated",
+        "Full merge (all 4 branches)",
+        "92+ test cases passing on merged master"
+      ]
+    },
+    "m06_certification": {
+      "status": "PENDING",
+      "items": [
+        "Code review (ultra-depth) sign-off",
+        "Authority invariant verified (no bypass paths)",
+        "Fail-closed constraints verified (all 25+)",
+        "Immutability verified (verdicts, evidence, batch data, archives)",
+        "Integration verified (all 6 checkpoints)",
+        "Security review sign-off",
+        "All critical risks mitigated (R01–R10)",
+        "Certification complete"
+      ]
+    },
+    "m07_owner_review": {
+      "status": "PENDING",
+      "items": [
+        "Evidence package reviewed (domains, tuples, constraints, tests)",
+        "Code review sign-off reviewed",
+        "Security review sign-off reviewed",
+        "Owner approval checklist signed",
+        "Phase 2 readiness certification issued",
+        "Ready for live authority decision"
+      ]
+    }
+  },
+  "sign_off": {
+    "domain_architect": {
+      "responsibility": "Froze domain models, verified authority invariant",
+      "date": "2026-09-07T23:59:59Z",
+      "status": "SIGNED_OFF"
+    },
+    "guardian_lead": {
+      "responsibility": "Reviews spec, owns M03 implementation",
+      "status": "READY_FOR_M03"
+    },
+    "hp_lead": {
+      "responsibility": "Owns M02 implementation",
+      "status": "READY_FOR_M02"
+    },
+    "batch_lead": {
+      "responsibility": "Owns M04 batch implementation",
+      "status": "READY_FOR_M04"
+    },
+    "ui_lead": {
+      "responsibility": "Owns M04 UI implementation",
+      "status": "READY_FOR_M04"
+    },
+    "technical_reviewer": {
+      "responsibility": "Signs off on code (M06 certification)",
+      "status": "PENDING_M06"
+    },
+    "security_architect": {
+      "responsibility": "Signs off on security (M06 certification)",
+      "status": "PENDING_M06"
+    },
+    "owner": {
+      "responsibility": "Reviews evidence, approves Phase 2 (M07)",
+      "status": "PENDING_M07"
+    }
+  },
+  "document_control": {
+    "classification": "Frozen Evidence Register",
+    "audience": "FlipFlop HQ Phase 2 Team",
+    "distribution": "Internal",
+    "change_authority": "Architect (corrections), Owner (major changes)",
+    "retention": "Permanent (audit trail)",
+    "freeze_date": "2026-09-07T23:59:59Z",
+    "status": "LOCKED_FOR_IMPLEMENTATION"
+  },
+  "final_status": {
+    "authority_invariant": "ZERO (HARD-LOCKED, NON-NEGOTIABLE)",
+    "failure_policy": "FAIL_CLOSED (stale/missing/contradicted blocks)",
+    "phase_2_readiness": "READY_FOR_IMPLEMENTATION_SEP_8_2026",
+    "critical_path": "M01 ✓ → M03 → M05 → M06 → M07",
+    "go_live_decision": "PENDING_M07_OWNER_REVIEW_SEP_19_2026"
+  }
+}

@@ -1,0 +1,43 @@
+================================================================================================================================
+FLIP FLOP X10.3C-R1.2A SESSION / HIGH-DETAIL OVERLAP AUDIT
+================================================================================================================================
+STATUS: PASS
+
+WHY R1.2 EXISTS
+TradingView Trade List exit times are 30-minute bar labels, not proven exact target-hit event timestamps.
+R1.2 maps the ET session anchor to ordered high-detail file windows before any post-target replay is attempted.
+
+INPUTS
+Target file: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\x10_3c_target_ceiling\runs\X10_3C_TARGET_WINNERS_20260808_062923.csv
+X10.3B audit: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\x10_3b_quant_core\runs\X10_3B_FILE_SCHEMA_AUDIT_20260808_062211.csv
+Rank>=2 authority files/windows: 5
+
+OWNED BLOCK TARGET COUNTS
+COVID_2020   target winners   4 | cap winners   0 | exact 30m overlap   0 | full 30m   0 | same-ET-date candidates   0
+AUG_2025     target winners   5 | cap winners   5 | exact 30m overlap   0 | full 30m   0 | same-ET-date candidates   0
+SEP_2025     target winners   2 | cap winners   2 | exact 30m overlap   0 | full 30m   0 | same-ET-date candidates   0
+
+2025 HIGH-DETAIL BLOCK
+Target winners in Aug/Sep 2025 windows:     7
+Route-cap target winners in those windows: 7
+Recovered exact 30m overlaps:              0
+Same-ET-date candidate matches:            0
+
+ALL TARGET WINNERS
+Exact 30m bar overlaps:                    0 / 1158
+Full 30m bar coverage:                     0 / 1158
+Same-ET-date candidate matches:            0 / 1158
+
+DIAGNOSIS: AUDIT_WINDOW_OR_TIMEZONE_MISMATCH_REQUIRES_FILE_LEVEL_REVIEW
+
+AUTHORITY RULE
+R1.2 does NOT claim an exact target-hit timestamp from TradingView.
+The next replay must detect the first ordered TBBO event that reaches/crosses the frozen target price inside the bar.
+Only after that detected event may post-target +1s/+5s/+30s/+1m/+5m continuation be measured.
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+================================================================================================================================

@@ -1,0 +1,63 @@
+==========================================================================================================================
+FLIP FLOP STAGE 3H.3 - PRE-ENTRY MICROSTRUCTURE TOXICITY ATLAS
+==========================================================================================================================
+STATUS: PASS
+ORDERED TBBO PRE-ENTRY ONLY
+HARD FREEZE: 5 SECONDS BEFORE ENTRY
+NO POST-ENTRY LEAKAGE
+NO THRESHOLD SEARCH
+NO CLASSIFIER TRAINING
+NO PINE CHANGE
+LIVE ROUTING LOCKED
+
+QUESTION
+Do the 19 sessions that remain toxic even under perfect direction have a measurable
+pre-entry microstructure fingerprint that differs from the 3 real winner sessions?
+
+FIXED TELEMETRY HORIZONS
+H300 = T-300s through T-5s
+H60  = T-60s  through T-5s
+H15  = T-15s  through T-5s
+
+FEATURE FAMILIES
+price displacement / range / finish location / path efficiency
+1-second path / realized movement / max jump / reversal count
+event intensity / internal event gaps
+median / p90 / p95 / max spread / spread widening
+locked-quote share / trade-vs-mid location
+cross-horizon direction, range, and spread ratios
+
+COVERAGE
+H300  | clean pass 14/22 | winner pass 1/3
+H60   | clean pass 14/22 | winner pass 1/3
+H15   | clean pass 14/22 | winner pass 1/3
+
+VERDICT
+PARTIAL_MICROSTRUCTURE_COVERAGE_DIAGNOSTIC_ONLY
+
+TOP FORENSIC FEATURE SEPARATION
+These are hypothesis rankings only. With only 3 winners, nothing below is a trading rule.
+XH__direction_agreement_60_15                    | delta   0.263 | sepAUC  0.632 | p  0.5584 | q  0.5584 | HIGHER_IN_TOXIC
+
+NON-NEGOTIABLE INTERPRETATION
+The labels are hindsight labels used only to map opportunity.
+The atlas may generate hypotheses but cannot promote a feature, threshold, model, Pine change, or quantity change.
+Any useful fingerprint must later survive fresh forward PREOPEN/ENTRY telemetry with frozen rules.
+
+OUTPUTS
+Coverage: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3\PREENTRY_MICROSTRUCTURE_COVERAGE.csv
+Feature matrix: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3\PREENTRY_MICROSTRUCTURE_FEATURE_MATRIX.csv
+Feature separation: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3\TOXIC_VS_WINNER_FEATURE_SEPARATION.csv
+Top toxic profiles: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3\TOP_TOXIC_MICROSTRUCTURE_PROFILES.csv
+Route summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3\ROUTE_LABEL_SUMMARY.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h3\FLIP_FLOP_STAGE3H3_PREENTRY_MICROSTRUCTURE_TOXICITY_ATLAS.json
+
+GATES
+Post-entry leakage: BLOCKED
+Threshold search: BLOCKED
+Classifier training: BLOCKED
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+==========================================================================================================================

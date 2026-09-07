@@ -1,0 +1,61 @@
+============================================================================================
+FLIP FLOP STAGE 2B - COVID 2020 SURGICAL REPLAY
+============================================================================================
+STATUS: PASS
+
+NO NEW DATA PURCHASED
+NO API KEY USED
+LIVE ROUTING LOCKED
+
+CONTROL
+Control hashes verified: 4
+TradingView BUY: entry 7396.5 | exit 7228.75 | net $-6,719.00
+TradingView SELL: entry 7396.0 | exit 7229.0 | net $6,671.00
+
+RAW NQM0 WINDOW
+Rows: 14,686
+Raw fields available: ts_recv, ts_event, rtype, publisher_id, instrument_id, action, side, depth, price, size, flags, ts_in_delta, sequence, bid_px_00, ask_px_00, bid_sz_00, ask_sz_00, bid_ct_00, ask_ct_00, symbol, ts_event_utc, ts_recv_utc, bid, ask, quote_state, spread_points, source_file
+Quote states: {'VALID': 14682, 'CROSSED': 4}
+
+LARGEST NO-TRADE GAP
+Gap: 851.835 seconds
+Last trade before gap: 2020-03-16 13:30:49.165263853+00:00 @ 7381.25
+First trade after gap: 2020-03-16 13:45:01+00:00 @ 7304.75 size 726
+
+ALIGNMENT
+Raw minus TradingView offset: -15.00 points
+Translated BUY entry: 7,381.50
+Translated BUY stop: 7,380.50
+Translated TradingView BUY exit: 7,213.75
+
+QUOTE REPAIR
+First valid/locked quote after resume: {'ts_recv': '2020-03-16T13:45:01.017526346+00:00', 'ts_event': '2020-03-16T13:45:01.014882989+00:00', 'rtype': 1, 'publisher_id': 1, 'instrument_id': 16908, 'action': 'T', 'side': 'B', 'depth': 0, 'price': 7304.75, 'size': 18, 'flags': 0, 'ts_in_delta': 33156, 'sequence': 4623306, 'bid_px_00': 7304.0, 'ask_px_00': 7304.75, 'bid_sz_00': 1, 'ask_sz_00': 18, 'bid_ct_00': 1, 'ask_ct_00': 1, 'symbol': 'NQM0', 'ts_event_utc': '2020-03-16T13:45:01.014882989+00:00', 'ts_recv_utc': '2020-03-16T13:45:01.017526346+00:00', 'bid': 7304.0, 'ask': 7304.75, 'quote_state': 'VALID', 'spread_points': 0.75, 'source_file': 'C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst', 'gap_seconds': 0.014882989}
+Crossed and missing quotes are excluded from executable-bid scenarios.
+
+TRADINGVIEW EXIT CHECK
+Exact translated exit traded: False
+Nearest actual trade: {'target': 7213.75, 'nearest_price': 7214.0, 'distance_points': 0.25, 'timestamp': '2020-03-16T13:54:28.469288177+00:00', 'size': 4.0}
+
+TWO-NQ FORENSIC FILL RANGE
+FIRST_POST_GAP_TRADE           exit 7304.75 | net $-3,079.00 | 2020-03-16T13:45:01+00:00
+FIRST_VALID_BID_AFTER_RESUME   exit 7304.0 | net $-3,109.00 | 2020-03-16T13:45:01.014882989+00:00
+WORST_TRADE_FIRST_250MS        exit 7272.75 | net $-4,359.00 | 2020-03-16T13:45:01.170858085+00:00
+WORST_TRADE_FIRST_1S           exit 7272.75 | net $-4,359.00 | 2020-03-16T13:45:01.170858085+00:00
+WORST_TRADE_FIRST_5S           exit 7272.75 | net $-4,359.00 | 2020-03-16T13:45:01.170858085+00:00
+TRADINGVIEW_TRANSLATED_EXIT    exit 7213.75 | net $-6,719.00 | None
+
+FILES CREATED
+Raw event slice: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\NQM0_1344_TO_1347_RAW_EVENTS.csv
+Window parquet: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\NQM0_1320_TO_1400_TBBO.parquet
+Fill scenarios: C:\FLIP_FLOP_HQ\02_VALIDATED\market_data\COVID_2020_03_16\surgical\COVID_FILL_SCENARIOS_2NQ.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage2\COVID_2020_03_16_STAGE2B_SURGICAL_REPLAY.json
+
+VERDICT GATES
+Control integrity: PASS
+Halt-gap detection: PASS
+Quote-quality classification: PASS
+Fill-range generation: PASS
+Pull tournament: BLOCKED pending one normal-session control
+Large-size scaling: BLOCKED
+Live routing: LOCKED
+============================================================================================

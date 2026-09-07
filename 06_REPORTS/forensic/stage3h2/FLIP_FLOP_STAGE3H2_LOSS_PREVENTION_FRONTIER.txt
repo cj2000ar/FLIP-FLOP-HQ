@@ -1,0 +1,72 @@
+====================================================================================================================
+FLIP FLOP STAGE 3H.2 - LOSS PREVENTION FRONTIER
+====================================================================================================================
+STATUS: PASS
+ORDERED TBBO / ONE-TICK / Q1 NORMALIZED
+NO NEW STRATEGY RULE
+NO PINE CHANGE
+NO QUANTITY AUTHORIZATION
+LIVE ROUTING LOCKED
+
+CORE ECONOMICS
+Sessions: 22
+Paired net: $-973.00
+Route-static net: $-484.00
+Perfect direction net: $-24.00
+Perfect BUY/SELL/SKIP net: $541.50
+Gross value of oracle winner sessions: $541.50
+Gross toxic loss even after perfect direction choice: $565.50
+Oracle winner sessions: 3
+Toxic sessions even with best direction: 19
+
+HOW LITTLE SKIP VALUE IS NEEDED AFTER PERFECT DIRECTION
+Perfect direction starts at: $-24.00
+Loss avoidance required to reach breakeven: $24.00
+That is 4.24% of the total $565.50 toxic-loss pool.
+If hindsight ranks toxic sessions perfectly, skipping the top 1 toxic session(s) reaches breakeven.
+
+WINNER DAMAGE
+Smallest real oracle winner: $30.50
+Median oracle winner: $195.50
+Largest oracle winner: $315.50
+A future SKIP detector must be judged by dollars preserved, not just classification accuracy.
+
+ROUTE-STATIC GAP TO PERFECT BUY/SELL/SKIP
+Total gap: $1,025.50
+Wrong-direction component: $345.00
+Should-have-skipped component: $680.50
+Other/correct-direction component: $0.00
+
+BREAKEVEN FRONTIER
+Retain  50% of winner dollars -> must avoid at least  52.12% of toxic-loss dollars.
+Retain  55% of winner dollars -> must avoid at least  47.33% of toxic-loss dollars.
+Retain  60% of winner dollars -> must avoid at least  42.55% of toxic-loss dollars.
+Retain  65% of winner dollars -> must avoid at least  37.76% of toxic-loss dollars.
+Retain  70% of winner dollars -> must avoid at least  32.97% of toxic-loss dollars.
+Retain  75% of winner dollars -> must avoid at least  28.18% of toxic-loss dollars.
+Retain  80% of winner dollars -> must avoid at least  23.40% of toxic-loss dollars.
+Retain  85% of winner dollars -> must avoid at least  18.61% of toxic-loss dollars.
+Retain  90% of winner dollars -> must avoid at least  13.82% of toxic-loss dollars.
+Retain  95% of winner dollars -> must avoid at least   9.03% of toxic-loss dollars.
+Retain 100% of winner dollars -> must avoid at least   4.24% of toxic-loss dollars.
+
+IMPORTANT
+This does NOT prove PREOPEN60, toxicity telemetry, or any classifier can achieve the frontier.
+It tells us exactly what future forward evidence must accomplish to create economic value.
+
+OUTPUTS
+Toxic ranking: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\TOXIC_SESSION_RANKING.csv
+Winner ranking: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\WINNER_VALUE_RANKING.csv
+Route-static decomposition: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\ROUTE_STATIC_GAP_DECOMPOSITION.csv
+Breakeven frontier: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\WINNER_RETENTION_TOXIC_AVOIDANCE_FRONTIER.csv
+Loss-prevention surface: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\ALGEBRAIC_LOSS_PREVENTION_SURFACE.csv
+Quantity ladder: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\loss_prevention_frontier\stage3h2\LOSS_PREVENTION_QUANTITY_1_TO_10.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h2\FLIP_FLOP_STAGE3H2_LOSS_PREVENTION_FRONTIER.json
+
+GATES
+New strategy rule: NOT CREATED
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity authorization: BLOCKED
+Live routing: LOCKED
+====================================================================================================================

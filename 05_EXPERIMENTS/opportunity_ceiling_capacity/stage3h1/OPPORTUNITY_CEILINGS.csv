@@ -1,0 +1,5 @@
+extra_ticks,paired_q1_each_net,route_static_q1_net,oracle_direction_q1_net,oracle_skip_q1_net,direction_ceiling_gain_vs_paired,skip_ceiling_gain_vs_direction,total_oracle_skip_gain_vs_paired,route_static_gap_to_oracle_skip
+0,-763.0,-379.0,76.0,546.5,839.0,470.5,1309.5,925.5
+1,-973.0,-484.0,-24.0,541.5,949.0,565.5,1514.5,1025.5
+2,-1183.0,-589.0,-124.0,536.5,1059.0,660.5,1719.5,1125.5
+4,-1603.0,-799.0,-324.0,526.5,1279.0,850.5,2129.5,1325.5

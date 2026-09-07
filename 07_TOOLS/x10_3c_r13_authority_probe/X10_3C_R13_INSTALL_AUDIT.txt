@@ -1,0 +1,17 @@
+﻿================================================================================================================
+FLIP FLOP X10.3C-R1.3 FILE-LEVEL AUTHORITY PROBE INSTALL
+================================================================================================================
+STATUS: PASS
+SHA256: A4C2D74A2DCA962CCC48A8DF788F36C87CC6C956F505C9A00E0C7F4658034488
+
+PURPOSE
+Explain why 7 known 2025 target winners map to zero X10.3B authority windows.
+Inspect the exact rank-2 files plus every file belonging to known owned data blocks.
+Detect timestamp mismatch, wrong-dataset selection, and likely schema aliases.
+
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Replay performed: NO
+Live routing: LOCKED
+================================================================================================================

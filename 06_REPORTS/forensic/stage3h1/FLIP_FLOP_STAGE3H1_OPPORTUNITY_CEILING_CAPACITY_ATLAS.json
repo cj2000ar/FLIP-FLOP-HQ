@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H1-OPPORTUNITY-CEILING-CAPACITY-ATLAS",
+  "created_utc": "2026-08-08T00:12:02.989830+00:00",
+  "source": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\double_stop_breakeven\\stage3f3_ordered_tbbo\\ORDERED_TBBO_BE_SESSION_RESULTS.csv",
+  "authority": "ORDERED_TBBO_STAGE3F3_BASELINE",
+  "interpretation": {
+    "oracle_direction": "Perfect hindsight choice of BUY or SELL. Upper bound only.",
+    "oracle_skip": "Perfect hindsight choice of BUY, SELL, or SKIP. Upper bound only.",
+    "quantity_ladder": "Linear arithmetic using observed per-contract outcomes. Does not model order-book market impact or fill degradation from larger size."
+  },
+  "one_tick_ceiling": {
+    "extra_ticks": 1.0,
+    "paired_q1_each_net": -973.0,
+    "route_static_q1_net": -484.0,
+    "oracle_direction_q1_net": -24.0,
+    "oracle_skip_q1_net": 541.5,
+    "direction_ceiling_gain_vs_paired": 949.0,
+    "skip_ceiling_gain_vs_direction": 565.5,
+    "total_oracle_skip_gain_vs_paired": 1514.5,
+    "route_static_gap_to_oracle_skip": 1025.5
+  },
+  "gates": {
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_authorization": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "normalized_baseline": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\opportunity_ceiling_capacity\\stage3h1\\AUTHORITATIVE_22_SESSION_BASELINE_NORMALIZED.csv",
+    "quantity_ladder": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\opportunity_ceiling_capacity\\stage3h1\\QUANTITY_1_TO_10_CAPACITY_LADDER.csv",
+    "session_oracle_map": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\opportunity_ceiling_capacity\\stage3h1\\ONE_TICK_ORACLE_SESSION_MAP.csv",
+    "opportunity_ceilings": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\opportunity_ceiling_capacity\\stage3h1\\OPPORTUNITY_CEILINGS.csv"
+  }
+}

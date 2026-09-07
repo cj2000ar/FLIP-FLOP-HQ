@@ -1,0 +1,66 @@
+============================================================================================================
+FLIP FLOP STAGE 3H.0 - PREOPEN 60-MINUTE HIGH-DETAIL COVERAGE AUDIT
+============================================================================================================
+STATUS: PASS
+NO STRATEGY RULE SCORED
+NO DEFAULT DETAILIZATION
+NO PINE CHANGE
+NO STAGE 4E CHANGE
+LIVE ROUTING LOCKED
+
+WINDOW
+Every frozen session T:
+Start = T - 60 minutes
+Freeze = T - 5 minutes
+Required: ordered TBBO continuity across the entire observation window
+
+COVERAGE
+2025-08-03 22:00:00+00:00    | WEEKLY             | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-04 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-04 22:00:00+00:00    | WEEKDAY_PREMIUM    | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-05 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-05 22:00:00+00:00    | WEEKDAY_PREMIUM    | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-06 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-07 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-07 22:00:00+00:00    | WEEKDAY_WEAK       | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-08 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-10 22:00:00+00:00    | WEEKLY             | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-11 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-12 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-12 22:00:00+00:00    | WEEKDAY_WEAK       | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-13 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-14 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-08-14 22:00:00+00:00    | WEEKDAY_WEAK       | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-08-15 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-09-14 22:00:00+00:00    | WEEKLY             | VALIDATED_SOURCE                | NO_OVERLAPPING_FILES
+2025-09-15 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-09-16 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-09-17 13:30:00+00:00    | NY                 | DIAGNOSTIC_ONLY_DEGRADED_SOURCE | PREOPEN60_CONTINUITY_FAIL
+2025-09-17 22:00:00+00:00    | WEEKDAY_WEAK       | DIAGNOSTIC_ONLY_DEGRADED_SOURCE | NO_OVERLAPPING_FILES
+2025-09-18 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+2025-09-19 13:30:00+00:00    | NY                 | VALIDATED_SOURCE                | PREOPEN60_CONTINUITY_FAIL
+
+COUNTS
+All sessions: 24
+Clean sessions: 22
+Clean validated preopen windows: 0
+Degraded sessions: 2
+Degraded validated preopen windows: 0
+
+VERDICT
+OWNED_RAW_PREOPEN60_COVERAGE_INSUFFICIENT_OBSERVER_UNTESTED
+
+NEXT AUTHORITY
+Do not score the observer from owned raw data. Preserve it as a future forward-data hypothesis.
+
+OUTPUTS
+Coverage audit: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preopen60_observer\stage3h0\PREOPEN60_COVERAGE_AUDIT.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h0\FLIP_FLOP_STAGE3H0_PREOPEN60_COVERAGE_AUDIT.json
+
+GATES
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity change: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+============================================================================================================

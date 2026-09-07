@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "text_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3d\\FLIP_FLOP_STAGE3D_PROOF_AWARE_LEAK_AUDIT.txt",
+  "json_report": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3d\\FLIP_FLOP_STAGE3D_PROOF_AWARE_LEAK_AUDIT.json",
+  "verdict": "GENERIC_SURVIVOR_GIVEBACK_RESEARCH_REJECTED_NO_CORRECTED_POOL",
+  "live_routing": "LOCKED"
+}

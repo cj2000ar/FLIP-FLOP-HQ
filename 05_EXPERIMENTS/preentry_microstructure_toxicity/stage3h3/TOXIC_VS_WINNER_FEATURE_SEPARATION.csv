@@ -1,0 +1,2 @@
+feature,n_toxic,n_winner,toxic_mean,winner_mean,toxic_median,winner_median,mean_difference_toxic_minus_winner,median_difference_toxic_minus_winner,cliffs_delta_toxic_vs_winner,abs_cliffs_delta,auc_toxic_positive,auc_separation,exact_permutation_p,direction_if_researched_later,bh_q_value,hypothesis_priority_score
+XH__direction_agreement_60_15,19,3,0.2631578947368421,0.0,0.0,0.0,0.2631578947368421,0.0,0.2631578947368421,0.2631578947368421,0.631578947368421,0.631578947368421,0.5584415584415584,HIGHER_IN_TOXIC,0.5584415584415584,0.16620498614958448

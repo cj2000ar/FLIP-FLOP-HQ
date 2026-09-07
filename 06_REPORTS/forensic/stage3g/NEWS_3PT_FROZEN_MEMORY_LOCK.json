@@ -1,0 +1,28 @@
+{
+  "status": "LOCKED",
+  "created_utc": "2026-08-07T23:18:52.818443+00:00",
+  "fallback_control": {
+    "version": "V3.6.72",
+    "historical_sessions": 2583,
+    "combined_control_net": 294276.0,
+    "pair_profit_factor": 2.877,
+    "positive_years": "7/7"
+  },
+  "one_account_research": {
+    "route_static_1tick_net": 36631.5,
+    "rf_d8_edge_60_1tick_net": 33289.5,
+    "stage4e_status": "UNCHANGED"
+  },
+  "closed_branch": {
+    "breakeven": "REVERT_TO_FROZEN_CONTROL_NO_BE",
+    "stage3f3_sha256": "ab4990483703fd777cfd2d4c4a93f8feca94a59ec750b882c8633ce427b0aea0"
+  },
+  "news_observer": {
+    "buffer_points": 3.0,
+    "range_minutes": 10,
+    "trigger_minutes": 10,
+    "reversal": "PROHIBITED",
+    "direct_order": "NOT_TESTED",
+    "authority": "ORDERED_TBBO_ONLY"
+  }
+}

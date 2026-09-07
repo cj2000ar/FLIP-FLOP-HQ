@@ -1,0 +1,12 @@
+{
+  "status": "OPENED_AND_SCORED_ONCE",
+  "opened_utc": "2026-08-07T01:40:28.631922+00:00",
+  "dna_sha256": "f4e0ebe4d8fba7e316654279830670793fc115c4ba89babcc52f5fcb7edd7b1c",
+  "model_sha256": "4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e",
+  "holdout_identity_sha256": "a1c6ea4e36d88e1a87bd7f492d81736f4f064aa7112dac887c74f38eae06f0d5",
+  "holdout_rows": 240,
+  "champion_candidate_id": "RF_D8_EDGE_60",
+  "edge_threshold": 60.0,
+  "decision": "HOLDOUT_MIXED_RESEARCH_ONLY",
+  "live_routing": "LOCKED"
+}

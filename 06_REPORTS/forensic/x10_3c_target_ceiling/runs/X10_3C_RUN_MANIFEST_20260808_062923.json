@@ -1,0 +1,12 @@
+{
+  "run": "20260808_062923",
+  "pair_sync_sha256": "2F09CCA2651652572C47EA615A830D509E6E433BA7AEA1AD38AFDA951663DB0F",
+  "summary": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_TARGET_CEILING_SUMMARY_20260808_062923.txt",
+  "selection_audit": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_EXPORT_PAIR_SELECTION_20260808_062923.csv",
+  "targets": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_TARGET_WINNERS_20260808_062923.csv",
+  "year_route": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_YEAR_ROUTE_CEILING_20260808_062923.csv",
+  "ny_compression": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_NY_COMPRESSION_20260808_062923.csv",
+  "overlap": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_HIGH_DETAIL_TARGET_OVERLAP_20260808_062923.csv",
+  "agent_board": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\runs\\X10_3C_AGENT_BOARD_20260808_062923.csv",
+  "ledger": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\x10_3c_target_ceiling\\state\\X10_3C_RESULTS_LEDGER.csv"
+}

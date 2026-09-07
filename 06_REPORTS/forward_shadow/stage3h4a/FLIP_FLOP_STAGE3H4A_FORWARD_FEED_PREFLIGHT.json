@@ -1,0 +1,134 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H4A-FORWARD-FEED-PREFLIGHT",
+  "created_utc": "2026-08-08T01:02:41.090786+00:00",
+  "python_packages": {
+    "python": "C:\\FLIP_FLOP_HQ\\.venv\\Scripts\\python.exe",
+    "status": "PASS",
+    "packages": {
+      "databento": true,
+      "dbn": false,
+      "ib_insync": false,
+      "websocket": false,
+      "websockets": true,
+      "requests": true
+    },
+    "stderr": ""
+  },
+  "credential_presence_only": {
+    "DATABENTO_API_KEY": {
+      "present": false,
+      "value_printed": false
+    },
+    "DBN_API_KEY": {
+      "present": false,
+      "value_printed": false
+    },
+    "TRADOVATE_ACCESS_TOKEN": {
+      "present": false,
+      "value_printed": false
+    },
+    "TRADOVATE_TOKEN": {
+      "present": false,
+      "value_printed": false
+    },
+    "IBKR_HOST": {
+      "present": false,
+      "value_printed": false
+    },
+    "IBKR_PORT": {
+      "present": false,
+      "value_printed": false
+    },
+    "RITHMIC_USER": {
+      "present": false,
+      "value_printed": false
+    }
+  },
+  "running_processes": {
+    "NinjaTrader": [],
+    "IBKR_TWS": [],
+    "Tradovate": [],
+    "Rithmic": []
+  },
+  "known_install_paths": [
+    {
+      "path": "C:\\Program Files\\NinjaTrader 8",
+      "exists": true
+    },
+    {
+      "path": "C:\\Program Files (x86)\\NinjaTrader 8",
+      "exists": false
+    },
+    {
+      "path": "C:\\Users\\cj200\\Documents\\NinjaTrader 8",
+      "exists": false
+    },
+    {
+      "path": "C:\\Jts",
+      "exists": false
+    },
+    {
+      "path": "C:\\Users\\cj200\\Jts",
+      "exists": false
+    }
+  ],
+  "quant_lab_source_mentions": [
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage2\\COVID_2020_03_16_INGEST_AND_REPLAY.json",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 9783
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage2\\COVID_2020_03_16_INGEST_AND_REPLAY.txt",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 1930
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage2\\COVID_2020_03_16_STAGE2B_SURGICAL_REPLAY.json",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 7620
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage2\\COVID_2020_03_16_STAGE2B_SURGICAL_REPLAY.txt",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 3705
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3\\FLIP_FLOP_STAGE3B_DUAL_BLOCK_INGEST.json",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 14681
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\06_REPORTS\\forensic\\stage3\\FLIP_FLOP_STAGE3B_DUAL_BLOCK_INGEST.txt",
+      "sources_mentioned": [
+        "databento"
+      ],
+      "file_size": 2263
+    }
+  ],
+  "security": {
+    "credential_values_printed": false,
+    "api_calls_made": false,
+    "broker_connections_made": false,
+    "market_data_downloaded": false,
+    "orders_placed": false
+  },
+  "gates": {
+    "live_routing": "LOCKED",
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_change": "BLOCKED"
+  },
+  "recommended_adapter_path": "NINJATRADER_LOCAL_ADAPTER_CANDIDATE"
+}

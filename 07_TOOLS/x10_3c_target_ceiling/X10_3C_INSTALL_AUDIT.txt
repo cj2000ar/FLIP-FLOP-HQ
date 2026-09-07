@@ -1,0 +1,27 @@
+﻿================================================================================================================
+FLIP FLOP X10.3C TARGET CEILING AUTOPSY INSTALL
+================================================================================================================
+STATUS: PASS
+Installed to: C:\FLIP_FLOP_HQ\07_TOOLS\x10_3c_target_ceiling
+Target Ceiling Engine SHA256: 2DDA635044B8AFF57C048FDE652530F44D23ABAC6E9008F1BAE88DC6F7F01AE7
+Frozen V3.6.72 modified: NO
+X10.2 modified: NO
+Target geometry modified: NO
+Live routing: LOCKED
+Notepad auto-open: ENABLED
+
+ACTIVE AGENTS
+QUANT_MATH_AGENT
+RESULTS_ORGANIZER
+TARGET_CEILING_AGENT
+TV_PATH_AUTHORITY_AGENT
+HIGH_DETAIL_OVERLAP_AGENT
+GOVERNOR
+
+ARMED NEXT
+POST_TARGET_REPLAY_AGENT
+
+NEXT
+Run:
+C:\FLIP_FLOP_HQ\07_TOOLS\x10_3c_target_ceiling\RUN_X10_3C_TARGET_CEILING.ps1
+================================================================================================================

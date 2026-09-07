@@ -1,0 +1,48 @@
+================================================================================
+FLIP FLOP COVID 2020 TICK INGEST + PRELIMINARY REPLAY
+================================================================================
+STATUS: PASS
+CASE: FF-STRESS-COVID-2020-03-16
+
+SOURCE INTEGRITY
+ZIP: C:\FLIP_FLOP_HQ\01_INBOX\market_data\raw\COVID_2020_03_16\DATABENTO_COVID_2020_03_16_c77e649a361f.zip
+ZIP SHA-256: c77e649a361fd536e6ac482bca66d4a308ca3b402898f5daf2ca36aa1103ba42
+DBN files decoded: 12
+Manifest hashes: 0 / 0 verified
+
+TRADINGVIEW CONTROL
+BUY  entry 7396.5 | exit 7228.75 | net $-6,719.00 | qty 2
+SELL entry 7396.0 | exit 7229.0 | net $6,671.00 | qty 2
+
+ACTIVE CONTRACT
+Selected: NQM0
+Opening volume: 23,191 | opening trades: 14,658
+
+OPENING 30-MINUTE TBBO
+Trades: 14,658 | volume: 23,191
+Low: 7044.75 | high: 7381.25 | range: 336.50 points
+Median spread: 1.5 | P95 spread: 4.5 | max spread: 14.5
+
+CONTINUOUS-TO-RAW ALIGNMENT
+TradingView midpoint: 7396.25
+First raw trade at/after 13:30 UTC: 7381.25
+Estimated raw minus TradingView offset: -15.00 points
+
+ONE-POINT STOP REPLAY
+BUY raw stop: 7380.50
+First BUY stop cross: {'ts_event': '2020-03-16T13:45:01+00:00', 'trade_price': 7304.75, 'bid': 7366.75, 'ask': 7297.0, 'executable_price': 7366.75, 'level': 7380.5, 'overshoot_points': 13.75, 'size': 726}
+SELL raw stop: 7382.00
+First SELL stop cross: NOT CROSSED
+
+VERDICT GATES
+Source integrity: PASS
+DBN decode: PASS
+Active contract identification: PASS
+Pull tournament: BLOCKED until report review and a normal-session control
+Large-size scaling: BLOCKED
+Live routing: LOCKED
+
+This is a preliminary raw-data forensic pass. It does not yet declare the
+$6,719 TradingView result valid or invalid. We must interpret the selected
+contract, continuous-series offset, TBBO chronology, and fill assumptions.
+================================================================================

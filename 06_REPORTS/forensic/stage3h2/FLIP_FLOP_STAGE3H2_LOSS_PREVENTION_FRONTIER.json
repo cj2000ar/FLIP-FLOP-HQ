@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3H2-LOSS-PREVENTION-FRONTIER",
+  "created_utc": "2026-08-08T00:19:14.922474+00:00",
+  "authority": "ORDERED_TBBO_STAGE3H1_ONE_TICK_NORMALIZED_Q1",
+  "core": {
+    "sessions": 22,
+    "paired_net_pc": -973.0,
+    "route_static_net_pc": -484.0,
+    "oracle_direction_net_pc": -24.0,
+    "oracle_skip_net_pc": 541.5,
+    "gross_oracle_winner_value_pc": 541.5,
+    "gross_toxic_loss_even_with_best_direction_pc": 565.5,
+    "oracle_winner_sessions": 3,
+    "toxic_sessions_even_with_best_direction": 19
+  },
+  "breakeven_from_direction_oracle": {
+    "starting_net_pc": -24.0,
+    "avoidable_dollars_needed_pc": 24.0,
+    "fraction_of_total_toxic_loss_needed": 0.042440318302387266,
+    "minimum_top_toxic_sessions_if_hindsight_ranked": 1
+  },
+  "winner_damage": {
+    "smallest_winner_pc": 30.5,
+    "median_winner_pc": 195.5,
+    "largest_winner_pc": 315.5
+  },
+  "route_static_gap": {
+    "total_gap_to_oracle_skip_pc": 1025.5,
+    "wrong_direction_component_pc": 345.0,
+    "should_skip_component_pc": 680.5,
+    "correct_direction_component_pc": 0.0
+  },
+  "interpretation": [
+    "All oracle quantities are hindsight ceilings, not tradable signals.",
+    "The frontier quantifies what a future pre-entry classifier must preserve and avoid.",
+    "No PREOPEN60 feature is scored because authoritative historical preopen coverage is absent.",
+    "Quantity rows are linear arithmetic only and do not authorize larger live size."
+  ],
+  "gates": {
+    "new_strategy_rule": "NOT_CREATED",
+    "pine_modification": "BLOCKED",
+    "stage4e_modification": "BLOCKED",
+    "quantity_authorization": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "toxic_ranking": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\TOXIC_SESSION_RANKING.csv",
+    "winner_ranking": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\WINNER_VALUE_RANKING.csv",
+    "route_static_decomposition": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\ROUTE_STATIC_GAP_DECOMPOSITION.csv",
+    "breakeven_frontier": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\WINNER_RETENTION_TOXIC_AVOIDANCE_FRONTIER.csv",
+    "loss_prevention_surface": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\ALGEBRAIC_LOSS_PREVENTION_SURFACE.csv",
+    "quantity_ladder": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\loss_prevention_frontier\\stage3h2\\LOSS_PREVENTION_QUANTITY_1_TO_10.csv"
+  }
+}

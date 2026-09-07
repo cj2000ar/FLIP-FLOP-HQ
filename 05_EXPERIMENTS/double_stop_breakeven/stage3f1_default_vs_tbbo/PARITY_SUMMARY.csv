@@ -1,0 +1,2 @@
+clean_sessions,default_double_stops,default_targets,raw_double_stops,raw_targets,raw_unresolved,outcome_match_rate,target_preservation_rate,default_net,raw_baseline_net,verdict
+22,16,6,19,1,2,0.6363636363636364,0.0,1016.0,-2127.0,BASELINE_PARITY_FAIL_STAGE3F_BE_VERDICT_SUSPENDED

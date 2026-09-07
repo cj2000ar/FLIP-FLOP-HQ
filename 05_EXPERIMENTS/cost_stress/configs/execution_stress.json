@@ -1,0 +1,43 @@
+{
+  "status": "ACTIVE_AFTER_BASELINE_REPLAY",
+  "slippage_ticks_per_fill": [
+    1,
+    2,
+    4,
+    8,
+    12
+  ],
+  "latency_ms": [
+    0,
+    50,
+    100,
+    250,
+    500,
+    1000
+  ],
+  "spread_ticks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "missed_fill_scenarios": [
+    "none",
+    "buy_entry_missed",
+    "sell_entry_missed",
+    "buy_exit_delayed",
+    "sell_exit_delayed"
+  ],
+  "quantities_per_worker": [
+    1,
+    2,
+    4,
+    5,
+    10
+  ],
+  "rules": [
+    "No size scaling promotion before one- and two-contract replay passes",
+    "Separate-account survival is scored independently",
+    "Pair profit cannot hide worker liquidation"
+  ]
+}

@@ -1,0 +1,26 @@
+FLIP FLOP MARKET DATA CANONICAL SCHEMA
+======================================
+
+Required normalized columns:
+- timestamp_utc : timezone-aware UTC timestamp
+- contract      : actual NQ futures contract symbol, not NQ1!
+- price         : last trade price or one-second close
+- bid           : best bid, required for Tier A
+- ask           : best ask, required for Tier A
+- size          : trade size, required for Tier A/B
+- source_file   : immutable preserved raw-file path
+- quality_tier  : A, B, or C
+
+QUALITY
+-------
+Tier A: tick trades + bid/ask + size
+Tier B: tick trades + size, no bid/ask
+Tier C: one-second contract-specific bars
+
+DO NOT
+------
+- Do not edit raw provider files.
+- Do not merge contracts manually.
+- Do not label NQ1! as an actual tradable contract.
+- Do not guess timezone or timestamp format.
+- Do not run the pull tournament before coverage and rollover validation.

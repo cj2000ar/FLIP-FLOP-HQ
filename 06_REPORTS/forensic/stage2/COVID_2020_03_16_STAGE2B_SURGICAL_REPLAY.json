@@ -1,0 +1,236 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STRESS-COVID-2020-03-16-STAGE2B",
+  "created_utc": "2026-08-06T05:31:42.998550+00:00",
+  "control_hashes_verified": 4,
+  "source_files": [
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst",
+      "sha256": "09752b2571a02de3adfd7df8f0e704504da5199a9732d19caab3933ed3b35861",
+      "bytes": 5626873
+    },
+    {
+      "path": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200317.tbbo.NQM0.dbn.zst",
+      "sha256": "99ba47437c2102a7f2a171e1d78970bb2924891ea4ca28872394da75dd9dfe15",
+      "bytes": 7748435
+    }
+  ],
+  "raw_fields_available": [
+    "ts_recv",
+    "ts_event",
+    "rtype",
+    "publisher_id",
+    "instrument_id",
+    "action",
+    "side",
+    "depth",
+    "price",
+    "size",
+    "flags",
+    "ts_in_delta",
+    "sequence",
+    "bid_px_00",
+    "ask_px_00",
+    "bid_sz_00",
+    "ask_sz_00",
+    "bid_ct_00",
+    "ask_ct_00",
+    "symbol",
+    "ts_event_utc",
+    "ts_recv_utc",
+    "bid",
+    "ask",
+    "quote_state",
+    "spread_points",
+    "source_file"
+  ],
+  "event_window": {
+    "start": "2020-03-16T13:20:00+00:00",
+    "end": "2020-03-16T14:00:00+00:00",
+    "rows": 14686,
+    "quote_state_counts": {
+      "VALID": 14682,
+      "CROSSED": 4
+    }
+  },
+  "largest_no_trade_gap": {
+    "seconds": 851.834736147,
+    "last_trade_before_gap": {
+      "ts_recv": "2020-03-16T13:30:49.165472656+00:00",
+      "ts_event": "2020-03-16T13:30:49.165263853+00:00",
+      "rtype": 1,
+      "publisher_id": 1,
+      "instrument_id": 16908,
+      "action": "T",
+      "side": "B",
+      "depth": 0,
+      "price": 7381.25,
+      "size": 1,
+      "flags": 0,
+      "ts_in_delta": 18141,
+      "sequence": 4472776,
+      "bid_px_00": 7366.75,
+      "ask_px_00": 7381.25,
+      "bid_sz_00": 1,
+      "ask_sz_00": 1216,
+      "bid_ct_00": 1,
+      "ask_ct_00": 126,
+      "symbol": "NQM0",
+      "ts_event_utc": "2020-03-16T13:30:49.165263853+00:00",
+      "ts_recv_utc": "2020-03-16T13:30:49.165472656+00:00",
+      "bid": 7366.75,
+      "ask": 7381.25,
+      "quote_state": "VALID",
+      "spread_points": 14.5,
+      "source_file": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst",
+      "gap_seconds": 3.04391887
+    },
+    "first_trade_after_gap": {
+      "ts_recv": "2020-03-16T13:45:01.011443995+00:00",
+      "ts_event": "2020-03-16T13:45:01+00:00",
+      "rtype": 1,
+      "publisher_id": 1,
+      "instrument_id": 16908,
+      "action": "T",
+      "side": "N",
+      "depth": 0,
+      "price": 7304.75,
+      "size": 726,
+      "flags": 0,
+      "ts_in_delta": 25520,
+      "sequence": 4623172,
+      "bid_px_00": 7366.75,
+      "ask_px_00": 7297.0,
+      "bid_sz_00": 2,
+      "ask_sz_00": 62,
+      "bid_ct_00": 1,
+      "ask_ct_00": 5,
+      "symbol": "NQM0",
+      "ts_event_utc": "2020-03-16T13:45:01+00:00",
+      "ts_recv_utc": "2020-03-16T13:45:01.011443995+00:00",
+      "bid": 7366.75,
+      "ask": 7297.0,
+      "quote_state": "CROSSED",
+      "spread_points": -69.75,
+      "source_file": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst",
+      "gap_seconds": 851.834736147
+    },
+    "resume_time": "2020-03-16T13:45:01+00:00"
+  },
+  "continuous_alignment": {
+    "tradingview_buy_entry": 7396.5,
+    "tradingview_sell_entry": 7396.0,
+    "tradingview_mid": 7396.25,
+    "first_raw_trade_at_entry": 7381.25,
+    "raw_minus_tv_offset": -15.0,
+    "raw_buy_entry": 7381.5,
+    "raw_sell_entry": 7381.0,
+    "raw_buy_stop": 7380.5,
+    "raw_sell_stop": 7382.0,
+    "translated_tradingview_buy_exit": 7213.75
+  },
+  "stop_chronology": {
+    "first_buy_stop_trade_cross": {
+      "ts_recv": "2020-03-16T13:45:01.011443995+00:00",
+      "ts_event": "2020-03-16T13:45:01+00:00",
+      "rtype": 1,
+      "publisher_id": 1,
+      "instrument_id": 16908,
+      "action": "T",
+      "side": "N",
+      "depth": 0,
+      "price": 7304.75,
+      "size": 726,
+      "flags": 0,
+      "ts_in_delta": 25520,
+      "sequence": 4623172,
+      "bid_px_00": 7366.75,
+      "ask_px_00": 7297.0,
+      "bid_sz_00": 2,
+      "ask_sz_00": 62,
+      "bid_ct_00": 1,
+      "ask_ct_00": 5,
+      "symbol": "NQM0",
+      "ts_event_utc": "2020-03-16T13:45:01+00:00",
+      "ts_recv_utc": "2020-03-16T13:45:01.011443995+00:00",
+      "bid": 7366.75,
+      "ask": 7297.0,
+      "quote_state": "CROSSED",
+      "spread_points": -69.75,
+      "source_file": "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw\\COVID_2020_03_16\\EXTRACTED_c77e649a361f\\glbx-mdp3-20200316.tbbo.NQM0.dbn.zst",
+      "gap_seconds": 851.834736147
+    },
+    "first_sell_stop_trade_cross": null
+  },
+  "tradingview_exit_market_check": {
+    "exact_translated_exit_trade_found": false,
+    "first_exact_trade": null,
+    "nearest_trade": {
+      "target": 7213.75,
+      "nearest_price": 7214.0,
+      "distance_points": 0.25,
+      "timestamp": "2020-03-16T13:54:28.469288177+00:00",
+      "size": 4.0
+    }
+  },
+  "two_nq_fill_scenarios": [
+    {
+      "scenario": "FIRST_POST_GAP_TRADE",
+      "exit_price": 7304.75,
+      "timestamp": "2020-03-16T13:45:01+00:00",
+      "estimated_buy_net_2_nq": -3079.0,
+      "note": "Earliest NQM0 TBBO trade after the largest no-trade gap."
+    },
+    {
+      "scenario": "FIRST_VALID_BID_AFTER_RESUME",
+      "exit_price": 7304.0,
+      "timestamp": "2020-03-16T13:45:01.014882989+00:00",
+      "estimated_buy_net_2_nq": -3109.0,
+      "note": "First non-crossed, non-missing best bid carried by a TBBO trade event."
+    },
+    {
+      "scenario": "WORST_TRADE_FIRST_250MS",
+      "exit_price": 7272.75,
+      "timestamp": "2020-03-16T13:45:01.170858085+00:00",
+      "estimated_buy_net_2_nq": -4359.0,
+      "note": "Stress case using the lowest trade during the first 250 milliseconds."
+    },
+    {
+      "scenario": "WORST_TRADE_FIRST_1S",
+      "exit_price": 7272.75,
+      "timestamp": "2020-03-16T13:45:01.170858085+00:00",
+      "estimated_buy_net_2_nq": -4359.0,
+      "note": "Stress case using the lowest trade during the first second."
+    },
+    {
+      "scenario": "WORST_TRADE_FIRST_5S",
+      "exit_price": 7272.75,
+      "timestamp": "2020-03-16T13:45:01.170858085+00:00",
+      "estimated_buy_net_2_nq": -4359.0,
+      "note": "Stress case using the lowest trade during the first five seconds."
+    },
+    {
+      "scenario": "TRADINGVIEW_TRANSLATED_EXIT",
+      "exit_price": 7213.75,
+      "timestamp": null,
+      "estimated_buy_net_2_nq": -6719.0,
+      "note": "TradingView BUY exit translated into the raw NQM0 price scale."
+    }
+  ],
+  "limitations": [
+    "TBBO carries the BBO immediately before each trade, not every quote update.",
+    "A historical stop-market fill after a halt cannot be known with certainty from TBBO alone.",
+    "Scenario P&L is a forensic range, not a guaranteed broker fill.",
+    "No quantity scaling or live routing is approved."
+  ],
+  "gates": {
+    "control_integrity": "PASS",
+    "raw_dbn_field_audit": "PASS",
+    "halt_gap_detection": "PASS",
+    "quote_quality_classification": "PASS",
+    "fill_range_generation": "PASS",
+    "pull_tournament": "BLOCKED_PENDING_NORMAL_SESSION_CONTROL",
+    "large_size_scaling": "BLOCKED",
+    "live_routing": "LOCKED"
+  }
+}

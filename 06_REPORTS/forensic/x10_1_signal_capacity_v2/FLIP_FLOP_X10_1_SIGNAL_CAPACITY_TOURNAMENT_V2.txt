@@ -1,0 +1,55 @@
+============================================================================================================================
+FLIP FLOP X10.1 — SIGNAL CAPACITY TOURNAMENT V2
+============================================================================================================================
+STATUS: PASS
+SYNC: PAP-FWD-S2W1-S100-W80-P80-K80-R06
+2,585 BUY/SELL sessions aligned.
+
+SIGNAL
+Frozen from 2020-2023 DEVELOPMENT ONLY:
+NY=SELL | WEEKLY=BUY | PREMIUM=BUY
+WEAK is not directionally scaled because its preferred side is unstable across eras.
+
+PRIMARY KILL-GATE RESULT
+NO MAIN CHALLENGER PASSES THE FULL PRIMARY GATE.
+Reason: the predeclared requirement 'worst rolling 100 active sessions > $0 under alpha=.35' fails even at Q1.
+This gate is preserved. It is NOT relaxed after seeing the result.
+
+DIAGNOSTIC RANKING (PRIMARY ROLLING-100 GATE EXCLUDED ONLY FOR DIAGNOSIS, NOT PROMOTION)
+A CURRENT STRONG-Q / WEAK-1        | max diagnostic Q6 | base $874,880.00 PF 2.956 DD $6,824.00 | alpha .35 $399,230.00 PF 1.566 DD $27,446.00 | net/DD 14.55
+B CORE-TIER                        | max diagnostic Q6 | base $833,430.00 PF 3.087 DD $6,704.00 | alpha .35 $405,450.00 PF 1.642 DD $22,650.00 | net/DD 17.90
+C SIGNAL-SCALE                     | max diagnostic Q6 | base $538,517.50 PF 3.014 DD $7,276.50 | alpha .35 $300,692.50 PF 1.719 DD $15,036.50 | net/DD 20.00
+
+Q6 HEAD-TO-HEAD
+A CURRENT STRONG-Q / WEAK-1
+   BASE      $ 874,880.00 PF 2.956 DD $  6,824.00
+   alpha .35 $ 399,230.00 PF 1.566 DD $ 27,446.00
+   alpha .50 $ 195,380.00 PF 1.239 DD $ 58,367.00
+   alpha .75 $-144,370.00 PF 0.856 DD $279,603.00
+B CORE-TIER
+   BASE      $ 833,430.00 PF 3.087 DD $  6,704.00
+   alpha .35 $ 405,450.00 PF 1.642 DD $ 22,650.00
+   alpha .50 $ 222,030.00 PF 1.303 DD $ 45,554.00
+   alpha .75 $ -83,670.00 PF 0.907 DD $218,758.00
+C SIGNAL-SCALE
+   BASE      $ 538,517.50 PF 3.014 DD $  7,276.50
+   alpha .35 $ 300,692.50 PF 1.719 DD $ 15,036.50
+   alpha .50 $ 198,767.50 PF 1.403 DD $ 26,070.00
+   alpha .75 $  28,892.50 PF 1.046 DD $ 89,838.50
+
+THE SURPRISE
+At Q6, SIGNAL-SCALE has lower headline base net, but under size-dependent execution stress it has:
+- the highest PF of the three main challengers at alpha .35 and .50
+- the lowest drawdown of the three at alpha .35 and .50
+- positive net even at tested alpha .75, where CURRENT and CORE-TIER are negative
+
+INTERPRETATION
+Signal scaling is behaving like an execution-footprint reducer: fewer large contracts are placed on the historically weaker side.
+That does NOT prove it is a tradable winner. It earns a forward shadow slot.
+
+CHESS MOVE
+Freeze SIGNAL-SCALE as a new forward shadow challenger.
+Keep CURRENT and CORE-TIER as controls.
+Do not modify V3.6.72 and do not authorize Q6 or Q10 live.
+Fresh forward evidence must decide whether the signal advantage survives outside this consumed history.
+============================================================================================================================

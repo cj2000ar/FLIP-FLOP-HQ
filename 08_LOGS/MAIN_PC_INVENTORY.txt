@@ -1,0 +1,84 @@
+﻿============================================================
+FLIP FLOP MAIN PC QUANT LAB INVENTORY
+Generated: 2026-08-05 21:29:39
+============================================================
+
+LAB ROOT
+C:\FLIP_FLOP_HQ
+
+WINDOWS
+Name: Microsoft Windows 11 Pro
+Version: 10.0.26200
+Architecture: 64-bit
+Build: 26200
+
+COMPUTER
+Manufacturer: ASUS
+Model: System Product Name
+RAM: 31.91 GB
+
+CPU
+Name: AMD Ryzen 5 5600X 6-Core Processor             
+Physical cores: 6
+Logical processors: 12
+Maximum clock: 4200 MHz
+
+GPU
+Name: AMD Radeon RX 6900 XT
+VRAM reported: 4 GB
+Driver: 32.0.21045.1000
+
+C DRIVE
+Total: 930.58 GB
+Free: 544.94 GB
+Used: 385.64 GB
+
+PYTHON
+python:
+Python 3.14.6
+
+py launcher:
+Python 3.14.6
+
+PIP
+pip 26.1.2 from C:\Users\cj200\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pip (python 3.14)
+
+
+GIT
+git version 2.53.0.windows.2
+
+VS CODE
+NOT INSTALLED OR NOT IN PATH
+
+WINGET
+v1.29.280
+
+POWERSHELL
+5.1.26100.8875
+
+CREATED FOLDERS
+C:\FLIP_FLOP_HQ\00_CONTROL
+C:\FLIP_FLOP_HQ\01_INBOX\tradingview_trades
+C:\FLIP_FLOP_HQ\01_INBOX\chart_exports
+C:\FLIP_FLOP_HQ\01_INBOX\market_data
+C:\FLIP_FLOP_HQ\02_VALIDATED
+C:\FLIP_FLOP_HQ\03_DATABASE
+C:\FLIP_FLOP_HQ\04_ENGINE\baseline
+C:\FLIP_FLOP_HQ\04_ENGINE\replay
+C:\FLIP_FLOP_HQ\04_ENGINE\execution
+C:\FLIP_FLOP_HQ\04_ENGINE\accounting
+C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament
+C:\FLIP_FLOP_HQ\05_EXPERIMENTS\cost_stress
+C:\FLIP_FLOP_HQ\05_EXPERIMENTS\walk_forward
+C:\FLIP_FLOP_HQ\05_EXPERIMENTS\rejected
+C:\FLIP_FLOP_HQ\06_REPORTS\daily
+C:\FLIP_FLOP_HQ\06_REPORTS\yearly
+C:\FLIP_FLOP_HQ\06_REPORTS\forensic
+C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates
+C:\FLIP_FLOP_HQ\07_DASHBOARD
+C:\FLIP_FLOP_HQ\08_LOGS
+C:\FLIP_FLOP_HQ\99_ARCHIVE
+
+============================================================
+INVENTORY COMPLETE
+============================================================

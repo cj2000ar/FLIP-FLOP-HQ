@@ -1,0 +1,71 @@
+========================================================================================================
+FLIP FLOP STAGE 4A.1 - SINGLE-LEG FAILURE ATLAS
+========================================================================================================
+STATUS: PASS
+NO NEW DATA PURCHASED
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+QUESTION
+Did first-stop proof fail, or did the protected entry plumbing create adverse selection?
+
+OFFICIAL STAGE 4A PROFILE
+Profile: CTRL_500MS_CAP_1P0
+Stop mode: ONE_POINT_FROM_FILL
+Clean control net: $1,016.00
+Candidate net at 0 extra ticks: $-519.00
+Delta at 0 ticks: $-1,535.00
+Delta at 1 tick: $-1,627.00
+Delta at 2 ticks: $-1,707.00
+
+ADVERSE-SELECTION MAP
+FAST_WINNER_SKIPPED    | sessions  2 | control $  738.00 | candidate $    0.00 | delta $ -738.00
+LOSER_SKIPPED          | sessions  9 | control $ -944.00 | candidate $    0.00 | delta $  944.00
+LOSER_TAKEN            | sessions  7 | control $ -826.00 | candidate $ -283.00 | delta $  543.00
+WINNER_TAKEN           | sessions  4 | control $2,048.00 | candidate $ -236.00 | delta $-2,284.00
+
+IMMEDIATE BBO DIAGNOSTIC, ZERO EXTRA TICKS
+Diagnostic only. It removes software delay and chase caps but is not crisis-safe.
+ORIGINAL_SURVIVOR_STOP    | net $-1,434.50 | delta $-2,450.50 | taken 22 | skips  0 | unresolved  0
+ONE_POINT_FROM_FILL       | net $-1,809.50 | delta $-2,825.50 | taken 22 | skips  0 | unresolved  0
+
+IMMEDIATE BBO DIAGNOSTIC, ONE EXTRA TICK
+ORIGINAL_SURVIVOR_STOP    | net $-1,834.50 | delta $-2,850.50 | taken 22 | skips  0 | unresolved  0
+ONE_POINT_FROM_FILL       | net $-2,129.50 | delta $-3,145.50 | taken 22 | skips  0 | unresolved  0
+
+VERDICT
+Status: FIRST_STOP_PROOF_NOT_SUPPORTED_BY_RAW_SAMPLE
+Next branch: TEST_PRE_ENTRY_DIRECTION_CLASSIFIER_NOT_POST_PROOF_ENTRY
+Immediate 1-tick delta: $-2,850.50
+Official protected-entry 1-tick delta: $-1,627.00
+Fast control winners skipped: 2
+Control losers taken: 7
+
+SAMPLE WARNING
+The 22 clean raw sessions were selected for giveback investigation, not sampled randomly. They can reject an execution profile but cannot estimate the strategy's population expectancy.
+
+NON-NEGOTIABLE DECISION
+Stage 4A did not authorize a router.
+No protected-entry profile is promoted.
+The immediate diagnostic is never a live recommendation.
+The next branch must follow the forensic verdict above.
+
+OUTPUTS
+Immediate BBO diagnostic: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a1_failure_atlas\IMMEDIATE_BBO_DIAGNOSTIC.csv
+Immediate BBO summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a1_failure_atlas\IMMEDIATE_BBO_SUMMARY.csv
+Official profile session map: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a1_failure_atlas\OFFICIAL_PROFILE_SESSION_MAP.csv
+Adverse-selection summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a1_failure_atlas\ADVERSE_SELECTION_SUMMARY.csv
+Route matrix: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\single_leg_survivor_router\stage4a1_failure_atlas\ROUTE_SELECTION_MATRIX.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage4a1\FLIP_FLOP_STAGE4A1_FAILURE_ATLAS.json
+
+GATES
+Control integrity: PASS
+Stage 4A failure decomposition: PASS
+Degraded-source exclusion: PASS
+Single-leg live promotion: BLOCKED
+Pine modification: BLOCKED PENDING REVIEW
+New data purchase: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+========================================================================================================

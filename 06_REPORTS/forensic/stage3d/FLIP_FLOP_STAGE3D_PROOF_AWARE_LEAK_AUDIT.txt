@@ -1,0 +1,57 @@
+====================================================================================================
+FLIP FLOP STAGE 3D - PROOF-AWARE LEAK RECLASSIFICATION
+====================================================================================================
+STATUS: PASS
+NO NEW DATA PURCHASED
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+WHY STAGE 3C LOST
+The original leak screen counted a losing worker's pre-stop MFE as recoverable giveback.
+That is usually pre-proof direction ambiguity, not safe profit.
+Only the final survivor's path after the opposite worker is stopped may be protected.
+Commission is separated from actual market giveback.
+
+FULL-HISTORY CORRECTION
+Completed months: 79 through 2026-07
+Old false pre-proof loser pool: $71,214.00
+Corrected survivor market-giveback upper bound: $0.00
+Survivor commission component: $4,907.25
+S6/W3 baseline-equivalent capture needed: $23,713.00
+Corrected pool fraction needed to bridge: N/A
+
+RAW 22-CLEAN-SESSION CORRECTION
+False pre-proof loser screen total: $324.50
+TV survivor market upper total: $0.00
+Raw true post-proof giveback total: $0.00
+Median raw true post-proof giveback: $0.00
+Maximum raw true post-proof giveback: $0.00
+Sessions with any raw post-proof giveback: 0
+
+VERDICT
+GENERIC_SURVIVOR_GIVEBACK_RESEARCH_REJECTED_NO_CORRECTED_POOL
+
+POLICY
+Fixed 50/65/75/85 pair locks: REJECTED
+Pre-proof loser MFE as recoverable profit: REJECTED
+Additional data purchase: BLOCKED pending corrected-pool review
+Only late-stage, target-relative, time-confirmed protection may continue if justified
+
+OUTPUTS
+Full-history corrected ranking: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3d_proof_aware\FULL_HISTORY_PROOF_AWARE_SURVIVOR_LEAKS.csv
+Raw proof-aware sessions: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3d_proof_aware\RAW_22_CLEAN_PROOF_AWARE_SESSIONS.csv
+Route summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3d_proof_aware\RAW_PROOF_AWARE_ROUTE_SUMMARY.csv
+Stage 3C damage map: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3d_proof_aware\STAGE3C_DAMAGE_BY_SESSION.csv
+Unresolved sessions: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3d_proof_aware\RAW_UNRESOLVED_SESSIONS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3d\FLIP_FLOP_STAGE3D_PROOF_AWARE_LEAK_AUDIT.json
+
+GATES
+Control integrity: PASS
+Classification repair: PASS
+Raw post-proof reconstruction: PASS
+Broad pair-floor family: REJECTED
+Pine modification: BLOCKED
+Large-size scaling: BLOCKED
+Live routing: LOCKED
+====================================================================================================

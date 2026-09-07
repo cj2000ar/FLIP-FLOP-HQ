@@ -1,0 +1,9 @@
+﻿{
+    "status":  "PASS",
+    "installed_to":  "C:\\FLIP_FLOP_HQ\\07_TOOLS\\cap10_sync_reports_v22",
+    "reporter_sha256":  "6deeb69f9f40e20713c335be070f8d9af75b317087e82e936dee5ad2eea5a938",
+    "notepad_auto_open":  "ENABLED",
+    "pair_dd_authority":  "CLOSED_EQUITY_ONLY",
+    "frozen_v3672_modified":  false,
+    "capacity_live_routing":  "LOCKED"
+}

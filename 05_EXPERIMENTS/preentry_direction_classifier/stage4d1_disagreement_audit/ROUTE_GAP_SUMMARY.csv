@@ -1,0 +1,5 @@
+route_class,sessions,rf_trades,static_trades,rf_net,static_net,delta
+WEEKDAY_PREMIUM,23,23,23,1113.0,2913.0,-1800.0
+WEEKDAY_WEAK,37,3,37,-103.5,1198.5,-1302.0
+NY,150,150,150,27600.0,28290.0,-690.0
+WEEKLY,30,30,30,4680.0,4230.0,450.0

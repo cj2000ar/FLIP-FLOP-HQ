@@ -1,0 +1,71 @@
+============================================================================================================================
+FLIP FLOP X10.2 DUAL-HASH FORWARD CHAMPIONSHIP SCORE
+============================================================================================================================
+ENGINE STATUS: PASS
+DECISION STATE: ACCUMULATING
+
+Parent protocol SHA256:   F14D59DB4F401E7E7A275249D2F50BBB4231669D8D9FBE93DA085387C865D23B
+Decision protocol SHA256: 3747EC5B12535E3F7EE0E24C57D8DCD07143F4EA17943840BF2E13F2393BC000
+Freeze cutoff: 2026-08-08T00:08:00-04:00
+
+BUY source:  C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (1).csv
+SELL source: C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (2).csv
+SYNC: PAP-FWD-S2W1-S100-W80-P80-K80-R06
+Full aligned export sessions: 2585
+Cumulative forward sessions: 0
+New sessions this run: 0
+Coverage: NY=0 | WEEKLY=0 | PREMIUM=0 | WEAK=0
+
+MINIMUM SAMPLE
+TOTAL >=90: WAIT
+NY >=30: WAIT
+WEEKLY >=8: WAIT
+PREMIUM >=8: WAIT
+WEAK >=8: WAIT
+
+PRIMARY ALPHA 0.35 — Q2-Q6
+Q2
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+Q3
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+Q4
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+Q5
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+Q6
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00 | Net/DD 0.000
+
+SECONDARY ALPHA 0.50 — Q6
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+
+FROZEN GATE SCORECARD
+sample_total                                     FAIL
+sample_NY                                        FAIL
+sample_WEEKLY                                    FAIL
+sample_PREMIUM                                   FAIL
+sample_WEAK                                      FAIL
+
+AUTHORITY
+ACCUMULATING = minimum sample incomplete.
+SIGNAL_SCALE_EARNED_CANDIDATE = permission to BUILD a side-by-side Pine research candidate only.
+INCONCLUSIVE = continue forward evidence with frozen rules.
+REJECT_SIGNAL_SCALE = frozen catastrophic rejection rule triggered after minimum sample.
+
+Frozen V3.6.72 modified: NO
+Pine promotion before gate: BLOCKED
+Capacity live routing: LOCKED
+Forward ledger: APPEND-ONLY
+Historical retuning: PROHIBITED
+============================================================================================================================

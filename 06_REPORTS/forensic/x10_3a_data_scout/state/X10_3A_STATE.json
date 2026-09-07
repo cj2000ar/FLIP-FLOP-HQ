@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "roots": [
+    "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\raw",
+    "C:\\FLIP_FLOP_HQ\\02_VALIDATED\\market_data\\GIVEBACK_BLOCKS_2025",
+    "C:\\FLIP_FLOP_HQ\\02_VALIDATED\\market_data\\COVID_2020_03_16\\surgical",
+    "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data",
+    "C:\\FLIP_FLOP_HQ\\02_VALIDATED\\market_data"
+  ],
+  "candidate_files": 100,
+  "high_detail_candidates": 89,
+  "tbbo_candidates": 65,
+  "known_rows": 1719237,
+  "bytes": 166284805,
+  "duplicate_groups": 0,
+  "hard_failures": 0,
+  "frozen_v3672_modified": false,
+  "x10_2_modified": false,
+  "live_routing": "LOCKED"
+}

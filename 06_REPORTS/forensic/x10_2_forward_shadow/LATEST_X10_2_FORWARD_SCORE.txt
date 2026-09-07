@@ -1,0 +1,90 @@
+============================================================================================================================
+FLIP FLOP X10.2 FROZEN FORWARD SHADOW SCORE
+============================================================================================================================
+ENGINE STATUS: PASS
+FORWARD STATUS: WAITING_FOR_FORWARD_SESSIONS
+Protocol SHA256: F14D59DB4F401E7E7A275249D2F50BBB4231669D8D9FBE93DA085387C865D23B
+Freeze cutoff: 2026-08-08T00:08:00-04:00
+Authority rule: entry timestamp must be STRICTLY AFTER cutoff.
+
+BUY source:  C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (1).csv
+BUY SHA256:  51FF94FFCD76B92BD50FE66B686BF55FF44C74F0508C9A4EE27476CF93267128
+SELL source: C:\Users\cj200\Downloads\Flip_Flop_CME_MINI_NQ1!_2026-08-07 (2).csv
+SELL SHA256: A8D8AA238D90D5B75ECBD41DA646ADEDCF0E7C1CC9CD6676314A536A35AC0863
+SYNC: PAP-FWD-S2W1-S100-W80-P80-K80-R06
+BUY/SELL full-export sessions aligned: 2585
+Latest full-export session: 2026-08-07T09:30:00-04:00
+
+Cumulative eligible forward sessions: 0
+New sessions added this run: 0
+Route coverage: NY=0 | WEEKLY=0 | PREMIUM=0 | WEAK=0
+
+SIGNAL MAP — FROZEN
+NY=SELL | WEEKLY=BUY | PREMIUM=BUY | WEAK=NO DIRECTIONAL SCALING
+
+CHALLENGERS
+A_CURRENT:      NY/WEEKLY/PREMIUM both sides Q; WEAK 1/1
+B_CORE_TIER:    NY/WEEKLY both sides Q; PREMIUM 1/1; WEAK skipped
+C_SIGNAL_SCALE: NY 1/Q(SELL); WEEKLY Q(BUY)/1; PREMIUM Q(BUY)/1; WEAK 1/1
+
+BASELINE FORWARD SCORE — ALPHA 0.00
+A_CURRENT
+  Q1 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q2 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q3 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q4 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q5 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q6 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+B_CORE_TIER
+  Q1 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q2 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q3 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q4 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q5 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q6 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+C_SIGNAL_SCALE
+  Q1 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q2 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q3 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q4 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q5 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+  Q6 | Net          $0.00 | PF     N/A | Closed-DD        $0.00 | Worst         N/A | R25         N/A | R50         N/A | R100         N/A
+
+Q6 HOSTILE COMPARISON — SIZE-DEPENDENT EXECUTION STRESS
+alpha 0.00 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+alpha 0.10 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+alpha 0.25 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+alpha 0.35 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+alpha 0.50 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+alpha 0.75 tick/fill per added contract
+  A_CURRENT       Net          $0.00 | PF     N/A | DD        $0.00
+  B_CORE_TIER     Net          $0.00 | PF     N/A | DD        $0.00
+  C_SIGNAL_SCALE  Net          $0.00 | PF     N/A | DD        $0.00
+
+GOVERNANCE
+Frozen V3.6.72 modified: NO
+Pine promotion: BLOCKED
+Capacity live routing: LOCKED
+Historical rows at/before cutoff: EXCLUDED
+Forward ledger: APPEND-ONLY; missing/mutated prior forward rows cause a hard failure.
+
+IMPORTANT
+This scorer has NO authority to declare a winner or authorize quantity.
+The frozen protocol did not define a minimum forward sample or promotion threshold.
+It records forward evidence only. Any promotion protocol must be frozen separately before it can judge these results.
+============================================================================================================================

@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "case_id": "FF-STAGE3D-PROOF-AWARE-LEAK-AUDIT",
+  "created_utc": "2026-08-06T22:55:06.600356+00:00",
+  "source_integrity": {
+    "control_hashes_verified": 4,
+    "stage3b": "PASS",
+    "stage3c": "PASS_REJECTED_BROAD_LOCKS",
+    "full_history_sessions": 2583,
+    "raw_block_sessions": 24,
+    "clean_raw_sessions": 6,
+    "unresolved_raw_sessions": 17
+  },
+  "classification_correction": {
+    "old_error": "A losing worker's favorable excursion before its stop was counted as recoverable giveback. In a two-sided Flip Flop pair, that is usually pre-proof direction ambiguity.",
+    "new_rule": "Only the final survivor's post-proof path may enter a giveback-retention audit. Commission is separated from market giveback."
+  },
+  "full_history_12k_bridge": {
+    "complete_through": "2026-07",
+    "completed_months": 79,
+    "current_total": 292287.0,
+    "current_average_month": 3699.8354430379745,
+    "S6_W3_total": 876861.0,
+    "S6_W3_average_month": 11099.506329113925,
+    "S6_W3_total_gap_to_12k": 71139.0,
+    "baseline_equivalent_capture_needed": 23713.0,
+    "old_false_preproof_pool": 71214.0,
+    "corrected_survivor_market_giveback_upper": 0.0,
+    "survivor_commission_component": 4907.25,
+    "corrected_pool_fraction_needed_to_bridge": null
+  },
+  "raw_22_clean_summary": {
+    "false_preproof_loser_screen_total": 324.5,
+    "survivor_market_upper_from_tv_total": 0.0,
+    "raw_true_post_proof_giveback_total": 0.0,
+    "median_raw_true_post_proof_giveback": 0.0,
+    "max_raw_true_post_proof_giveback": 0.0,
+    "sessions_with_any_raw_post_proof_giveback": 0
+  },
+  "verdict": "GENERIC_SURVIVOR_GIVEBACK_RESEARCH_REJECTED_NO_CORRECTED_POOL",
+  "next_research_policy": [
+    "Reject fixed 50/65/75/85 pair locks from the active branch.",
+    "Do not count pre-proof losing-worker MFE as recoverable profit.",
+    "Do not spend more credits until the corrected survivor pool is reviewed.",
+    "If a corrected pool remains, test only late-stage, target-relative, time-confirmed protection.",
+    "Keep V3.6.72 control, quantity, and live-routing locks unchanged."
+  ],
+  "gates": {
+    "control_integrity": "PASS",
+    "classification_repair": "PASS",
+    "full_history_reclassification": "PASS",
+    "raw_post_proof_reconstruction": "PASS",
+    "broad_pair_floor_family": "REJECTED",
+    "new_data_purchase": "BLOCKED_PENDING_CORRECTED_POOL_REVIEW",
+    "pine_modification": "BLOCKED",
+    "large_size_scaling": "BLOCKED",
+    "live_routing": "LOCKED"
+  },
+  "outputs": {
+    "full_history_proof_aware_csv": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\stage3d_proof_aware\\FULL_HISTORY_PROOF_AWARE_SURVIVOR_LEAKS.csv",
+    "raw_clean_session_csv": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\stage3d_proof_aware\\RAW_22_CLEAN_PROOF_AWARE_SESSIONS.csv",
+    "route_summary_csv": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\stage3d_proof_aware\\RAW_PROOF_AWARE_ROUTE_SUMMARY.csv",
+    "stage3c_damage_csv": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\stage3d_proof_aware\\STAGE3C_DAMAGE_BY_SESSION.csv",
+    "unresolved_csv": "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\stage3d_proof_aware\\RAW_UNRESOLVED_SESSIONS.csv"
+  }
+}

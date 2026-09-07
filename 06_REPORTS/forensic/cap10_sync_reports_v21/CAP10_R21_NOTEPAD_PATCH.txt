@@ -1,0 +1,4 @@
+FLIP FLOP CAP10 R2.1 NOTEPAD PATCH
+STATUS: PASS
+Every reporter run now creates CSV + HTML + TXT and automatically opens the TXT in Notepad.
+Frozen V3.6.72 modified: NO

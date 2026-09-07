@@ -1,0 +1,52 @@
+====================================================================================================================
+FLIP FLOP STAGE 3H.3A - STRICT COVERAGE FAILURE AUTOPSY
+====================================================================================================================
+STATUS: PASS
+STAGE 3H.3 COVERAGE RESULT: VALID
+STAGE 3H.3 FEATURE-SEPARATION STATISTICS: VOID
+
+WHY
+The original statistics layer did not strictly exclude continuity-failed windows before feature comparison.
+This package repairs the research governance by allowing statistics only on coverage-PASS rows.
+
+STRICT COVERAGE
+H300  | winner pass 1/3 | toxic pass 13/19
+H60   | winner pass 1/3 | toxic pass 13/19
+H15   | winner pass 1/3 | toxic pass 13/19
+
+STATISTICAL ELIGIBILITY
+Eligible horizons: NONE
+Strict feature statistics authorized: NO
+
+VERDICT
+NO_VALID_FEATURE_SEPARATION_AUTHORIZED_IN_STAGE3H3
+
+FAILURE REASONS
+H15   | TOXIC  | NO_OVERLAPPING_FILES                             | 6
+H15   | WINNER | NO_OVERLAPPING_FILES                             | 2
+H300  | TOXIC  | NO_OVERLAPPING_FILES                             | 6
+H300  | WINNER | NO_OVERLAPPING_FILES                             | 2
+H60   | TOXIC  | NO_OVERLAPPING_FILES                             | 6
+H60   | WINNER | NO_OVERLAPPING_FILES                             | 2
+
+NON-NEGOTIABLE
+Do not relax continuity thresholds after seeing this result.
+Do not use voided Stage 3H.3 feature rankings.
+Do not train a toxicity model from this sample.
+Missing authoritative winner coverage must be solved with future forward capture, not reconstructed bars.
+
+OUTPUTS
+Failure detail: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3a\STRICT_COVERAGE_FAILURE_DETAIL.csv
+Coverage summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3a\STRICT_COVERAGE_SUMMARY.csv
+Failure reason summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_microstructure_toxicity\stage3h3a\FAILURE_REASON_SUMMARY.csv
+Void lock: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h3a\STAGE3H3_FEATURE_SEPARATION_VOID_LOCK.txt
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h3a\FLIP_FLOP_STAGE3H3A_COVERAGE_FAILURE_AUTOPSY.json
+
+GATES
+Threshold search: BLOCKED
+Classifier training: BLOCKED
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity change: BLOCKED
+Live routing: LOCKED
+====================================================================================================================

@@ -1,0 +1,1115 @@
+//@version=6
+//@strategy_alert_message {{strategy.order.alert_message}}
+// Flip Flop V3.6.72-CAP10-SYNC-R2 • SELL worker • RESEARCH CAPACITY + MULTI-Q REPORTER
+strategy("Flip Flop",
+     shorttitle="Flip Flop",
+     overlay=true,
+     pyramiding=0,
+     default_qty_type=strategy.fixed,
+     default_qty_value=1,
+     initial_capital=250000,
+     currency=currency.USD,
+     commission_type=strategy.commission.cash_per_contract,
+     commission_value=2.25,
+     slippage=1,
+     process_orders_on_close=false,
+     calc_on_order_fills=false,
+     calc_on_every_tick=true,
+     close_entries_rule="ANY",
+     margin_long=1.0,
+     margin_short=1.0,
+     use_bar_magnifier=true,
+     fill_orders_on_standard_ohlc=true,
+     max_labels_count=100,
+     max_lines_count=100)
+
+// ============================================================================
+// NQ09B • FROZEN ENGINE + CONTROL CENTER
+// ----------------------------------------------------------------------------
+// CORRECT CLOCK CLASSIFICATION:
+// • NY cash/opening anchor: 09:30 ET.
+// • WEEKLY GLOBEX OPEN: Sunday 18:00 ET, assigned to Monday trade date.
+// • DAILY GLOBEX REOPENS: Monday–Thursday 18:00 ET, assigned to the
+//   following Tuesday–Friday trade dates.
+// • Friday 18:00 is never treated as an Asia open.
+//
+// FLIP FLOP SYMMETRY:
+// • Strong routes use the same increased quantity on BUY and SELL workers.
+// • Weak CHOP / NORMAL weekdays remain at the baseline quantity.
+// • Same shared stop for NY, weekly open, and weekday reopens.
+// • Same target on BUY and SELL inside each passport.
+// • Separate native entry IDs prevent cross-session contamination.
+// • No global daily-loss rule merges NY and Asia.
+//
+// RESEARCH DESIGN:
+// • New York remains frozen at 09:30 and N130 / TP2.
+// • NY, weekly open, and premium weekday routes are the frozen strong lane.
+// • Gate-pass CHOP / NORMAL remains the weak lane at 18:00.
+// • Gate-fail and every 18:30 route remain OFF.
+// • Telemetry records clock date, trade date, reopen class, and reference close.
+// • The frozen execution geometry is unchanged.
+// • LIVE routing remains locked until the external controller is connected,
+//   acknowledged, and tested with minimum size.
+// ============================================================================
+
+string GCC = "[CC] CONTROL CENTER"
+string operatingMode = input.string("PAPER", "Operating mode",
+     options=["MONITOR", "PAPER", "LIVE"], group=GCC,
+     tooltip="MONITOR blocks new strategy entries. PAPER runs the native worker without live routing. LIVE still requires all routing locks below.")
+string engineWindow = input.string("FORWARD / LIVE", "Engine window",
+     options=["FROZEN AUDIT", "FORWARD / LIVE"], group=GCC,
+     tooltip="FROZEN AUDIT stops at July 31, 2026 and preserves the audited comparison. FORWARD / LIVE continues on new bars with no fixed end date and is required before routing current signals.")
+string contractMode = input.string("AUDITED SMART 2/1", "Contract mode",
+     options=["SAFE 1/1", "AUDITED SMART 2/1", "CAPACITY STRONG Q / WEAK 1", "CAPACITY UNIFORM Q/Q"], group=GCC,
+     tooltip="AUDITED SMART preserves the frozen 2 NQ strong / 1 NQ weak profile. CAPACITY modes are research-only and allow 1-10 NQ per selected lane. CAPACITY modes can never arm live routing.")
+int capacityQty = input.int(5, "CAP10 research contracts", minval=1, maxval=10, step=1, group=GCC,
+     tooltip="Research-only quantity used by CAPACITY modes. It changes quantity only; entry logic, stop geometry, target geometry, sessions and route classification remain frozen.")
+string accountAlias = input.string("SELL_ACCOUNT", "Broker account alias", group=GCC,
+     tooltip="A non-sensitive label only. Never place an account number, password, token, or API credential in Pine.")
+string controllerTarget = input.string("SIM", "Controller target",
+     options=["SIM", "LIVE"], group=GCC)
+string brokerSymbolAlias = input.string("UNMAPPED", "Broker contract symbol", group=GCC,
+     tooltip="Required only for future LIVE routing. Map NQ1! to the actual front-month broker contract. Continuous NQ1! must never be sent directly as a live broker order symbol.")
+bool armLiveRouting = input.bool(false, "ARM live routing", group=GCC,
+     tooltip="Arms router messages only when Operating mode is LIVE, target is LIVE, confirmation is armed, profile is valid, and the chart is realtime.")
+string liveConfirmation = input.string("LOCKED", "Live confirmation",
+     options=["LOCKED", "ARM NQ09B LIVE"], group=GCC)
+bool manualKill = input.bool(false, "MANUAL KILL — block new entries", group=GCC,
+     tooltip="Blocks new Pine entries in this script instance. It does not flatten an open position and it cannot update an already-created TradingView server alert. Stop the alert and manage the broker directly for a real emergency kill.")
+bool cleanChart = input.bool(true, "Clean chart comments", group=GCC,
+     tooltip="Uses short order comments instead of the long audit telemetry. Also hide TradingView's Trades on chart in Strategy Settings > Style for a completely clean chart.")
+bool showLevels = input.bool(true, "Show live entry / stop / target", group=GCC)
+string uiScale = input.string("BALANCED", "UI size",
+     options=["COMPACT", "BALANCED", "LARGE"], group=GCC,
+     tooltip="Directly controls both FLIP FLOP tables on every device: COMPACT = tiny, BALANCED = small, LARGE = normal. Pine cannot auto-detect desktop or mobile.")
+bool showDashboard = true
+bool showRecentTrades = true
+bool showCap10Matrix = input.bool(true, "Show Q1-Q10 shadow report matrix", group=GCC,
+     tooltip="Displays same-fill arithmetic reports for Q1-Q10 from the worker's actual closed trades. Shadow only; does not place or alter orders.")
+
+bool safeOneMode = contractMode == "SAFE 1/1"
+bool auditedSmartMode = contractMode == "AUDITED SMART 2/1"
+bool capacityStrongMode = contractMode == "CAPACITY STRONG Q / WEAK 1"
+bool capacityUniformMode = contractMode == "CAPACITY UNIFORM Q/Q"
+bool capacityResearchMode = capacityStrongMode or capacityUniformMode
+int strongRouteQty = safeOneMode ? 1 : auditedSmartMode ? 2 : capacityQty
+int weakRouteQty = capacityUniformMode ? capacityQty : 1
+string sizeCode = safeOneMode ? "S1 / W1" : auditedSmartMode ? "S2 / W1" :
+     capacityStrongMode ? "CAP S" + str.tostring(capacityQty) + " / W1" :
+     "CAP Q" + str.tostring(capacityQty) + " / Q" + str.tostring(capacityQty)
+string workerSide = "SELL"
+string routerProtocol = "FFCC-1"
+
+string G1 = "01. IDENTITY + SESSION PASSPORTS"
+string nyTz = input.string("America/New_York", "Clock time zone", group=G1)
+string sessionMode = input.string("NY + ALL GLOBEX OPENS", "Active passports",
+     options=["NY ONLY", "WEEKLY OPEN ONLY", "WEEKDAY REOPENS ONLY",
+              "ALL GLOBEX OPENS", "NY + WEEKLY OPEN", "NY + ALL GLOBEX OPENS"], group=G1)
+string nySession = input.session("0930-1600", "NY session", group=G1)
+string globexAsiaSession = input.session("1800-0300", "Globex Asia window", group=G1)
+
+string weeklyTiming = "WEEKLY 18:00"
+
+bool useMondayClockReopen = input.bool(true, "Trade Monday 18:00 clock reopen", group=G1)
+bool useTuesdayClockReopen = input.bool(true, "Trade Tuesday 18:00 clock reopen", group=G1)
+bool useWednesdayClockReopen = input.bool(true, "Trade Wednesday 18:00 clock reopen", group=G1)
+bool useThursdayClockReopen = input.bool(true, "Trade Thursday 18:00 clock reopen", group=G1)
+
+int backtestStart = input.time(timestamp("01 Jan 2020 00:00 -0500"), "Backtest start", group=G1)
+int backtestEnd = input.time(timestamp("31 Dec 2099 23:59 -0500"), "Backtest end", group=G1)
+bool strictIdentity = input.bool(true, "Require NQ 30m standard candles", group=G1)
+bool strictSmartSizeProfile = input.bool(true, "Lock V3.6.72 geometry + selected CAP10 quantity profile", group=G1)
+
+string G2 = "02. SHARED RISK + SESSION TARGETS"
+string nyTargetMode = "N130 TP2"
+string weeklyTargetMode = input.string("W80", "Weekly-open target",
+     options=["W45", "W50", "W55", "W60", "W625", "W70", "W75", "W775",
+              "W80", "W85", "W90", "W100", "W110", "W120", "W130"], group=G2)
+string weekdayPremiumTargetMode = input.string("D80", "Premium weekday target",
+     options=["D45", "D50", "D55", "D60", "D625", "D70", "D75", "D775",
+              "D80", "D85", "D90", "D100", "D110", "D120", "D130"], group=G2)
+string weekdayWeakTargetMode = input.string("D80", "CHOP / NORMAL weekday target",
+     options=["D45", "D50", "D55", "D60", "D625", "D70", "D75", "D775",
+              "D80", "D85", "D90", "D100", "D110", "D120", "D130"], group=G2)
+float stopPoints = input.float(1.00, "Shared native stop points",
+     options=[0.50, 0.75, 1.00, 1.25, 1.50], group=G2)
+float pairRiskCap = input.float(125.0, "Frozen-mode modeled pair double-stop ceiling $",
+     minval=25.0, maxval=500.0, step=5.0, group=G2)
+float capacityPairRiskCap = 600.0  // frozen CAP10 research ceiling; Q10 modeled paired stop = $590 at the locked profile
+
+string G3 = "03. WEEKDAY 18:00 / 18:30 ROUTER"
+bool weekdayRangeGateEnabled = input.bool(true, "Enable prior-30m range gate", group=G3)
+float weekdayMinPrior30RangeAtr = input.float(0.06, "Minimum prior 30m range / prior daily ATR",
+     options=[0.00, 0.04, 0.05, 0.06, 0.07, 0.08, 0.10], group=G3)
+string weekdayImmediateMode = "NQ07 CONTROL"
+string weekdayDelayedPool = "OFF"
+string weekdayDelayedConfirm = "ALL DELAYED"
+float delayedMinOpenRangeAtr = 0.08
+float delayedMinOpenBodyAtr = 0.04
+float delayedMinOpenEfficiency = 0.50
+float delayedEdgeClose = 0.30
+
+string G4 = "04. FROZEN QX06 POINT GEOMETRY"
+float corridorFactor = input.float(0.00075, "MNQ-reference corridor factor",
+     minval=0.00075, maxval=0.00075, step=0.000025, group=G4)
+float corridorFloor = input.float(12.50, "MNQ-reference corridor floor $",
+     minval=12.50, maxval=12.50, step=0.50, group=G4)
+float corridorCeiling = input.float(17.50, "MNQ-reference corridor ceiling $",
+     minval=17.50, maxval=17.50, step=0.50, group=G4)
+
+float tick = syminfo.mintick
+float nqDollarsPerPoint = 20.0
+float nqRoundTripCommission = 4.50
+float nqModeledSlip = tick * nqDollarsPerPoint
+float nqModeledCostPerContract = nqRoundTripCommission + nqModeledSlip
+float nqModeledLossPerContract = stopPoints * nqDollarsPerPoint + nqModeledCostPerContract
+float modeledStrongPairDoubleStop = 2.0 * strongRouteQty * nqModeledLossPerContract
+float modeledWeakPairDoubleStop = 2.0 * weakRouteQty * nqModeledLossPerContract
+float modeledPairDoubleStop = math.max(modeledStrongPairDoubleStop, modeledWeakPairDoubleStop)
+float activePairRiskCap = capacityResearchMode ? capacityPairRiskCap : pairRiskCap
+bool riskGateOk = modeledPairDoubleStop <= activePairRiskCap + 0.001
+
+float refDollarsPerPoint = 2.0
+float refRoundTripCommission = 1.90
+float refModeledSlip = tick * refDollarsPerPoint
+float refModeledCost = refRoundTripCommission + refModeledSlip
+float refModeledLoss = stopPoints * refDollarsPerPoint + refModeledCost
+
+f_target_multiplier(string mode) =>
+    mode == "W45" or mode == "D45" ? 0.45 :
+     mode == "W50" or mode == "D50" ? 0.50 :
+     mode == "W55" or mode == "D55" ? 0.55 :
+     mode == "W60" or mode == "D60" ? 0.60 :
+     mode == "W625" or mode == "D625" ? 0.625 :
+     mode == "W70" or mode == "D70" ? 0.70 :
+     mode == "W75" or mode == "D75" ? 0.75 :
+     mode == "W775" or mode == "D775" ? 0.775 :
+     mode == "W80" or mode == "D80" ? 0.80 :
+     mode == "W85" or mode == "D85" ? 0.85 :
+     mode == "W90" or mode == "D90" ? 0.90 :
+     mode == "W100" or mode == "D100" ? 1.00 :
+     mode == "W110" or mode == "D110" ? 1.10 :
+     mode == "W120" or mode == "D120" ? 1.20 : 1.30
+
+float nyMultiplier = 1.30
+float weeklyMultiplier = f_target_multiplier(weeklyTargetMode)
+float weekdayPremiumMultiplier = f_target_multiplier(weekdayPremiumTargetMode)
+float weekdayWeakMultiplier = f_target_multiplier(weekdayWeakTargetMode)
+
+bool tickerLooksNQ = syminfo.root == "NQ" or
+     (str.contains(str.upper(syminfo.ticker), "NQ") and not str.contains(str.upper(syminfo.ticker), "MNQ"))
+bool isThirtyMinutes = timeframe.isminutes and timeframe.multiplier == 30
+bool electronicSessionOk = syminfo.session == session.regular
+bool identityOk = tickerLooksNQ and isThirtyMinutes and chart.is_standard and electronicSessionOk
+bool brokerSymbolMapped = str.trim(brokerSymbolAlias) != "" and brokerSymbolAlias != "UNMAPPED" and
+     not str.contains(brokerSymbolAlias, "!")
+bool quantityProfileOk =
+     (safeOneMode and strongRouteQty == 1 and weakRouteQty == 1) or
+     (auditedSmartMode and strongRouteQty == 2 and weakRouteQty == 1) or
+     (capacityStrongMode and capacityQty >= 1 and capacityQty <= 10 and strongRouteQty == capacityQty and weakRouteQty == 1) or
+     (capacityUniformMode and capacityQty >= 1 and capacityQty <= 10 and strongRouteQty == capacityQty and weakRouteQty == capacityQty)
+bool smartSizeProfileOk = sessionMode == "NY + ALL GLOBEX OPENS" and
+     nyTz == "America/New_York" and nySession == "0930-1600" and globexAsiaSession == "1800-0300" and
+     useMondayClockReopen and useTuesdayClockReopen and useWednesdayClockReopen and useThursdayClockReopen and
+     weeklyTargetMode == "W80" and weekdayPremiumTargetMode == "D80" and weekdayWeakTargetMode == "D80" and
+     math.abs(stopPoints - 1.00) < 0.001 and math.abs(pairRiskCap - 125.0) < 0.001 and
+     weekdayRangeGateEnabled and math.abs(weekdayMinPrior30RangeAtr - 0.06) < 0.0001 and quantityProfileOk
+
+string syncSizingCode = safeOneMode ? "S1W1" : auditedSmartMode ? "S2W1" :
+     capacityStrongMode ? "CSQ" + str.tostring(capacityQty) + "W1" :
+     "CUQ" + str.tostring(capacityQty)
+string syncWindowCode = engineWindow == "FROZEN AUDIT" ? "AUD" : "FWD"
+string syncModeCode = operatingMode == "PAPER" ? "PAP" : operatingMode == "MONITOR" ? "MON" : "LIV"
+string syncProfileCode = syncModeCode + "-" + syncWindowCode + "-" + syncSizingCode +
+     "-S100-W80-P80-K80-R06"
+
+var int firstLoadedBarTime = time
+int reportStartGraceMs = 3 * 24 * 60 * 60 * 1000
+bool reportStartCovered = firstLoadedBarTime <= backtestStart + reportStartGraceMs
+bool tradeHistoryTrimmed = strategy.closedtrades > 0 and strategy.closedtrades.first_index > 0
+bool reportIntegrityOk = reportStartCovered and not tradeHistoryTrimmed
+string loadedFromText = str.format_time(firstLoadedBarTime, "MM/dd/yy", nyTz)
+string reportIntegrityText = tradeHistoryTrimmed ? "TRIMMED TRADES" :
+     reportStartCovered ? "FULL START OK" : "PARTIAL • " + loadedFromText
+
+bool engineEnabled = operatingMode != "MONITOR"
+bool authorityOk = (not strictIdentity or identityOk) and
+     (not strictSmartSizeProfile or smartSizeProfileOk) and not manualKill and riskGateOk and engineEnabled
+bool liveRouteArmed = operatingMode == "LIVE" and engineWindow == "FORWARD / LIVE" and
+     not capacityResearchMode and
+     controllerTarget == "LIVE" and brokerSymbolMapped and armLiveRouting and
+     liveConfirmation == "ARM NQ09B LIVE" and
+     authorityOk and barstate.isrealtime
+
+strategy.risk.max_position_size(math.max(strongRouteQty, weakRouteQty))
+
+bool modeNy = sessionMode == "NY ONLY" or sessionMode == "NY + WEEKLY OPEN" or
+     sessionMode == "NY + ALL GLOBEX OPENS"
+bool modeWeekly = sessionMode == "WEEKLY OPEN ONLY" or sessionMode == "ALL GLOBEX OPENS" or
+     sessionMode == "NY + WEEKLY OPEN" or sessionMode == "NY + ALL GLOBEX OPENS"
+bool modeWeekday = sessionMode == "WEEKDAY REOPENS ONLY" or sessionMode == "ALL GLOBEX OPENS" or
+     sessionMode == "NY + ALL GLOBEX OPENS"
+
+int nyClock = time(timeframe.period, nySession, nyTz)
+int asiaClock = time(timeframe.period, globexAsiaSession, nyTz)
+bool inNy = not na(nyClock)
+bool inAsia = not na(asiaClock)
+bool nyEnd = modeNy and not inNy and inNy[1]
+bool asiaEnd = (modeWeekly or modeWeekday) and not inAsia and inAsia[1]
+
+int nyAnchorMinutes = 9 * 60 + 30
+int weeklyAnchorMinutes = weeklyTiming == "WEEKLY 18:00" ? 18 * 60 :
+     weeklyTiming == "WEEKLY 18:30" ? 18 * 60 + 30 : 19 * 60
+int weekdayAnchorMinutes = 18 * 60
+int weekdayDelayedMinutes = 18 * 60 + 30
+
+int nextBarTime = time(timeframe.period, -1)
+bool nextInAsia = not na(time(timeframe.period, globexAsiaSession, nyTz, -1))
+int nextMinutes = not na(nextBarTime) ? hour(nextBarTime, nyTz) * 60 + minute(nextBarTime, nyTz) : na
+int nextClockDow = not na(nextBarTime) ? dayofweek(nextBarTime) : na
+
+bool isWeeklyClockOpen = nextClockDow == dayofweek.sunday
+bool isWeekdayClockOpen = nextClockDow >= dayofweek.monday and nextClockDow <= dayofweek.thursday
+
+bool weekdayClockEnabled =
+     (nextClockDow == dayofweek.monday and useMondayClockReopen) or
+     (nextClockDow == dayofweek.tuesday and useTuesdayClockReopen) or
+     (nextClockDow == dayofweek.wednesday and useWednesdayClockReopen) or
+     (nextClockDow == dayofweek.thursday and useThursdayClockReopen)
+
+bool nextStartsNy = modeNy and nextMinutes == nyAnchorMinutes
+bool nextStartsWeekly = modeWeekly and nextInAsia and isWeeklyClockOpen and nextMinutes == weeklyAnchorMinutes
+bool rawNextStartsWeekday = modeWeekday and nextInAsia and isWeekdayClockOpen and weekdayClockEnabled and
+     nextMinutes == weekdayAnchorMinutes
+bool nextStartsWeekdayDelayed = modeWeekday and nextInAsia and isWeekdayClockOpen and weekdayClockEnabled and
+     nextMinutes == weekdayDelayedMinutes
+
+// Add six hours to the 18:00 clock timestamp to identify the following trade date.
+// Sunday 18:00 -> Monday trade date.
+// Monday–Thursday 18:00 -> Tuesday–Friday trade dates.
+int tradeDateTime = not na(nextBarTime) ? nextBarTime + 6 * 60 * 60 * 1000 : na
+int clockDateKey = not na(nextBarTime) ?
+     year(nextBarTime, nyTz) * 10000 + month(nextBarTime, nyTz) * 100 + dayofmonth(nextBarTime, nyTz) : na
+int tradeDateKey = not na(tradeDateTime) ?
+     year(tradeDateTime, nyTz) * 10000 + month(tradeDateTime, nyTz) * 100 + dayofmonth(tradeDateTime, nyTz) : na
+
+bool nextInDate = not na(nextBarTime) and nextBarTime >= backtestStart and
+     (engineWindow != "FROZEN AUDIT" or nextBarTime <= backtestEnd)
+bool frozenWindowEnded = engineWindow == "FROZEN AUDIT" and time > backtestEnd
+
+[priorDailyAtr, priorDayOpen, priorDayClose, priorDayHigh, priorDayLow] =
+     request.security(syminfo.tickerid, "D",
+          [ta.atr(14)[1], open[1], close[1], high[1], low[1]],
+          lookahead=barmerge.lookahead_on)
+[priorWeekOpen, priorWeekClose, priorWeekHigh, priorWeekLow] =
+     request.security(syminfo.tickerid, "W",
+          [open[1], close[1], high[1], low[1]],
+          lookahead=barmerge.lookahead_on)
+
+float priorDayReturnAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     (priorDayClose - priorDayOpen) / priorDailyAtr : na
+float priorWeekReturnAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     (priorWeekClose - priorWeekOpen) / priorDailyAtr : na
+float prior30RangeAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     (high - low) / priorDailyAtr : na
+
+
+// ============================================================================
+// NQ09B SHADOW 30M + ROLLING 60M CONTEXT
+// Zero execution authority. Raw features are appended to entry telemetry only.
+// ============================================================================
+f_sign(float value) =>
+    value > 0 ? 1 : value < 0 ? -1 : 0
+
+f_clamp(float value, float lo, float hi) =>
+    math.max(lo, math.min(hi, value))
+
+float ctxRange1 = high - low
+float ctxRange2 = high[1] - low[1]
+float ctxBody1 = close - open
+float ctxBody2 = close[1] - open[1]
+float ctxGap = open - close[1]
+
+float ctxHigh60 = math.max(high, high[1])
+float ctxLow60 = math.min(low, low[1])
+float ctxRange60 = ctxHigh60 - ctxLow60
+float ctxBody60 = close - open[1]
+float ctxPath60 = math.abs(ctxBody2) + math.abs(ctxGap) + math.abs(ctxBody1)
+
+float ctxRet1Atr = not na(priorDailyAtr) and priorDailyAtr > tick ? ctxBody1 / priorDailyAtr : na
+float ctxRet2Atr = not na(priorDailyAtr) and priorDailyAtr > tick ? ctxBody2 / priorDailyAtr : na
+float ctxRet60Atr = not na(priorDailyAtr) and priorDailyAtr > tick ? ctxBody60 / priorDailyAtr : na
+float ctxRange60Atr = not na(priorDailyAtr) and priorDailyAtr > tick ? ctxRange60 / priorDailyAtr : na
+float ctxEfficiency60 = ctxPath60 > 0 ? math.abs(ctxBody60) / ctxPath60 : 0.0
+
+int ctxSign1 = f_sign(ctxBody1)
+int ctxSign2 = f_sign(ctxBody2)
+bool ctxAligned = ctxSign1 != 0 and ctxSign1 == ctxSign2
+
+float ctxUpperWick1 = high - math.max(open, close)
+float ctxLowerWick1 = math.min(open, close) - low
+float ctxUpperWick2 = high[1] - math.max(open[1], close[1])
+float ctxLowerWick2 = math.min(open[1], close[1]) - low[1]
+float ctxTotalRange = ctxRange1 + ctxRange2
+float ctxWickConflict = ctxTotalRange > 0 ?
+     (ctxUpperWick1 + ctxLowerWick1 + ctxUpperWick2 + ctxLowerWick2) / ctxTotalRange : 1.0
+
+float ctxCompression = not na(ctxRange60Atr) ?
+     f_clamp((1.0 - f_clamp(ctxRange60Atr / 0.25, 0.0, 1.0)) * 100.0, 0.0, 100.0) : na
+
+float ctxPriorDayRange = priorDayHigh - priorDayLow
+float ctxPriorWeekRange = priorWeekHigh - priorWeekLow
+float ctxPriorDayLocation = ctxPriorDayRange > 0 ? (close - priorDayLow) / ctxPriorDayRange : na
+float ctxPriorWeekLocation = ctxPriorWeekRange > 0 ? (close - priorWeekLow) / ctxPriorWeekRange : na
+
+float ctxDistancePdHighAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     math.abs(priorDayHigh - close) / priorDailyAtr : na
+float ctxDistancePdLowAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     math.abs(close - priorDayLow) / priorDailyAtr : na
+float ctxDistancePwHighAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     math.abs(priorWeekHigh - close) / priorDailyAtr : na
+float ctxDistancePwLowAtr = not na(priorDailyAtr) and priorDailyAtr > tick ?
+     math.abs(close - priorWeekLow) / priorDailyAtr : na
+
+bool ctxShock = not na(ctxRange60Atr) and not na(ctxRet60Atr) and
+     (ctxRange60Atr >= 0.35 or math.abs(ctxRet60Atr) >= 0.25)
+bool ctxExpansion = not ctxShock and ctxAligned and ctxEfficiency60 >= 0.55 and
+     not na(ctxRet60Atr) and not na(ctxRange60Atr) and
+     math.abs(ctxRet60Atr) >= 0.08 and ctxRange60Atr >= 0.10
+bool ctxChop = not ctxShock and not ctxExpansion and
+     ((not ctxAligned and ctxEfficiency60 <= 0.40) or ctxWickConflict >= 0.55 or
+      (not na(ctxRange60Atr) and ctxRange60Atr < 0.06))
+string ctxState = ctxShock ? "SHOCK" : ctxExpansion ? "EXPANSION" : ctxChop ? "CHOP" : "NORMAL"
+
+f_ctx_telemetry() =>
+    "|s60" + ctxState +
+     "|r1" + str.tostring(ctxRet1Atr, "#.###") +
+     "|r2" + str.tostring(ctxRet2Atr, "#.###") +
+     "|r60" + str.tostring(ctxRet60Atr, "#.###") +
+     "|rg60" + str.tostring(ctxRange60Atr, "#.###") +
+     "|ef60" + str.tostring(ctxEfficiency60, "#.###") +
+     "|al" + (ctxAligned ? "1" : "0") +
+     "|wc" + str.tostring(ctxWickConflict, "#.###") +
+     "|cp" + str.tostring(ctxCompression, "#.1") +
+     "|pdl" + str.tostring(ctxPriorDayLocation, "#.###") +
+     "|pwl" + str.tostring(ctxPriorWeekLocation, "#.###") +
+     "|dh" + str.tostring(ctxDistancePdHighAtr, "#.###") +
+     "|dl" + str.tostring(ctxDistancePdLowAtr, "#.###") +
+     "|wh" + str.tostring(ctxDistancePwHighAtr, "#.###") +
+     "|wl" + str.tostring(ctxDistancePwLowAtr, "#.###")
+
+
+bool weekdayGatePass = not weekdayRangeGateEnabled or
+     (not na(prior30RangeAtr) and prior30RangeAtr >= weekdayMinPrior30RangeAtr)
+bool weekdayStrongState = ctxExpansion or ctxShock
+bool weekdayImmediateEligible =
+     weekdayImmediateMode == "NQ07 CONTROL" ? weekdayGatePass :
+     weekdayImmediateMode == "EXPANSION + SHOCK" ? weekdayGatePass and weekdayStrongState :
+     weekdayImmediateMode == "EXPANSION ONLY" ? weekdayGatePass and ctxExpansion :
+     weekdayImmediateMode == "SHOCK ONLY" ? weekdayGatePass and ctxShock : false
+bool nextStartsWeekdayImmediate = rawNextStartsWeekday and weekdayImmediateEligible
+
+bool weekdayDelayCandidate =
+     weekdayDelayedPool == "ALL NOT IMMEDIATE" ? not weekdayImmediateEligible :
+     weekdayDelayedPool == "ONLY GATE PASS WEAK" ? weekdayGatePass and not weekdayImmediateEligible :
+     weekdayDelayedPool == "ONLY GATE FAIL" ? not weekdayGatePass : false
+
+float openingRange = high - low
+float openingBody = close - open
+float openingEfficiency = openingRange > 0 ? math.abs(openingBody) / openingRange : 0.0
+float openingCloseLocation = openingRange > 0 ? (close - low) / openingRange : 0.5
+float openingRangeAtr = not na(priorDailyAtr) and priorDailyAtr > tick ? openingRange / priorDailyAtr : na
+float openingBodyAtr = not na(priorDailyAtr) and priorDailyAtr > tick ? openingBody / priorDailyAtr : na
+bool openingEdgeClose = openingCloseLocation <= delayedEdgeClose or
+     openingCloseLocation >= 1.0 - delayedEdgeClose
+bool delayedConfirmationOk =
+     weekdayDelayedConfirm == "ALL DELAYED" ? true :
+     weekdayDelayedConfirm == "RANGE >= MIN" ? not na(openingRangeAtr) and openingRangeAtr >= delayedMinOpenRangeAtr :
+     weekdayDelayedConfirm == "EFFICIENCY >= MIN" ? openingEfficiency >= delayedMinOpenEfficiency :
+     weekdayDelayedConfirm == "EDGE CLOSE" ? openingEdgeClose :
+     weekdayDelayedConfirm == "RANGE + EFFICIENCY + EDGE" ?
+          not na(openingRangeAtr) and openingRangeAtr >= delayedMinOpenRangeAtr and
+          openingEfficiency >= delayedMinOpenEfficiency and openingEdgeClose :
+     not na(openingBodyAtr) and math.abs(openingBodyAtr) >= delayedMinOpenBodyAtr and
+          openingEfficiency >= delayedMinOpenEfficiency and openingEdgeClose
+
+var int lastNyAnchor = na
+var int lastWeeklyAnchor = na
+var int lastWeekdayImmediateAnchor = na
+var int lastWeekdayDelayedAnchor = na
+var string lastPassport = "WAITING"
+var float lastNyTargetPoints = na
+var float lastWeeklyTargetPoints = na
+var float lastWeekdayTargetPoints = na
+var int lastNyTargetTicks = na
+var int lastWeeklyTargetTicks = na
+var int lastWeekdayTargetTicks = na
+var int nySignals = 0
+var int weeklySignals = 0
+var int weekdayPremiumSignals = 0
+var int weekdayWeakSignals = 0
+var int weekdayDelayedSignals = 0
+var int weekdayDelayedRejected = 0
+var int lastWeekdayRouteQty = 1
+var string lastRouteLabel = "WAITING"
+var string lastEntryContext = "NONE"
+
+var bool weekdayDelayPending = false
+var int pendingClockDateKey = na
+var int pendingTradeDateKey = na
+var float pendingPreReference = na
+var float pendingPreRangeAtr = na
+var string pendingPreState = "NONE"
+var string pendingPreContext = ""
+
+bool flatAndReady = strategy.position_size == 0 and strategy.opentrades == 0
+
+if barstate.isconfirmed and authorityOk and nextInDate and rawNextStartsWeekday and flatAndReady
+    weekdayDelayPending := weekdayDelayCandidate
+    pendingClockDateKey := clockDateKey
+    pendingTradeDateKey := tradeDateKey
+    pendingPreReference := close
+    pendingPreRangeAtr := prior30RangeAtr
+    pendingPreState := ctxState
+    pendingPreContext := f_ctx_telemetry()
+
+f_corridor(float referencePrice) =>
+    math.min(math.max(referencePrice * corridorFactor, corridorFloor), corridorCeiling)
+
+f_target_ticks(float referencePrice, float multiplier) =>
+    float corridor = f_corridor(referencePrice)
+    float fullMovePoints = (corridor + refModeledLoss + refModeledCost) / refDollarsPerPoint
+    int fullTicks = int(math.max(1.0, math.ceil(fullMovePoints / tick)))
+    int(math.max(1.0, math.ceil(fullTicks * multiplier)))
+
+f_route_message(string eventName, string actionName, string routeName, int quantity,
+                int stopTicks, int targetTicks, int eventKey) =>
+    string routedEvent = liveRouteArmed ? eventName : "BLOCKED"
+    string routedAction = liveRouteArmed ? actionName : "NONE"
+    "{\"protocol\":\"" + routerProtocol +
+     "\",\"system\":\"NQ09B_CC\"" +
+     ",\"worker\":\"" + workerSide + "\"" +
+     ",\"account_alias\":\"" + accountAlias + "\"" +
+     ",\"target\":\"" + controllerTarget + "\"" +
+     ",\"mode\":\"" + operatingMode + "\"" +
+     ",\"event\":\"" + routedEvent + "\"" +
+     ",\"action\":\"" + routedAction + "\"" +
+     ",\"route\":\"" + routeName + "\"" +
+     ",\"event_key\":" + str.tostring(eventKey) +
+     ",\"quantity\":" + str.tostring(quantity) +
+     ",\"size_profile\":\"" + sizeCode + "\"" +
+     ",\"symbol\":\"" + (brokerSymbolMapped ? brokerSymbolAlias : syminfo.ticker) + "\"" +
+     ",\"chart_symbol\":\"" + syminfo.ticker + "\"" +
+     ",\"tv_order_id\":\"{{strategy.order.id}}\"" +
+     ",\"tv_fill_price\":\"{{strategy.order.price}}\"" +
+     ",\"tv_market_position\":\"{{strategy.market_position}}\"" +
+     ",\"timeframe\":\"30m\"" +
+     ",\"reference_price\":" + str.tostring(close, format.mintick) +
+     ",\"stop_ticks\":" + str.tostring(stopTicks) +
+     ",\"target_ticks\":" + str.tostring(targetTicks) +
+     ",\"bar_time_ms\":" + str.tostring(nextBarTime) +
+     ",\"event_time_ms\":" + str.tostring(timenow) + "}"
+
+if barstate.isconfirmed and authorityOk and nextInDate and nextStartsNy and flatAndReady and
+     (na(lastNyAnchor) or nextBarTime != lastNyAnchor)
+    int targetTicks = f_target_ticks(close, nyMultiplier)
+    int stopTicks = int(math.max(1.0, math.round(stopPoints / tick)))
+    float targetPoints = targetTicks * tick
+
+    string telemetry = "NQ09B|clock" + str.tostring(clockDateKey) +
+         "|trade" + str.tostring(clockDateKey) +
+         "|classNY|sideSELL|q" + str.tostring(strongRouteQty) + "|timNY0930|tm" + nyTargetMode +
+         "|sp" + str.tostring(stopPoints, "#.00") +
+         "|tp" + str.tostring(targetPoints, "#.00") +
+         "|ref" + str.tostring(close, "#.00") +
+         "|risk" + str.tostring(modeledStrongPairDoubleStop, "#.00") + f_ctx_telemetry()
+
+    strategy.entry("NQ09B NY SELL", strategy.short, qty=strongRouteQty,
+         comment=cleanChart ? "[CC] SELL NY|" + syncProfileCode : telemetry,
+         alert_message=f_route_message("ENTRY", "OPEN_SHORT", "NY", strongRouteQty, stopTicks, targetTicks, clockDateKey))
+    strategy.exit("NQ09B NY SELL EXIT", from_entry="NQ09B NY SELL", qty=strongRouteQty,
+         loss=stopTicks, profit=targetTicks,
+         comment_loss="NQ09B SELL NY STOP",
+         comment_profit="NQ09B SELL NY " + nyTargetMode,
+         alert_loss=f_route_message("STOP", "CLOSE_SHORT", "NY", strongRouteQty, stopTicks, targetTicks, clockDateKey),
+         alert_profit=f_route_message("TARGET", "CLOSE_SHORT", "NY", strongRouteQty, stopTicks, targetTicks, clockDateKey))
+
+    lastNyAnchor := nextBarTime
+    lastPassport := "NY"
+    lastRouteLabel := "NY"
+    lastEntryContext := ctxState
+    lastNyTargetPoints := targetPoints
+    lastNyTargetTicks := targetTicks
+    nySignals += 1
+
+if barstate.isconfirmed and authorityOk and nextInDate and nextStartsWeekly and flatAndReady and
+     (na(lastWeeklyAnchor) or nextBarTime != lastWeeklyAnchor)
+    int targetTicks = f_target_ticks(close, weeklyMultiplier)
+    int stopTicks = int(math.max(1.0, math.round(stopPoints / tick)))
+    float targetPoints = targetTicks * tick
+
+    string telemetry = "NQ09B|clock" + str.tostring(clockDateKey) +
+         "|trade" + str.tostring(tradeDateKey) +
+         "|classWEEKLY_OPEN|sideSELL|q" + str.tostring(strongRouteQty) + "|tim" + weeklyTiming +
+         "|tm" + weeklyTargetMode +
+         "|sp" + str.tostring(stopPoints, "#.00") +
+         "|tp" + str.tostring(targetPoints, "#.00") +
+         "|ref" + str.tostring(close, "#.00") +
+         "|pdr" + str.tostring(priorDayReturnAtr, "#.###") +
+         "|pwr" + str.tostring(priorWeekReturnAtr, "#.###") +
+         "|r30" + str.tostring(prior30RangeAtr, "#.###") +
+         "|gate" + str.tostring(weekdayMinPrior30RangeAtr, "#.00") +
+         "|risk" + str.tostring(modeledStrongPairDoubleStop, "#.00") + f_ctx_telemetry()
+
+    strategy.entry("NQ09B WEEKLY SELL", strategy.short, qty=strongRouteQty,
+         comment=cleanChart ? "[CC] SELL WEEKLY|" + syncProfileCode : telemetry,
+         alert_message=f_route_message("ENTRY", "OPEN_SHORT", "WEEKLY", strongRouteQty, stopTicks, targetTicks, tradeDateKey))
+    strategy.exit("NQ09B WEEKLY SELL EXIT", from_entry="NQ09B WEEKLY SELL", qty=strongRouteQty,
+         loss=stopTicks, profit=targetTicks,
+         comment_loss="NQ09B SELL WEEKLY STOP",
+         comment_profit="NQ09B SELL WEEKLY " + weeklyTargetMode,
+         alert_loss=f_route_message("STOP", "CLOSE_SHORT", "WEEKLY", strongRouteQty, stopTicks, targetTicks, tradeDateKey),
+         alert_profit=f_route_message("TARGET", "CLOSE_SHORT", "WEEKLY", strongRouteQty, stopTicks, targetTicks, tradeDateKey))
+
+    lastWeeklyAnchor := nextBarTime
+    lastPassport := "WEEKLY"
+    lastRouteLabel := "WEEKLY"
+    lastEntryContext := ctxState
+    lastWeeklyTargetPoints := targetPoints
+    lastWeeklyTargetTicks := targetTicks
+    weeklySignals += 1
+
+if barstate.isconfirmed and authorityOk and nextInDate and nextStartsWeekdayImmediate and flatAndReady and
+     (na(lastWeekdayImmediateAnchor) or nextBarTime != lastWeekdayImmediateAnchor)
+    bool premiumRoute = weekdayStrongState
+    string activeWeekdayTargetMode = premiumRoute ? weekdayPremiumTargetMode : weekdayWeakTargetMode
+    float activeWeekdayMultiplier = premiumRoute ? weekdayPremiumMultiplier : weekdayWeakMultiplier
+    string activeWeekdayRoute = premiumRoute ? "PREMIUM" : "WEAK"
+    int activeWeekdayQty = premiumRoute ? strongRouteQty : weakRouteQty
+    float activePairDoubleStop = premiumRoute ? modeledStrongPairDoubleStop : modeledWeakPairDoubleStop
+
+    int targetTicks = f_target_ticks(close, activeWeekdayMultiplier)
+    int stopTicks = int(math.max(1.0, math.round(stopPoints / tick)))
+    float targetPoints = targetTicks * tick
+
+    string telemetry = "NQ09B|clock" + str.tostring(clockDateKey) +
+         "|trade" + str.tostring(tradeDateKey) +
+         "|classDAILY_REOPEN|routeIMM1800_" + activeWeekdayRoute +
+         "|sideSELL|q" + str.tostring(activeWeekdayQty) + "|tim18:00" +
+         "|tm" + activeWeekdayTargetMode +
+         "|sp" + str.tostring(stopPoints, "#.00") +
+         "|tp" + str.tostring(targetPoints, "#.00") +
+         "|ref" + str.tostring(close, "#.00") +
+         "|r30" + str.tostring(prior30RangeAtr, "#.###") +
+         "|gate" + str.tostring(weekdayMinPrior30RangeAtr, "#.00") +
+         "|risk" + str.tostring(activePairDoubleStop, "#.00") + f_ctx_telemetry()
+
+    strategy.entry("NQ09B WEEKDAY 1800 SELL", strategy.short, qty=activeWeekdayQty,
+         comment=cleanChart ? "[CC] SELL " + activeWeekdayRoute + "|" + syncProfileCode : telemetry,
+         alert_message=f_route_message("ENTRY", "OPEN_SHORT", "WEEKDAY_" + activeWeekdayRoute,
+              activeWeekdayQty, stopTicks, targetTicks, tradeDateKey))
+    strategy.exit("NQ09B WEEKDAY 1800 SELL EXIT", from_entry="NQ09B WEEKDAY 1800 SELL", qty=activeWeekdayQty,
+         loss=stopTicks, profit=targetTicks,
+         comment_loss="NQ09B SELL WEEKDAY 1800 STOP",
+         comment_profit="NQ09B SELL WEEKDAY 1800 " + activeWeekdayTargetMode,
+         alert_loss=f_route_message("STOP", "CLOSE_SHORT", "WEEKDAY_" + activeWeekdayRoute,
+              activeWeekdayQty, stopTicks, targetTicks, tradeDateKey),
+         alert_profit=f_route_message("TARGET", "CLOSE_SHORT", "WEEKDAY_" + activeWeekdayRoute,
+              activeWeekdayQty, stopTicks, targetTicks, tradeDateKey))
+
+    weekdayDelayPending := false
+    lastWeekdayImmediateAnchor := nextBarTime
+    lastPassport := "WEEKDAY18"
+    lastWeekdayRouteQty := activeWeekdayQty
+    lastRouteLabel := premiumRoute ? "WKDAY PREMIUM" : "WKDAY WEAK"
+    lastEntryContext := ctxState
+    lastWeekdayTargetPoints := targetPoints
+    lastWeekdayTargetTicks := targetTicks
+    if premiumRoute
+        weekdayPremiumSignals += 1
+    else
+        weekdayWeakSignals += 1
+
+if barstate.isconfirmed and authorityOk and nextInDate and nextStartsWeekdayDelayed and weekdayDelayPending and flatAndReady and
+     (na(lastWeekdayDelayedAnchor) or nextBarTime != lastWeekdayDelayedAnchor)
+    if delayedConfirmationOk
+        int targetTicks = f_target_ticks(close, weekdayWeakMultiplier)
+        int stopTicks = int(math.max(1.0, math.round(stopPoints / tick)))
+        float targetPoints = targetTicks * tick
+
+        string telemetry = "NQ09B|clock" + str.tostring(pendingClockDateKey) +
+             "|trade" + str.tostring(pendingTradeDateKey) +
+             "|classDAILY_REOPEN|routeDLY1830|sideSELL|q" + str.tostring(weakRouteQty) + "|tim18:30" +
+             "|tm" + weekdayWeakTargetMode +
+             "|sp" + str.tostring(stopPoints, "#.00") +
+             "|tp" + str.tostring(targetPoints, "#.00") +
+             "|ref" + str.tostring(close, "#.00") +
+             "|preRef" + str.tostring(pendingPreReference, "#.00") +
+             "|preR30" + str.tostring(pendingPreRangeAtr, "#.###") +
+             "|preState" + pendingPreState +
+             "|or" + str.tostring(openingRangeAtr, "#.###") +
+             "|ob" + str.tostring(openingBodyAtr, "#.###") +
+             "|oe" + str.tostring(openingEfficiency, "#.###") +
+             "|ocl" + str.tostring(openingCloseLocation, "#.###") +
+             "|confirm" + weekdayDelayedConfirm +
+             "|risk" + str.tostring(modeledWeakPairDoubleStop, "#.00") + pendingPreContext
+
+        strategy.entry("NQ09B WEEKDAY 1830 SELL", strategy.short, qty=weakRouteQty,
+             comment=cleanChart ? "[CC] SELL 18:30|" + syncProfileCode : telemetry,
+             alert_message=f_route_message("ENTRY", "OPEN_SHORT", "WEEKDAY_1830", weakRouteQty,
+                  stopTicks, targetTicks, pendingTradeDateKey))
+        strategy.exit("NQ09B WEEKDAY 1830 SELL EXIT", from_entry="NQ09B WEEKDAY 1830 SELL", qty=weakRouteQty,
+             loss=stopTicks, profit=targetTicks,
+             comment_loss="NQ09B SELL WEEKDAY 1830 STOP",
+             comment_profit="NQ09B SELL WEEKDAY 1830 " + weekdayWeakTargetMode,
+             alert_loss=f_route_message("STOP", "CLOSE_SHORT", "WEEKDAY_1830", weakRouteQty,
+                  stopTicks, targetTicks, pendingTradeDateKey),
+             alert_profit=f_route_message("TARGET", "CLOSE_SHORT", "WEEKDAY_1830", weakRouteQty,
+                  stopTicks, targetTicks, pendingTradeDateKey))
+
+        lastWeekdayDelayedAnchor := nextBarTime
+        lastPassport := "WEEKDAY1830"
+        lastWeekdayRouteQty := weakRouteQty
+        lastRouteLabel := "WKDAY 18:30"
+        lastEntryContext := pendingPreState
+        lastWeekdayTargetPoints := targetPoints
+        lastWeekdayTargetTicks := targetTicks
+        weekdayDelayedSignals += 1
+    else
+        weekdayDelayedRejected += 1
+
+    weekdayDelayPending := false
+
+if weekdayDelayPending and not inAsia and not rawNextStartsWeekday
+    weekdayDelayPending := false
+
+if barstate.isconfirmed and nyEnd and strategy.position_size != 0 and lastPassport == "NY"
+    strategy.cancel_all()
+    strategy.close("NQ09B NY SELL", immediately=true, comment="NQ09B SELL NY SESSION END",
+         alert_message=f_route_message("SESSION_FLAT", "FLATTEN", "NY", strongRouteQty,
+              int(math.max(1.0, math.round(stopPoints / tick))), lastNyTargetTicks, lastNyAnchor))
+
+if barstate.isconfirmed and asiaEnd and strategy.position_size != 0 and lastPassport == "WEEKLY"
+    strategy.cancel_all()
+    strategy.close("NQ09B WEEKLY SELL", immediately=true, comment="NQ09B SELL WEEKLY SESSION END",
+         alert_message=f_route_message("SESSION_FLAT", "FLATTEN", "WEEKLY", strongRouteQty,
+              int(math.max(1.0, math.round(stopPoints / tick))), lastWeeklyTargetTicks, lastWeeklyAnchor))
+
+if barstate.isconfirmed and asiaEnd and strategy.position_size != 0 and lastPassport == "WEEKDAY18"
+    strategy.cancel_all()
+    strategy.close("NQ09B WEEKDAY 1800 SELL", immediately=true,
+         comment="NQ09B SELL WEEKDAY 1800 SESSION END",
+         alert_message=f_route_message("SESSION_FLAT", "FLATTEN",
+              lastRouteLabel == "WKDAY PREMIUM" ? "WEEKDAY_PREMIUM" : "WEEKDAY_WEAK", lastWeekdayRouteQty,
+              int(math.max(1.0, math.round(stopPoints / tick))), lastWeekdayTargetTicks, lastWeekdayImmediateAnchor))
+
+if barstate.isconfirmed and asiaEnd and strategy.position_size != 0 and lastPassport == "WEEKDAY1830"
+    strategy.cancel_all()
+    strategy.close("NQ09B WEEKDAY 1830 SELL", immediately=true,
+         comment="NQ09B SELL WEEKDAY 1830 SESSION END",
+         alert_message=f_route_message("SESSION_FLAT", "FLATTEN", "WEEKDAY_1830", weakRouteQty,
+              int(math.max(1.0, math.round(stopPoints / tick))), lastWeekdayTargetTicks, lastWeekdayDelayedAnchor))
+
+
+// ============================================================================
+// CAP10 R2 SHADOW REPORT LEDGER
+// Reconstructs Q1-Q10 from actual native closed trades using per-contract P/L.
+// Two views:
+// 1) UNIFORM Q/Q: every route uses Q.
+// 2) STRONG Q / WEAK 1: NY/WEEKLY/PREMIUM use Q; WEAK stays 1.
+// This is same-fill TradingView arithmetic only. It has ZERO execution authority.
+// ============================================================================
+var array<float> capUNet = array.new_float(10, 0.0)
+var array<float> capUGrossProfit = array.new_float(10, 0.0)
+var array<float> capUGrossLoss = array.new_float(10, 0.0)
+var array<float> capUEquity = array.new_float(10, 0.0)
+var array<float> capUPeak = array.new_float(10, 0.0)
+var array<float> capUMaxDd = array.new_float(10, 0.0)
+
+var array<float> capSNet = array.new_float(10, 0.0)
+var array<float> capSGrossProfit = array.new_float(10, 0.0)
+var array<float> capSGrossLoss = array.new_float(10, 0.0)
+var array<float> capSEquity = array.new_float(10, 0.0)
+var array<float> capSPeak = array.new_float(10, 0.0)
+var array<float> capSMaxDd = array.new_float(10, 0.0)
+
+var int capProcessedClosed = 0
+var int capWeakTrades = 0
+var int capStrongTrades = 0
+
+if strategy.closedtrades > capProcessedClosed
+    int capFirstAvailable = strategy.closedtrades.first_index
+    int capStart = math.max(capProcessedClosed, capFirstAvailable)
+    for capTradeNum = capStart to strategy.closedtrades - 1
+        float capTradeProfit = strategy.closedtrades.profit(capTradeNum)
+        float capTradeQty = math.abs(strategy.closedtrades.size(capTradeNum))
+        string capEntryComment = strategy.closedtrades.entry_comment(capTradeNum)
+        string capUpperComment = str.upper(capEntryComment)
+        bool capIsWeak = str.contains(capUpperComment, "WEAK") or str.contains(capUpperComment, "18:30")
+        float capUnitProfit = capTradeQty > 0 ? capTradeProfit / capTradeQty : 0.0
+
+        if capIsWeak
+            capWeakTrades += 1
+        else
+            capStrongTrades += 1
+
+        for capIdx = 0 to 9
+            int capQ = capIdx + 1
+            float capUniformPnl = capUnitProfit * capQ
+            float capStrongWeakPnl = capUnitProfit * (capIsWeak ? 1 : capQ)
+
+            float uNet = array.get(capUNet, capIdx) + capUniformPnl
+            float uGp = array.get(capUGrossProfit, capIdx) + math.max(capUniformPnl, 0.0)
+            float uGl = array.get(capUGrossLoss, capIdx) + math.min(capUniformPnl, 0.0)
+            float uEq = array.get(capUEquity, capIdx) + capUniformPnl
+            float uPeak = math.max(array.get(capUPeak, capIdx), uEq)
+            float uDd = uEq - uPeak
+            float uMaxDd = math.min(array.get(capUMaxDd, capIdx), uDd)
+            array.set(capUNet, capIdx, uNet)
+            array.set(capUGrossProfit, capIdx, uGp)
+            array.set(capUGrossLoss, capIdx, uGl)
+            array.set(capUEquity, capIdx, uEq)
+            array.set(capUPeak, capIdx, uPeak)
+            array.set(capUMaxDd, capIdx, uMaxDd)
+
+            float sNet = array.get(capSNet, capIdx) + capStrongWeakPnl
+            float sGp = array.get(capSGrossProfit, capIdx) + math.max(capStrongWeakPnl, 0.0)
+            float sGl = array.get(capSGrossLoss, capIdx) + math.min(capStrongWeakPnl, 0.0)
+            float sEq = array.get(capSEquity, capIdx) + capStrongWeakPnl
+            float sPeak = math.max(array.get(capSPeak, capIdx), sEq)
+            float sDd = sEq - sPeak
+            float sMaxDd = math.min(array.get(capSMaxDd, capIdx), sDd)
+            array.set(capSNet, capIdx, sNet)
+            array.set(capSGrossProfit, capIdx, sGp)
+            array.set(capSGrossLoss, capIdx, sGl)
+            array.set(capSEquity, capIdx, sEq)
+            array.set(capSPeak, capIdx, sPeak)
+            array.set(capSMaxDd, capIdx, sMaxDd)
+
+    capProcessedClosed := strategy.closedtrades
+
+float avgNy = strategy.position_size != 0 and lastPassport == "NY" ? strategy.position_avg_price : na
+float avgWeekly = strategy.position_size != 0 and lastPassport == "WEEKLY" ? strategy.position_avg_price : na
+float avgWeekday = strategy.position_size != 0 and
+     (lastPassport == "WEEKDAY18" or lastPassport == "WEEKDAY1830") ? strategy.position_avg_price : na
+
+float nyStopLevel = not na(avgNy) ? avgNy + stopPoints : na
+float nyTargetLevel = not na(avgNy) and not na(lastNyTargetTicks) ? avgNy - lastNyTargetTicks * tick : na
+float weeklyStopLevel = not na(avgWeekly) ? avgWeekly + stopPoints : na
+float weeklyTargetLevel = not na(avgWeekly) and not na(lastWeeklyTargetTicks) ? avgWeekly - lastWeeklyTargetTicks * tick : na
+float weekdayStopLevel = not na(avgWeekday) ? avgWeekday + stopPoints : na
+float weekdayTargetLevel = not na(avgWeekday) and not na(lastWeekdayTargetTicks) ? avgWeekday - lastWeekdayTargetTicks * tick : na
+
+plot(showLevels ? avgNy : na, "NY Entry", color=color.blue, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? nyStopLevel : na, "NY Stop", color=color.red, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? nyTargetLevel : na, "NY Target", color=color.green, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? avgWeekly : na, "Weekly Entry", color=color.blue, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? weeklyStopLevel : na, "Weekly Stop", color=color.red, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? weeklyTargetLevel : na, "Weekly Target", color=color.green, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? avgWeekday : na, "Weekday Entry", color=color.blue, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? weekdayStopLevel : na, "Weekday Stop", color=color.red, linewidth=2, style=plot.style_linebr)
+plot(showLevels ? weekdayTargetLevel : na, "Weekday Target", color=color.green, linewidth=2, style=plot.style_linebr)
+
+plot(lastNyTargetPoints, "NY target points", display=display.data_window)
+plot(lastWeeklyTargetPoints, "Weekly-open target points", display=display.data_window)
+plot(lastWeekdayTargetPoints, "Weekday-reopen target points", display=display.data_window)
+plot(modeledPairDoubleStop, "Modeled pair double stop $", display=display.data_window)
+plot(nySignals, "NY signals", display=display.data_window)
+plot(weeklySignals, "Weekly-open signals", display=display.data_window)
+plot(weekdayPremiumSignals, "Weekday premium 18:00 signals", display=display.data_window)
+plot(weekdayWeakSignals, "Weekday weak 18:00 signals", display=display.data_window)
+plot(weekdayDelayedSignals, "Weekday 18:30 signals", display=display.data_window)
+plot(weekdayDelayedRejected, "Weekday delayed rejections", display=display.data_window)
+plot(strategy.max_drawdown, "Native max drawdown", display=display.data_window)
+plot(ctxRet60Atr, "Shadow 60m return / ATR", display=display.data_window)
+plot(ctxRange60Atr, "Shadow 60m range / ATR", display=display.data_window)
+plot(ctxEfficiency60, "Shadow 60m efficiency", display=display.data_window)
+plot(ctxWickConflict, "Shadow wick conflict", display=display.data_window)
+plot(ctxCompression, "Shadow compression", display=display.data_window)
+
+color ccBlack = color.rgb(0, 0, 0)
+color ccGrid = color.rgb(65, 65, 70)
+color ccMuted = color.rgb(190, 190, 195)
+color ccGood = color.lime
+color ccBad = color.red
+color ccWarn = color.orange
+color ccAqua = color.aqua
+string ccTextSize = uiScale == "COMPACT" ? size.tiny :
+     uiScale == "LARGE" ? size.normal : size.small
+
+f_cc_cell(table panel, int column, int row, string value, color valueColor) =>
+    table.cell(panel, column, row, value, text_color=valueColor, bgcolor=ccBlack,
+         text_size=ccTextSize, text_halign=column == 0 ? text.align_left : text.align_right)
+
+f_cc_money(float value) =>
+    (value >= 0 ? "+$" : "-$") + str.tostring(math.abs(value), "#,###,##0.00")
+
+var table dash = table.new(position.top_right, 2, 21, bgcolor=ccBlack,
+     frame_color=ccGrid, frame_width=1, border_color=ccGrid, border_width=1)
+var table recentDash = table.new(position.bottom_right, 4, 6, bgcolor=ccBlack,
+     frame_color=ccGrid, frame_width=1, border_color=ccGrid, border_width=1)
+var table capDash = table.new(position.bottom_left, 7, 12, bgcolor=ccBlack,
+     frame_color=ccGrid, frame_width=1, border_color=ccGrid, border_width=1)
+
+// Populate the COMPLETE structure immediately. table.new() alone is invisible
+// until cells exist, so the full cockpit stays visible while history calculates.
+if barstate.isfirst
+    f_cc_cell(dash, 0, 0, "Flip Flop", color.white)
+    f_cc_cell(dash, 1, 0, workerSide + " • SYNCING", ccWarn)
+    f_cc_cell(dash, 0, 1, "Engine", ccMuted)
+    f_cc_cell(dash, 1, 1, "NQ09B • SYNCING", ccWarn)
+    f_cc_cell(dash, 0, 2, "Account", ccMuted)
+    f_cc_cell(dash, 1, 2, accountAlias, color.white)
+    f_cc_cell(dash, 0, 3, "Chart check", ccMuted)
+    f_cc_cell(dash, 1, 3, "VALIDATING", ccWarn)
+    f_cc_cell(dash, 0, 4, "Test window", ccMuted)
+    f_cc_cell(dash, 1, 4, engineWindow, color.white)
+    f_cc_cell(dash, 0, 5, "Sizing", ccMuted)
+    f_cc_cell(dash, 1, 5, contractMode, capacityResearchMode or safeOneMode ? ccWarn : ccGood)
+    f_cc_cell(dash, 0, 6, "Route size", ccMuted)
+    f_cc_cell(dash, 1, 6, sizeCode + " NQ", color.white)
+    f_cc_cell(dash, 0, 7, "Routing", ccMuted)
+    f_cc_cell(dash, 1, 7, "PAPER • OFF", ccWarn)
+    f_cc_cell(dash, 0, 8, "Broker link", ccMuted)
+    f_cc_cell(dash, 1, 8, "UNVERIFIED • PINE ONLY", ccWarn)
+    f_cc_cell(dash, 0, 9, "Entry lock", ccMuted)
+    f_cc_cell(dash, 1, 9, manualKill ? "ON" : "OFF", manualKill ? ccBad : ccGood)
+    f_cc_cell(dash, 0, 10, "Position", ccMuted)
+    f_cc_cell(dash, 1, 10, "FLAT", color.white)
+    f_cc_cell(dash, 0, 11, "Route • state", ccMuted)
+    f_cc_cell(dash, 1, 11, "AWAITING SIGNAL", ccMuted)
+    f_cc_cell(dash, 0, 12, "Entry • stop", ccMuted)
+    f_cc_cell(dash, 1, 12, "- / -", ccMuted)
+    f_cc_cell(dash, 0, 13, "Target", ccMuted)
+    f_cc_cell(dash, 1, 13, "-", ccMuted)
+    f_cc_cell(dash, 0, 14, "Pair max-stop risk", ccMuted)
+    f_cc_cell(dash, 1, 14, "$" + str.tostring(modeledPairDoubleStop, "#,###.00"), ccWarn)
+    f_cc_cell(dash, 0, 15, "Data sync", ccMuted)
+    f_cc_cell(dash, 1, 15, "STARTING", ccWarn)
+    f_cc_cell(dash, 0, 16, "Last signal", ccMuted)
+    f_cc_cell(dash, 1, 16, "NONE YET", ccMuted)
+    f_cc_cell(dash, 0, 17, "Net • PF • DD", ccMuted)
+    f_cc_cell(dash, 1, 17, "+$0.00 • -- • $0.00", ccWarn)
+    f_cc_cell(dash, 0, 18, "System", ccMuted)
+    f_cc_cell(dash, 1, 18, "SYNCING HISTORY", ccWarn)
+    f_cc_cell(dash, 0, 19, "Report span", ccMuted)
+    f_cc_cell(dash, 1, 19, "CHECKING", ccWarn)
+    f_cc_cell(dash, 0, 20, "Sync profile", ccMuted)
+    f_cc_cell(dash, 1, 20, syncProfileCode, color.white)
+
+    if showCap10Matrix
+        f_cc_cell(capDash, 0, 0, "Q", ccAqua)
+        f_cc_cell(capDash, 1, 0, "UNIFORM NET", ccAqua)
+        f_cc_cell(capDash, 2, 0, "U PF", ccAqua)
+        f_cc_cell(capDash, 3, 0, "U DD", ccAqua)
+        f_cc_cell(capDash, 4, 0, "STRONG/WEAK NET", ccAqua)
+        f_cc_cell(capDash, 5, 0, "S/W PF", ccAqua)
+        f_cc_cell(capDash, 6, 0, "S/W DD", ccAqua)
+        for capRow = 1 to 10
+            f_cc_cell(capDash, 0, capRow, "Q" + str.tostring(capRow), color.white)
+            for capCol = 1 to 6
+                f_cc_cell(capDash, capCol, capRow, "SYNCING", ccMuted)
+        f_cc_cell(capDash, 0, 11, "TV SAME-FILL", ccWarn)
+        f_cc_cell(capDash, 1, 11, "SHADOW", ccWarn)
+        f_cc_cell(capDash, 2, 11, "", ccMuted)
+        f_cc_cell(capDash, 3, 11, "", ccMuted)
+        f_cc_cell(capDash, 4, 11, "NO ORDER IMPACT", ccWarn)
+        f_cc_cell(capDash, 5, 11, "", ccMuted)
+        f_cc_cell(capDash, 6, 11, "", ccMuted)
+
+    f_cc_cell(recentDash, 0, 0, "LIVE NOW", ccAqua)
+    f_cc_cell(recentDash, 1, 0, "ENTRY • LIVE", ccMuted)
+    f_cc_cell(recentDash, 2, 0, "STOP • TARGET", ccMuted)
+    f_cc_cell(recentDash, 3, 0, "OPEN P/L", ccMuted)
+    f_cc_cell(recentDash, 0, 1, "FLAT • SYNCING", ccWarn)
+    f_cc_cell(recentDash, 1, 1, "LAST SIGNAL\nNONE YET", ccMuted)
+    f_cc_cell(recentDash, 2, 1, "LAST EXIT\n-", ccMuted)
+    f_cc_cell(recentDash, 3, 1, "+$0.00", ccMuted)
+    f_cc_cell(recentDash, 0, 2, "LAST 3 CLOSED", color.white)
+    f_cc_cell(recentDash, 1, 2, "ENTRY", ccMuted)
+    f_cc_cell(recentDash, 2, 2, "EXIT", ccMuted)
+    f_cc_cell(recentDash, 3, 2, "P/L", ccMuted)
+    for loadingRow = 3 to 5
+        f_cc_cell(recentDash, 0, loadingRow, "WAITING", ccMuted)
+        f_cc_cell(recentDash, 1, loadingRow, "-", ccMuted)
+        f_cc_cell(recentDash, 2, loadingRow, "-", ccMuted)
+        f_cc_cell(recentDash, 3, loadingRow, "-", ccMuted)
+
+// Refresh real native strategy data during the historical pass and again on
+// the final/realtime bar. Intermediate values are explicitly labeled PARTIAL.
+bool uiRefresh = barstate.isfirst or barstate.islast or bar_index % 250 == 0
+bool uiHistoryLoading = not barstate.islast
+
+if uiRefresh
+    table.set_position(dash, position.top_right)
+    table.set_position(recentDash, position.bottom_right)
+    table.clear(dash, 0, 0, 1, 20)
+    table.clear(recentDash, 0, 0, 3, 5)
+    if showCap10Matrix
+        table.clear(capDash, 0, 0, 6, 11)
+
+    float pf = strategy.grossloss > 0 ? strategy.grossprofit / strategy.grossloss : na
+    string pfText = na(pf) ? "--" : str.tostring(pf, "#.000")
+    bool hasPosition = strategy.position_size != 0
+    float activeEntry = hasPosition ? strategy.position_avg_price : na
+    float activeStop = lastPassport == "NY" ? nyStopLevel :
+         lastPassport == "WEEKLY" ? weeklyStopLevel : weekdayStopLevel
+    float activeTarget = lastPassport == "NY" ? nyTargetLevel :
+         lastPassport == "WEEKLY" ? weeklyTargetLevel : weekdayTargetLevel
+    int currentQty = hasPosition ? int(math.abs(strategy.position_size)) : 0
+    float openPoints = hasPosition ? (close - activeEntry) * math.sign(strategy.position_size) : 0.0
+    float currentPairRisk = hasPosition ? 2.0 * currentQty * nqModeledLossPerContract : modeledPairDoubleStop
+    int latestAnchor = math.max(math.max(nz(lastNyAnchor, 0), nz(lastWeeklyAnchor, 0)),
+         math.max(nz(lastWeekdayImmediateAnchor, 0), nz(lastWeekdayDelayedAnchor, 0)))
+    string lastSignalText = latestAnchor > 0 ? str.format_time(latestAnchor, "MM/dd/yy HH:mm", nyTz) : "NONE"
+    string heartbeatText = uiHistoryLoading ? "SYNCING • BAR " + str.tostring(bar_index) :
+         barstate.isrealtime ? "LIVE • " + str.format_time(timenow, "HH:mm:ss", nyTz) :
+         reportIntegrityOk ? "HISTORY COMPLETE" : "PARTIAL HISTORY"
+    string positionText = hasPosition ? workerSide + " " + str.tostring(currentQty) + " • " + f_cc_money(strategy.openprofit) : "FLAT"
+    string routeState = lastRouteLabel
+    string routerState = operatingMode != "LIVE" ? operatingMode + " • ROUTING OFF" :
+         capacityResearchMode ? "LOCK • CAP10 RESEARCH" :
+         engineWindow != "FORWARD / LIVE" ? "LOCK • FORWARD WINDOW" :
+         controllerTarget != "LIVE" ? "LOCK • TARGET" :
+         not brokerSymbolMapped ? "LOCK • CONTRACT" :
+         not armLiveRouting ? "LOCK • ARM SWITCH" :
+         liveConfirmation != "ARM NQ09B LIVE" ? "LOCK • CONFIRMATION" :
+         not authorityOk ? "LOCK • AUTHORITY" :
+         not barstate.isrealtime ? "WAIT • REALTIME" : "ARMED • PINE"
+    color routerColor = liveRouteArmed ? ccAqua : operatingMode == "LIVE" ? ccBad : ccWarn
+    string engineState = manualKill ? "ENTRY LOCK ACTIVE" :
+         not identityOk ? "BLOCKED • CHART" :
+         not smartSizeProfileOk ? "BLOCKED • PROFILE" :
+         not riskGateOk ? "BLOCKED • RISK" :
+         frozenWindowEnded ? "AUDIT WINDOW ENDED" :
+         operatingMode == "MONITOR" ? "MONITOR ONLY" : "ENGINE READY"
+    color engineColor = engineState == "ENGINE READY" ? ccGood :
+         engineState == "MONITOR ONLY" or engineState == "AUDIT WINDOW ENDED" ? ccWarn : ccBad
+    string engineLabel = frozenWindowEnded ? "NQ09B • AUDIT ENDED" : engineWindow == "FROZEN AUDIT" ? "NQ09B • FROZEN" : "NQ09B • FORWARD"
+    int latestTradeIndex = strategy.closedtrades - 1
+    bool hasClosedTrade = latestTradeIndex >= 0
+    float latestClosedProfit = na
+    float latestClosedExitPrice = na
+    if hasClosedTrade
+        latestClosedProfit := strategy.closedtrades.profit(latestTradeIndex)
+        latestClosedExitPrice := strategy.closedtrades.exit_price(latestTradeIndex)
+    string liveStatusText = hasPosition ? workerSide + " " + str.tostring(currentQty) + "\n" + routeState : "FLAT\nLAST • " + routeState
+    string liveEntryText = hasPosition ? "ENTRY @" + str.tostring(activeEntry, format.mintick) + "\nLIVE @" + str.tostring(close, format.mintick) : "LAST SIGNAL\n" + lastSignalText
+    string liveBracketText = hasPosition ? "STOP @" + str.tostring(activeStop, format.mintick) + "\nTARGET @" + str.tostring(activeTarget, format.mintick) : hasClosedTrade ? "LAST EXIT\n@" + str.tostring(latestClosedExitPrice, format.mintick) : "LAST EXIT\n-"
+    string livePnlText = hasPosition ? f_cc_money(strategy.openprofit) + "\n" + str.tostring(openPoints, "#.00") + " pts" : hasClosedTrade ? f_cc_money(latestClosedProfit) : "+$0.00"
+    color livePnlColor = ccMuted
+    if hasPosition
+        livePnlColor := strategy.openprofit >= 0 ? ccGood : ccBad
+    else if hasClosedTrade
+        livePnlColor := latestClosedProfit >= 0 ? ccGood : ccBad
+
+    if showDashboard
+        f_cc_cell(dash, 0, 0, "Flip Flop", color.white)
+        f_cc_cell(dash, 1, 0, workerSide + (uiHistoryLoading ? " • SYNCING" : " • " + operatingMode), uiHistoryLoading ? ccWarn : operatingMode == "LIVE" ? ccAqua : ccGood)
+        f_cc_cell(dash, 0, 1, "Engine", ccMuted)
+        f_cc_cell(dash, 1, 1, engineLabel, frozenWindowEnded ? ccWarn : engineWindow == "FORWARD / LIVE" ? ccAqua : ccGood)
+        f_cc_cell(dash, 0, 2, "Account", ccMuted)
+        f_cc_cell(dash, 1, 2, accountAlias, color.white)
+        f_cc_cell(dash, 0, 3, "Chart check", ccMuted)
+        f_cc_cell(dash, 1, 3, identityOk ? "NQ1! | 30m | OK" : "BLOCKED", identityOk ? ccGood : ccBad)
+        f_cc_cell(dash, 0, 4, "Test window", ccMuted)
+        f_cc_cell(dash, 1, 4, engineWindow, engineWindow == "FORWARD / LIVE" ? ccAqua : color.white)
+        f_cc_cell(dash, 0, 5, "Sizing", ccMuted)
+        f_cc_cell(dash, 1, 5, contractMode, capacityResearchMode or safeOneMode ? ccWarn : ccGood)
+        f_cc_cell(dash, 0, 6, "Route size", ccMuted)
+        f_cc_cell(dash, 1, 6, sizeCode + " NQ", color.white)
+        f_cc_cell(dash, 0, 7, "Routing", ccMuted)
+        f_cc_cell(dash, 1, 7, routerState, routerColor)
+        f_cc_cell(dash, 0, 8, "Broker link", ccMuted)
+        f_cc_cell(dash, 1, 8, "UNVERIFIED • PINE ONLY", ccWarn)
+        f_cc_cell(dash, 0, 9, "Entry lock", ccMuted)
+        f_cc_cell(dash, 1, 9, manualKill ? "ON • BLOCKING ENTRIES" : "OFF", manualKill ? ccBad : ccGood)
+        f_cc_cell(dash, 0, 10, "Position", ccMuted)
+        f_cc_cell(dash, 1, 10, positionText, hasPosition ? ccAqua : color.white)
+        f_cc_cell(dash, 0, 11, "Route • state", ccMuted)
+        f_cc_cell(dash, 1, 11, routeState + " • " + ctxState, color.white)
+        f_cc_cell(dash, 0, 12, "Entry • stop", ccMuted)
+        f_cc_cell(dash, 1, 12, hasPosition ? str.tostring(activeEntry, format.mintick) + " / " + str.tostring(activeStop, format.mintick) : "- / -", hasPosition ? color.white : ccMuted)
+        f_cc_cell(dash, 0, 13, "Target", ccMuted)
+        f_cc_cell(dash, 1, 13, hasPosition ? str.tostring(activeTarget, format.mintick) : "-", hasPosition ? ccGood : ccMuted)
+        f_cc_cell(dash, 0, 14, "Pair max-stop risk", ccMuted)
+        f_cc_cell(dash, 1, 14, "$" + str.tostring(currentPairRisk, "#.00"), riskGateOk ? ccWarn : ccBad)
+        f_cc_cell(dash, 0, 15, "Data sync", ccMuted)
+        f_cc_cell(dash, 1, 15, heartbeatText, barstate.isrealtime ? ccGood : ccWarn)
+        f_cc_cell(dash, 0, 16, "Last signal", ccMuted)
+        f_cc_cell(dash, 1, 16, lastSignalText, color.white)
+        f_cc_cell(dash, 0, 17, "Net • PF • DD", ccMuted)
+        f_cc_cell(dash, 1, 17, f_cc_money(strategy.netprofit) + " • " + pfText + " • $" + str.tostring(strategy.max_drawdown, "#,###.00"), strategy.netprofit >= 0 ? ccGood : ccBad)
+        f_cc_cell(dash, 0, 18, "System", ccMuted)
+        f_cc_cell(dash, 1, 18, (uiHistoryLoading ? "SYNCING" : engineState) + " • " + str.tostring(strategy.closedtrades) + "T", uiHistoryLoading ? ccWarn : engineColor)
+        f_cc_cell(dash, 0, 19, "Report span", ccMuted)
+        f_cc_cell(dash, 1, 19, reportIntegrityText, reportIntegrityOk ? ccGood : ccBad)
+        f_cc_cell(dash, 0, 20, "Sync profile", ccMuted)
+        f_cc_cell(dash, 1, 20, syncProfileCode, color.white)
+
+    if showCap10Matrix
+        f_cc_cell(capDash, 0, 0, "Q", ccAqua)
+        f_cc_cell(capDash, 1, 0, "UNIFORM NET", ccAqua)
+        f_cc_cell(capDash, 2, 0, "U PF", ccAqua)
+        f_cc_cell(capDash, 3, 0, "U DD", ccAqua)
+        f_cc_cell(capDash, 4, 0, "STRONG/WEAK NET", ccAqua)
+        f_cc_cell(capDash, 5, 0, "S/W PF", ccAqua)
+        f_cc_cell(capDash, 6, 0, "S/W DD", ccAqua)
+        for capRow = 1 to 10
+            int capIdx = capRow - 1
+            float uNetR = array.get(capUNet, capIdx)
+            float uGpR = array.get(capUGrossProfit, capIdx)
+            float uGlR = array.get(capUGrossLoss, capIdx)
+            float uPfR = uGlR < 0 ? uGpR / math.abs(uGlR) : na
+            float uDdR = array.get(capUMaxDd, capIdx)
+            float sNetR = array.get(capSNet, capIdx)
+            float sGpR = array.get(capSGrossProfit, capIdx)
+            float sGlR = array.get(capSGrossLoss, capIdx)
+            float sPfR = sGlR < 0 ? sGpR / math.abs(sGlR) : na
+            float sDdR = array.get(capSMaxDd, capIdx)
+            f_cc_cell(capDash, 0, capRow, "Q" + str.tostring(capRow), color.white)
+            f_cc_cell(capDash, 1, capRow, f_cc_money(uNetR), uNetR >= 0 ? ccGood : ccBad)
+            f_cc_cell(capDash, 2, capRow, na(uPfR) ? "--" : str.tostring(uPfR, "#.000"), color.white)
+            f_cc_cell(capDash, 3, capRow, f_cc_money(uDdR), uDdR < 0 ? ccWarn : ccGood)
+            f_cc_cell(capDash, 4, capRow, f_cc_money(sNetR), sNetR >= 0 ? ccGood : ccBad)
+            f_cc_cell(capDash, 5, capRow, na(sPfR) ? "--" : str.tostring(sPfR, "#.000"), color.white)
+            f_cc_cell(capDash, 6, capRow, f_cc_money(sDdR), sDdR < 0 ? ccWarn : ccGood)
+        f_cc_cell(capDash, 0, 11, reportIntegrityOk ? "TV SAME-FILL" : "PARTIAL DATA", reportIntegrityOk ? ccGood : ccBad)
+        f_cc_cell(capDash, 1, 11, str.tostring(capStrongTrades) + " strong", ccMuted)
+        f_cc_cell(capDash, 2, 11, "", ccMuted)
+        f_cc_cell(capDash, 3, 11, "", ccMuted)
+        f_cc_cell(capDash, 4, 11, str.tostring(capWeakTrades) + " weak", ccMuted)
+        f_cc_cell(capDash, 5, 11, "", ccMuted)
+        f_cc_cell(capDash, 6, 11, "", ccMuted)
+
+    if showRecentTrades
+        f_cc_cell(recentDash, 0, 0, "LIVE NOW", ccAqua)
+        f_cc_cell(recentDash, 1, 0, "ENTRY • LIVE", ccMuted)
+        f_cc_cell(recentDash, 2, 0, "STOP • TARGET", ccMuted)
+        f_cc_cell(recentDash, 3, 0, "OPEN P/L", ccMuted)
+        f_cc_cell(recentDash, 0, 1, liveStatusText, hasPosition ? ccAqua : color.white)
+        f_cc_cell(recentDash, 1, 1, liveEntryText, color.white)
+        f_cc_cell(recentDash, 2, 1, liveBracketText, hasPosition ? ccWarn : ccMuted)
+        f_cc_cell(recentDash, 3, 1, livePnlText, livePnlColor)
+        f_cc_cell(recentDash, 0, 2, "LAST 3 CLOSED", color.white)
+        f_cc_cell(recentDash, 1, 2, "ENTRY", ccMuted)
+        f_cc_cell(recentDash, 2, 2, "EXIT", ccMuted)
+        f_cc_cell(recentDash, 3, 2, "P/L", ccMuted)
+        for row = 3 to 5
+            int tradeIndex = strategy.closedtrades - (row - 2)
+            if tradeIndex >= 0
+                int entryTime = strategy.closedtrades.entry_time(tradeIndex)
+                int exitTime = strategy.closedtrades.exit_time(tradeIndex)
+                float tradeProfit = strategy.closedtrades.profit(tradeIndex)
+                string tradeDate = str.format_time(entryTime, "MM/dd/yy", nyTz)
+                string entryText = str.format_time(entryTime, "HH:mm", nyTz) + "\n@" + str.tostring(strategy.closedtrades.entry_price(tradeIndex), format.mintick)
+                string exitText = str.format_time(exitTime, "HH:mm", nyTz) + "\n@" + str.tostring(strategy.closedtrades.exit_price(tradeIndex), format.mintick)
+                f_cc_cell(recentDash, 0, row, tradeDate, color.white)
+                f_cc_cell(recentDash, 1, row, entryText, color.white)
+                f_cc_cell(recentDash, 2, row, exitText, color.white)
+                f_cc_cell(recentDash, 3, row, f_cc_money(tradeProfit), tradeProfit >= 0 ? ccGood : ccBad)
+            else
+                f_cc_cell(recentDash, 0, row, "WAITING", ccMuted)
+                f_cc_cell(recentDash, 1, row, "-", ccMuted)
+                f_cc_cell(recentDash, 2, row, "-", ccMuted)
+                f_cc_cell(recentDash, 3, row, "-", ccMuted)

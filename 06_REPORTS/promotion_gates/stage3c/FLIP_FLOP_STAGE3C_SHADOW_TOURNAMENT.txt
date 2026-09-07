@@ -1,0 +1,81 @@
+==================================================================================================
+FLIP FLOP STAGE 3C - SHADOW PEAK-GIVEBACK PROTECTION TOURNAMENT
+==================================================================================================
+STATUS: PASS
+PINE WORKERS UNCHANGED
+QUANTITY UNCHANGED
+LIVE ROUTING LOCKED
+
+DATA SPLIT
+August clean discovery sessions: 17
+September clean validation sessions: 5
+September 17 diagnostic-only sessions: 2
+
+RULES
+Rules including control: 22
+Fixed locks: 50%, 65%, 75%, 85%
+Activation levels: 2R, 3R, 4R, 5R
+Dynamic ladders: FAST, BALANCED, LOOSE
+Adaptive volatility locks: ARM 3R and ARM 4R
+Cost stress: 0, 1, 2, and 4 extra ticks on protected-floor exits
+
+CONTROL
+Discovery control net: $916.00
+Validation control net: $100.00
+Discovery control worst session: $-118.00
+Validation control worst session: $-118.00
+
+PROVISIONAL RESULT
+Status: NO_RULE_PASSED_ALL_GATES_BEST_DIAGNOSTIC_ONLY
+Rule: FIXED_85_ARM_5R
+Family: FIXED
+Discovery delta: $-580.00
+Validation delta: $-310.00
+Discovery net: $336.00
+Validation net: $-210.00
+Discovery worst session: $-118.00
+Validation worst session: $-118.00
+
+CHAMPION VALIDATION COST STRESS
+0 extra ticks | net $-210.00 | delta $-310.00 | worst $-118.00 | floors 1
+1 extra ticks | net $-220.00 | delta $-320.00 | worst $-118.00 | floors 1
+2 extra ticks | net $-230.00 | delta $-330.00 | worst $-118.00 | floors 1
+4 extra ticks | net $-250.00 | delta $-350.00 | worst $-118.00 | floors 1
+
+TOP 5 DISCOVERY RULES, ZERO EXTRA TICKS
+FIXED_85_ARM_5R                      delta $  -580.00 | net $   336.00 | worst $ -118.00
+FIXED_75_ARM_5R                      delta $  -640.00 | net $   276.00 | worst $ -118.00
+DYNAMIC_BALANCED_3R_5R_8R_12R        delta $  -710.00 | net $   206.00 | worst $ -118.00
+FIXED_65_ARM_5R                      delta $  -710.00 | net $   206.00 | worst $ -118.00
+DYNAMIC_FAST_2R_4R_6R_8R             delta $  -775.00 | net $   141.00 | worst $ -118.00
+
+TOP 5 VALIDATION RULES, ZERO EXTRA TICKS
+FIXED_85_ARM_4R                      delta $  -310.00 | net $  -210.00 | worst $ -118.00
+FIXED_85_ARM_5R                      delta $  -310.00 | net $  -210.00 | worst $ -118.00
+FIXED_75_ARM_5R                      delta $  -340.00 | net $  -240.00 | worst $ -118.00
+FIXED_75_ARM_4R                      delta $  -340.00 | net $  -240.00 | worst $ -118.00
+DYNAMIC_BALANCED_3R_5R_8R_12R        delta $  -360.00 | net $  -260.00 | worst $ -118.00
+
+LIMITS
+This is a discovery and small validation tournament, not promotion evidence.
+TBBO observes BBO at trade events, not every quote update.
+The five-session clean September validation sample is too small for live approval.
+
+OUTPUTS
+Session-rule results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3c_shadow\SESSION_RULE_RESULTS.csv
+Discovery leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3c_shadow\DISCOVERY_LEADERBOARD.csv
+Validation leaderboard: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3c_shadow\VALIDATION_LEADERBOARD.csv
+September 17 diagnostic: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3c_shadow\DEGRADED_SEPT17_DIAGNOSTIC_ONLY.csv
+Unresolved triggers: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\pull_tournament\stage3c_shadow\UNRESOLVED_RAW_TRIGGERS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage3c\FLIP_FLOP_STAGE3C_SHADOW_TOURNAMENT.json
+
+GATES
+Control integrity: PASS
+Discovery scoring: PASS
+Validation scoring: PASS
+Degraded-source exclusion: PASS
+Shadow champion: NO_RULE_PASSED_ALL_GATES_BEST_DIAGNOSTIC_ONLY
+Pine modification: BLOCKED
+Large-size scaling: BLOCKED
+Live routing: LOCKED
+==================================================================================================

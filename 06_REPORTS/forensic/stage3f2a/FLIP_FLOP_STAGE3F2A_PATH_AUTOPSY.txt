@@ -1,0 +1,56 @@
+============================================================================================================
+FLIP FLOP STAGE 3F.2A - DEFAULT-BAR TARGET PATH AUTOPSY
+============================================================================================================
+STATUS: PASS
+NO BREAKEVEN RULE SCORED
+NO PINE CHANGE
+NO DATA PURCHASE
+LIVE ROUTING LOCKED
+
+QUESTION
+Were five default-bar SELL targets lost because the raw baseline is broken,
+or because ordered TBBO shows the survivor stop occurred first?
+
+SIX DEFAULT TARGET SESSIONS
+Targets preserved by ordered TBBO: 1/6
+Survivor stopped before target: 5/6
+Same-30-minute-bar order artifacts: 5/6
+
+ALIGNMENT HEALTH
+All BUY/SELL continuous-to-active offsets consistent within one tick: True
+Maximum absolute offset difference: 0.0000 points
+Maximum clean event gap: 32.838513 seconds
+
+TARGET EVENT ORDER
+2025-08-05 18:00:00 | SELL_TARGET | RAW_SURVIVOR_STOP_BEFORE_TARGET             | same bar True | DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT
+2025-08-07 09:30:00 | SELL_TARGET | RAW_SURVIVOR_STOP_BEFORE_TARGET             | same bar True | DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT
+2025-08-12 09:30:00 | SELL_TARGET | RAW_SURVIVOR_STOP_BEFORE_TARGET             | same bar True | DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT
+2025-08-12 18:00:00 | SELL_TARGET | RAW_TARGET_PRESERVED                        | same bar None | HIGH_DETAIL_CONFIRMS_DEFAULT_TARGET
+2025-08-14 09:30:00 | SELL_TARGET | RAW_SURVIVOR_STOP_BEFORE_TARGET             | same bar True | DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT
+2025-09-18 09:30:00 | SELL_TARGET | RAW_SURVIVOR_STOP_BEFORE_TARGET             | same bar True | DEFAULT_BAR_SAME_CANDLE_ORDER_ARTIFACT
+
+VERDICT
+ORDERED_TBBO_OVERRULES_FIVE_DEFAULT_BAR_TARGETS
+
+INTERPRETATION
+If ordered TBBO stopped the survivor first, raw data should not be altered to reproduce the default-bar winner.
+The default backtest remains useful as a control, but it is not exact execution truth on path-sensitive sessions.
+The 22 sessions were selected research blocks, not a random population sample.
+
+OUTPUTS
+Six-target autopsy: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2a_path_autopsy\SIX_DEFAULT_TARGET_EVENT_ORDER.csv
+All-session alignment health: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2a_path_autopsy\ALL_22_CLEAN_ALIGNMENT_HEALTH.csv
+Target timeline: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\double_stop_breakeven\stage3f2a_path_autopsy\TARGET_EVENT_TIMELINE.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3f2a\FLIP_FLOP_STAGE3F2A_PATH_AUTOPSY.json
+
+GATES
+Same-date target overlap: PASS
+Ordered event autopsy: PASS
+Contract offset consistency: PASS
+Default-bar target reliability: FAIL
+Stage 3F original verdict: VOID BASELINE
+Repaired raw BE rerun: REVIEWABLE
+Pine modification: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+============================================================================================================

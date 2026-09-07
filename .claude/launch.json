@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "FlipFlop Dashboard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "07_DASHBOARD"],
+      "port": 5173
+    },
+    {
+      "name": "FlipFlop Website",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "08_WEBSITE/flipflop-website-FULL"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

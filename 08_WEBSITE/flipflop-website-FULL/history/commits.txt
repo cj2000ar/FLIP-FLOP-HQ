@@ -1,0 +1,18 @@
+f535ab9 2026-09-07T12:11:27-04:00 Simplify the website demo to automatic chart playback and refine brand typography
+c2ac89c 2026-09-07T11:47:44-04:00 Prevent stale HTML from requesting removed deployment assets
+069a8e5 2026-09-07T11:40:56-04:00 Add interactive trade and access demo with verified HQ scope and cinematic brand entry
+b1b43b8 2026-09-07T11:21:41-04:00 Clarify HQ positioning, onboarding and compatibility requirements
+56da6f8 2026-09-07T11:17:16-04:00 Explain HQ automation with an interactive multilingual flow
+ced1c14 2026-09-07T11:11:11-04:00 Refine cinematic world sequence and modern HQ identity
+830a087 2026-09-07T10:51:40-04:00 Refine multilingual HQ website, access flow and cinematic motion
+8f816b0 2026-09-07T10:06:30-04:00 Integrate red and green recycling HQ app icon across site branding
+fa200e0 2026-09-07T10:03:02-04:00 Neutralize UI surfaces and refine smooth orbital market motion
+7ac0fda 2026-09-07T09:58:19-04:00 Render nocturnal Earth with city lights cloud layer and restrained crescent lighting
+0fe8c2b 2026-09-07T09:53:53-04:00 Refine clean trading wordmark and add continuous dark smoke atmosphere
+5557dc9 2026-09-07T09:45:44-04:00 Add rotating textured Earth and orbital charts with dimensional trading brand
+936b000 2026-09-07T09:18:00-04:00 Add pointer depth and progressive scroll reveals from visual reference
+ced74cf 2026-09-07T09:16:27-04:00 Set confirmed starting options and email inquiry destination
+abe56be 2026-09-07T09:15:16-04:00 Create product sales website with animated market and separate HQ demo
+fbe7d13 2026-09-07T08:51:56-04:00 Refine HQ with dark Saturn backdrop and restrained trading palette
+97e355c 2026-09-07T08:44:29-04:00 Match Flip Flop HQ operations console visual
+9c34de0 2026-09-07T08:29:43-04:00 Build Flip Flop HQ astral trading site

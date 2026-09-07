@@ -1,0 +1,13 @@
+{
+  "base_commit": "f535ab92a3a291c8a902f0f4a14fa24c9c6ec67d",
+  "original_tracked_files": 114,
+  "changed_original_files": [
+    "src/app/layout.tsx",
+    "components.json",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "added": "local font CSS/assets, tests, documentation, media, references, licenses and integrity tooling",
+  "dependency_lockfile": "byte-identical to published source",
+  "live_website_modified": false
+}

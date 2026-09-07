@@ -1,0 +1,49 @@
+========================================================================
+FLIP FLOP CONTROL VAULT - STAGE 1 BASELINE AUDIT
+========================================================================
+STATUS: PASS
+BASELINE: FLIP FLOP V3.6.72 NQ1! 30m 2020-01-01 through 2026-08-05
+
+BUY closed trades:       2,583
+SELL closed trades:      2,583
+Matched pair sessions:   2,583
+BUY net:                 $148,888.00
+SELL net:                $145,388.00
+Combined pair net:       $294,276.00
+BUY PF:                  2.282
+SELL PF:                 2.300
+PAIR PF:                 2.877
+Positive years:          7 / 7
+BUY same-bar trades:     2,581 / 2,583
+SELL same-bar trades:    2,580 / 2,583
+
+YEARLY RESULTS
+shape: (7, 5)
+┌──────┬─────────┬──────────┬──────────┬──────────┐
+│ year ┆ buy_net ┆ sell_net ┆ pair_net ┆ sessions │
+│ ---  ┆ ---     ┆ ---      ┆ ---      ┆ ---      │
+│ i32  ┆ f64     ┆ f64      ┆ f64      ┆ u32      │
+╞══════╪═════════╪══════════╪══════════╪══════════╡
+│ 2020 ┆ 10466.5 ┆ 19406.5  ┆ 29873.0  ┆ 412      │
+│ 2021 ┆ 12539.5 ┆ 12009.5  ┆ 24549.0  ┆ 405      │
+│ 2022 ┆ 34298.5 ┆ 22558.5  ┆ 56857.0  ┆ 371      │
+│ 2023 ┆ 14152.5 ┆ 10612.5  ┆ 24765.0  ┆ 362      │
+│ 2024 ┆ 16152.5 ┆ 15937.5  ┆ 32090.0  ┆ 394      │
+│ 2025 ┆ 27062.5 ┆ 29192.5  ┆ 56255.0  ┆ 394      │
+│ 2026 ┆ 34216.0 ┆ 35671.0  ┆ 69887.0  ┆ 245      │
+└──────┴─────────┴──────────┴──────────┴──────────┘
+
+CONTROL FILE SHA-256
+657f9c62d2e6f12547632c34c6a755ee56bb475b3d012cf548ee19acfb616452  BUY_V3.6.72_2020_CONTROL.pine
+836c39fa5892b410b3f986cb40b8b917e353713e074ac235d7712ac3e1fa00c6  SELL_V3.6.72_2020_CONTROL.pine
+a33a7325f9f4046be22389183121dc508bdf7a6b80f30c20d57e3d42187a8151  BUY_Strategy_Report_2020_2026.csv
+db7796f454b2f2bb35421fd78ef6c02c7e4d307b95b56f27456f55b5a0237593  SELL_Strategy_Report_2020_2026.csv
+
+VERDICT
+Baseline identity, trade counts, timestamps, route symmetry, quantity
+symmetry, cumulative P&L, and positive-year continuity all PASS.
+
+LIMITATION
+Intrabar tick order, bid/ask spread, queue priority, latency, and extreme
+stop slippage remain unproven. Those belong to Stage 2 replay testing.
+========================================================================

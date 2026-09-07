@@ -1,0 +1,51 @@
+============================================================================================================
+FLIP FLOP STAGE 3H.4A - FORWARD DATA-FEED PREFLIGHT
+============================================================================================================
+STATUS: PASS
+NO API CALL
+NO BROKER CONNECTION
+NO CREDENTIAL VALUE PRINTED
+NO MARKET DATA DOWNLOAD
+NO ORDER
+
+PYTHON DATA CAPABILITY
+Quant Lab Python: C:\FLIP_FLOP_HQ\.venv\Scripts\python.exe
+databento      : INSTALLED
+dbn            : not installed
+ib_insync      : not installed
+websocket      : not installed
+websockets     : INSTALLED
+requests       : INSTALLED
+
+CREDENTIAL PRESENCE (VALUES NEVER PRINTED)
+DATABENTO_API_KEY           : not present
+DBN_API_KEY                 : not present
+TRADOVATE_ACCESS_TOKEN      : not present
+TRADOVATE_TOKEN             : not present
+IBKR_HOST                   : not present
+IBKR_PORT                   : not present
+RITHMIC_USER                : not present
+
+RUNNING PLATFORM PROCESSES
+No recognized broker/platform process detected.
+
+KNOWN INSTALL PATHS
+FOUND: C:\Program Files\NinjaTrader 8
+
+QUANT LAB SOURCE MENTIONS
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage2\COVID_2020_03_16_INGEST_AND_REPLAY.json
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage2\COVID_2020_03_16_INGEST_AND_REPLAY.txt
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage2\COVID_2020_03_16_STAGE2B_SURGICAL_REPLAY.json
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage2\COVID_2020_03_16_STAGE2B_SURGICAL_REPLAY.txt
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3\FLIP_FLOP_STAGE3B_DUAL_BLOCK_INGEST.json
+databento                | C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3\FLIP_FLOP_STAGE3B_DUAL_BLOCK_INGEST.txt
+
+PREFLIGHT DECISION
+NINJATRADER_LOCAL_ADAPTER_CANDIDATE
+
+NEXT RULE
+Do not create a vendor-specific capture adapter until this preflight identifies an existing feed capability
+or the user explicitly chooses a data source.
+
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forward_shadow\stage3h4a\FLIP_FLOP_STAGE3H4A_FORWARD_FEED_PREFLIGHT.json
+============================================================================================================

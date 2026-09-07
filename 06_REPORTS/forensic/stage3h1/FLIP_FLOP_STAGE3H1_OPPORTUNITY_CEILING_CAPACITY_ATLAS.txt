@@ -1,0 +1,64 @@
+====================================================================================================================
+FLIP FLOP STAGE 3H.1 - OPPORTUNITY CEILING + 1-TO-10 CONTRACT CAPACITY ATLAS
+====================================================================================================================
+STATUS: PASS
+ORDERED TBBO BASELINE ONLY
+NO DEFAULT-BAR PATH ASSUMPTIONS
+NO PINE CHANGE
+NO QUANTITY AUTHORIZATION
+LIVE ROUTING LOCKED
+
+WHAT THE ORACLES MEAN
+ORACLE_DIRECTION = perfect hindsight BUY-vs-SELL chooser. Impossible benchmark, not a strategy.
+ORACLE_SKIP = perfect hindsight BUY-vs-SELL-vs-SKIP chooser. Impossible benchmark, not a strategy.
+
+WHY THEY MATTER
+They quantify the maximum economic room available for a pre-entry direction filter
+and a toxic-session SKIP detector before we spend time building either.
+
+ONE-TICK / ONE-CONTRACT-PER-ACTIVE-SIDE CEILINGS
+Paired baseline: $-973.00
+Route-static: $-484.00
+Perfect direction oracle: $-24.00
+Perfect BUY/SELL/SKIP oracle: $541.50
+Direction ceiling gain vs paired: $949.00
+Additional SKIP ceiling vs direction: $565.50
+Total oracle ceiling gain vs paired: $1,514.50
+Route-static gap to oracle skip: $1,025.50
+
+ONE-TICK CAPACITY SNAPSHOT
+Q= 1 | ORACLE_DIRECTION   | max simultaneous  1 | net $    -24.00 | PF   0.958 | DD $  -246.00 | worst $  -54.50
+Q= 1 | ORACLE_SKIP        | max simultaneous  1 | net $    541.50 | PF      NA | DD $     0.00 | worst $    0.00
+Q= 1 | PAIRED_Q_EACH      | max simultaneous  2 | net $   -973.00 | PF   0.310 | DD $  -973.00 | worst $ -164.00
+Q= 1 | ROUTE_STATIC       | max simultaneous  1 | net $   -484.00 | PF   0.318 | DD $  -484.00 | worst $  -79.50
+Q= 2 | ORACLE_DIRECTION   | max simultaneous  2 | net $    -48.00 | PF   0.958 | DD $  -492.00 | worst $ -109.00
+Q= 2 | ORACLE_SKIP        | max simultaneous  2 | net $  1,083.00 | PF      NA | DD $     0.00 | worst $    0.00
+Q= 2 | PAIRED_Q_EACH      | max simultaneous  4 | net $ -1,946.00 | PF   0.310 | DD $-1,946.00 | worst $ -328.00
+Q= 2 | ROUTE_STATIC       | max simultaneous  2 | net $   -968.00 | PF   0.318 | DD $  -968.00 | worst $ -159.00
+Q= 5 | ORACLE_DIRECTION   | max simultaneous  5 | net $   -120.00 | PF   0.958 | DD $-1,230.00 | worst $ -272.50
+Q= 5 | ORACLE_SKIP        | max simultaneous  5 | net $  2,707.50 | PF      NA | DD $     0.00 | worst $    0.00
+Q= 5 | PAIRED_Q_EACH      | max simultaneous 10 | net $ -4,865.00 | PF   0.310 | DD $-4,865.00 | worst $ -820.00
+Q= 5 | ROUTE_STATIC       | max simultaneous  5 | net $ -2,420.00 | PF   0.318 | DD $-2,420.00 | worst $ -397.50
+Q=10 | ORACLE_DIRECTION   | max simultaneous 10 | net $   -240.00 | PF   0.958 | DD $-2,460.00 | worst $ -545.00
+Q=10 | ORACLE_SKIP        | max simultaneous 10 | net $  5,415.00 | PF      NA | DD $     0.00 | worst $    0.00
+Q=10 | PAIRED_Q_EACH      | max simultaneous 20 | net $ -9,730.00 | PF   0.310 | DD $-9,730.00 | worst $-1,640.00
+Q=10 | ROUTE_STATIC       | max simultaneous 10 | net $ -4,840.00 | PF   0.318 | DD $-4,840.00 | worst $ -795.00
+
+CRITICAL CAPACITY WARNING
+The 1-to-10 ladder is linear arithmetic under the SAME observed fills.
+It does NOT prove that 5, 10, or 20 total NQ contracts receive the same fill quality.
+Full market-impact/capacity authority requires deeper order-book or paper execution evidence.
+
+OUTPUTS
+Normalized baseline: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\opportunity_ceiling_capacity\stage3h1\AUTHORITATIVE_22_SESSION_BASELINE_NORMALIZED.csv
+Quantity ladder: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\opportunity_ceiling_capacity\stage3h1\QUANTITY_1_TO_10_CAPACITY_LADDER.csv
+Oracle session map: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\opportunity_ceiling_capacity\stage3h1\ONE_TICK_ORACLE_SESSION_MAP.csv
+Opportunity ceilings: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\opportunity_ceiling_capacity\stage3h1\OPPORTUNITY_CEILINGS.csv
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\forensic\stage3h1\FLIP_FLOP_STAGE3H1_OPPORTUNITY_CEILING_CAPACITY_ATLAS.json
+
+GATES
+Pine modification: BLOCKED
+Stage 4E modification: BLOCKED
+Quantity authorization: BLOCKED
+Live routing: LOCKED
+====================================================================================================================

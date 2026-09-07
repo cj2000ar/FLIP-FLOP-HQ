@@ -1,0 +1,91 @@
+========================================================================================================
+FLIP FLOP STAGE 4C - PRE-ENTRY DIRECTION CLASSIFIER TOURNAMENT
+========================================================================================================
+STATUS: PASS
+NO PINE EXECUTION CHANGE
+NO QUANTITY CHANGE
+NO NEW DATA PURCHASE
+LIVE ROUTING LOCKED
+
+LOCKED TIME SPLIT
+Development rows, 2020-2023: 1550
+Validation rows, 2024-2025: 788
+Holdout rows, 2026 Jan-Jul: 240
+Partial August 2026 rows excluded: 5
+Holdout predictions created: NO
+Holdout P&L inspected: NO
+
+TOURNAMENT
+Model families: LOGIT_C001, LOGIT_C005, LOGIT_C01, RF_D4, RF_D8, EXTRA_D6, GB_STUMP, GB_D2
+Edge thresholds: [0.0, 20.0, 40.0, 60.0]
+Development walk-forward years: 2021, 2022, 2023
+Development stress: 1 extra tick
+Validation stress: [0, 1, 2] extra ticks
+Candidates frozen before validation: ['GB_STUMP_EDGE_0', 'GB_STUMP_EDGE_20', 'GB_D2_EDGE_20', 'RF_D8_EDGE_60', 'GB_D2_EDGE_0']
+
+BEST STATIC SINGLE-LEG BASELINE AT ONE EXTRA TICK
+Policy: ALWAYS_SELL
+Net: $37,730.00
+Profit factor: 1.9460408204202397
+Max drawdown: $-2,505.00
+
+CLASSIFIER RESULT
+Status: CHAMPION_FROZEN_HOLDOUT_LOCKED
+Candidate: RF_D8_EDGE_60
+Model: RF_D8
+Edge threshold: $60.00
+Development OOS net: $50,216.00
+Minimum development fold: $10,928.50
+Validation net, 0 extra ticks: $50,799.50
+Validation net, 1 extra tick: $43,854.50
+Validation net, 2 extra ticks: $36,909.50
+Validation PF, 1 extra tick: 2.202596904007788
+Validation max drawdown, 1 extra tick: $-1,035.00
+Validation trades, 1 extra tick: 699
+All promotion gates passed: True
+
+GATE DETAIL
+development_all_folds_positive: PASS
+validation_0t_positive: PASS
+validation_1t_positive: PASS
+validation_2t_positive: PASS
+validation_2024_2025_positive: PASS
+validation_pf_1t: PASS
+beats_best_static_1t_by_5pct: PASS
+drawdown_within_150pct_static: PASS
+minimum_trade_coverage: PASS
+
+FROZEN CHAMPION
+Model: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\frozen_model\FROZEN_PREENTRY_CHAMPION.joblib
+Model SHA-256: 4fe2d8385c266058c38f9ea9942dfe6dee42042fce7cba2aa79e6554143a624e
+Freeze manifest: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\frozen_model\CHAMPION_FREEZE_MANIFEST.json
+Holdout status: LOCKED AND UNSCORED
+
+NON-NEGOTIABLE INTERPRETATION
+A profitable classifier is not enough. It must beat the simple static side after costs.
+Validation candidates were frozen from development results before validation scoring.
+The 2026 holdout remains untouched.
+No parameter changes are allowed after this result and before any authorized holdout test.
+
+OUTPUTS
+Development detail: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\DEVELOPMENT_WALK_FORWARD_DETAIL.csv
+Development summary: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\DEVELOPMENT_CANDIDATE_SUMMARY.csv
+Validation static baselines: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\VALIDATION_STATIC_BASELINES.csv
+Validation candidate results: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\VALIDATION_CANDIDATE_RESULTS.csv
+Validation predictions: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\VALIDATION_SESSION_PREDICTIONS.csv
+Promotion comparison: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\PROMOTION_GATE_COMPARISON.csv
+Holdout lock: C:\FLIP_FLOP_HQ\05_EXPERIMENTS\preentry_direction_classifier\stage4c_tournament\HOLDOUT_LOCK_MANIFEST.json
+JSON report: C:\FLIP_FLOP_HQ\06_REPORTS\promotion_gates\stage4c\FLIP_FLOP_STAGE4C_CLASSIFIER_TOURNAMENT.json
+
+GATES
+Control integrity: PASS
+Pre-entry-only schema: PASS
+Chronological development: PASS
+Fixed validation candidate set: PASS
+Holdout lock: PASS
+Classifier result: CHAMPION_FROZEN_HOLDOUT_LOCKED
+Pine execution change: NONE
+Quantity change: BLOCKED
+New data purchase: BLOCKED
+Live routing: LOCKED
+========================================================================================================

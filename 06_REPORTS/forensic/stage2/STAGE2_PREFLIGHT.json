@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "stage": "STAGE 2 REPLAY PREFLIGHT",
+  "created_utc": "2026-08-06T02:12:02.645547+00:00",
+  "control": {
+    "baseline": "FLIP FLOP V3.6.72 NQ1! 30m 2020-01-01 through 2026-08-05",
+    "hashes_verified": 4,
+    "hash_details": [
+      {
+        "name": "BUY_V3.6.72_2020_CONTROL.pine",
+        "sha256": "657f9c62d2e6f12547632c34c6a755ee56bb475b3d012cf548ee19acfb616452",
+        "status": "PASS"
+      },
+      {
+        "name": "SELL_V3.6.72_2020_CONTROL.pine",
+        "sha256": "836c39fa5892b410b3f986cb40b8b917e353713e074ac235d7712ac3e1fa00c6",
+        "status": "PASS"
+      },
+      {
+        "name": "BUY_Strategy_Report_2020_2026.csv",
+        "sha256": "a33a7325f9f4046be22389183121dc508bdf7a6b80f30c20d57e3d42187a8151",
+        "status": "PASS"
+      },
+      {
+        "name": "SELL_Strategy_Report_2020_2026.csv",
+        "sha256": "db7796f454b2f2bb35421fd78ef6c02c7e4d307b95b56f27456f55b5a0237593",
+        "status": "PASS"
+      }
+    ]
+  },
+  "database": {
+    "buy_rows": 2583,
+    "sell_rows": 2583,
+    "pair_rows": 2583,
+    "pair_net": 294276.0,
+    "first_trade": "2020-01-02 09:30",
+    "last_trade": "2026-08-05 09:30"
+  },
+  "same_bar_dependency": {
+    "buy": "2581/2583",
+    "sell": "2580/2583",
+    "buy_rate": 0.9992257065427798,
+    "sell_rate": 0.9988385598141696
+  },
+  "market_data": {
+    "raw_files_found": 0,
+    "files": [],
+    "status": "WAITING_FOR_DATA"
+  },
+  "minimum_data_requirements": {
+    "preferred_tier_A": [
+      "Contract-specific NQ futures ticks",
+      "UTC timestamps with sub-second precision when available",
+      "Last trade price and size",
+      "Bid and ask quotes",
+      "Coverage from 2020-01-01 through current date",
+      "Documented exchange and timezone",
+      "Verified futures contract symbol"
+    ],
+    "acceptable_tier_B": [
+      "Contract-specific NQ trade ticks",
+      "UTC timestamps",
+      "Last trade price and size",
+      "No bid/ask; execution stress must estimate spread"
+    ],
+    "approximate_tier_C": [
+      "One-second OHLC or trade bars",
+      "Contract-specific symbols",
+      "Cannot prove exact within-second ordering",
+      "Research only; not promotion-quality execution truth"
+    ],
+    "rejected": [
+      "30-minute bars only",
+      "Unmapped continuous prices with unknown roll construction",
+      "Data without timestamps",
+      "Data with future leakage or reconstructed synthetic ticks"
+    ]
+  },
+  "gates": {
+    "control_hashes": "PASS",
+    "control_database": "PASS",
+    "live_routing": "LOCKED",
+    "pull_tournament": "BLOCKED_UNTIL_MARKET_DATA_VALIDATED",
+    "large_size_scaling": "BLOCKED"
+  },
+  "files_installed": [
+    "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\pull_tournament\\configs\\pull_candidates.json",
+    "C:\\FLIP_FLOP_HQ\\05_EXPERIMENTS\\cost_stress\\configs\\execution_stress.json",
+    "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\contract_maps\\contract_roll_map.csv",
+    "C:\\FLIP_FLOP_HQ\\01_INBOX\\market_data\\MARKET_DATA_SCHEMA.txt",
+    "C:\\FLIP_FLOP_HQ\\04_ENGINE\\replay\\src\\import_market_data.py"
+  ]
+}

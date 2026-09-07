@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "install_status": "NEW_PROTOCOL_FROZEN",
+  "protocol_hash": "d0757cd4fb33ade3e1d505a1c7ca2af40ad68ff5b5ceddbb28e13e7be5596fbb",
+  "eligible_after_utc": "2026-08-08T00:47:26.557040+00:00",
+  "next_session": {
+    "capture_id": "58a4eb7fc4cd5e812339175658111734",
+    "passport": "WEEKLY",
+    "scheduled_entry_et": "2026-08-09T18:00:00-04:00",
+    "scheduled_entry_utc": "2026-08-09T22:00:00+00:00",
+    "preopen_start_utc": "2026-08-09T21:00:00+00:00",
+    "preopen_freeze_utc": "2026-08-09T21:55:00+00:00"
+  },
+  "manifest_rows": 257,
+  "inbox": "C:\\FLIP_FLOP_HQ\\01_RAW\\FORWARD_BLACKBOX_INBOX",
+  "install_dir": "C:\\FLIP_FLOP_HQ\\07_TOOLS\\stage3h4_forward_blackbox_v1",
+  "live_routing": "LOCKED",
+  "pine_change": "BLOCKED",
+  "stage4e_change": "BLOCKED",
+  "quantity_change": "BLOCKED"
+}
