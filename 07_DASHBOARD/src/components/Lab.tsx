@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import '../lab/lab.css';
 import { AUTHORITY_BANNER } from '../lab/labData';
+import { API_BASE, API_HEADERS } from '../labApiClient';
 import StrategyVault from '../lab/StrategyVault';
 import StrategyArena from '../lab/StrategyArena';
 import ExperimentLedger from '../lab/ExperimentLedger';
@@ -9,13 +10,6 @@ import NewsAgenda from '../lab/NewsAgenda';
 import GuardianLedgers from '../lab/GuardianLedgers';
 import PromotionGate from '../lab/PromotionGate';
 import QuantumLab from '../lab/QuantumLab';
-
-const API_BASE = 'http://localhost:8000';
-
-const apiHeaders = {
-  'Machine-ID': 'dashboard-test',
-  'Fencing-Token': 'test-token',
-};
 
 class ErrorBoundary extends React.Component<
   { children: ReactNode },
@@ -73,13 +67,13 @@ function LabContent({ initialSection = 'vault' }: { initialSection?: LabSectionI
         setGlobalLoading(true);
         // Parallel pre-fetch all API endpoints
         await Promise.all([
-          fetch(`${API_BASE}/vault/items`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/vault/families`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/experiments`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/queue`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/agenda/events`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/guardian/wounds`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/guardian/calibration`, { headers: apiHeaders }),
+          fetch(`${API_BASE}/vault/items`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/vault/families`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/experiments`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/queue`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/agenda/events`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/guardian/wounds`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/guardian/calibration`, { headers: API_HEADERS }),
         ]);
       } catch (err) {
         // Silently fail pre-fetch - individual components will handle errors

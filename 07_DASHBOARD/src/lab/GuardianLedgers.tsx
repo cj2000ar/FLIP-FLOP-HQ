@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { GUARDIAN_CORE, type LedgerEntry } from './labData';
-
-const API_BASE = 'http://localhost:8000';
-const apiHeaders = { 'Machine-ID': 'dashboard-test', 'Fencing-Token': 'test-token' };
+import { API_BASE, API_HEADERS } from '../labApiClient';
 
 export default function GuardianLedgers() {
   const [wounds, setWounds] = useState<LedgerEntry[]>([]);
@@ -18,8 +16,8 @@ export default function GuardianLedgers() {
         setError(null);
 
         const [woundsRes, calibrationRes] = await Promise.all([
-          fetch(`${API_BASE}/guardian/wounds`, { headers: apiHeaders }),
-          fetch(`${API_BASE}/guardian/calibration`, { headers: apiHeaders }),
+          fetch(`${API_BASE}/guardian/wounds`, { headers: API_HEADERS }),
+          fetch(`${API_BASE}/guardian/calibration`, { headers: API_HEADERS }),
         ]);
 
         if (woundsRes.status === 401 || woundsRes.status === 403 || calibrationRes.status === 401 || calibrationRes.status === 403) {

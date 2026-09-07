@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { MARKETS, type VaultItem, type StrategyFamily } from './labData';
+import { API_BASE, API_HEADERS } from '../labApiClient';
 
 const ALL = 'ALL';
-const API_BASE = 'http://localhost:8000';
-const apiHeaders = { 'Machine-ID': 'dashboard-test', 'Fencing-Token': 'test-token' };
 
 export default function StrategyVault() {
   const [family, setFamily] = useState<string>(ALL);
@@ -22,8 +21,8 @@ export default function StrategyVault() {
         setError(null);
 
         const [vaultRes, familiesRes] = await Promise.all([
-          fetch(`${API_BASE}/vault/items${family !== ALL ? `?family=${family}` : ''}`, { headers: apiHeaders, signal: controller.signal }),
-          fetch(`${API_BASE}/vault/families`, { headers: apiHeaders, signal: controller.signal }),
+          fetch(`${API_BASE}/vault/items${family !== ALL ? `?family=${family}` : ''}`, { headers: API_HEADERS, signal: controller.signal }),
+          fetch(`${API_BASE}/vault/families`, { headers: API_HEADERS, signal: controller.signal }),
         ]);
 
         if (vaultRes.status === 401 || vaultRes.status === 403) {

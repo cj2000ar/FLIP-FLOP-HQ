@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { type Experiment } from './labData';
-
-const API_BASE = 'http://localhost:8000';
-const apiHeaders = { 'Machine-ID': 'dashboard-test', 'Fencing-Token': 'test-token' };
+import { API_BASE, API_HEADERS } from '../labApiClient';
 
 export default function ExperimentLedger() {
   const [experiments, setExperiments] = useState<Experiment[]>([]);
@@ -16,7 +14,7 @@ export default function ExperimentLedger() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/experiments`, { headers: apiHeaders });
+        const res = await fetch(`${API_BASE}/experiments`, { headers: API_HEADERS });
 
         if (res.status === 401 || res.status === 403) {
           setError('Authentication required. Please refresh your session.');
