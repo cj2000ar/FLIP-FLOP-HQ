@@ -5,7 +5,8 @@
       "name": "FlipFlop Dashboard",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "07_DASHBOARD"],
-      "port": 5173
+      "port": 5173,
+      "autoPort": true
     },
     {
       "name": "FlipFlop Website",
