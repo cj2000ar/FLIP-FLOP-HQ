@@ -10,6 +10,7 @@ import ArchiveViewer from './ArchiveViewer';
 import Brand from './Brand';
 import Lab from './Lab';
 import GuardianPage from './GuardianPage';
+import ShadowLab from './ShadowLab';
 
 /**
  * ScreenComponent - Main responsive UI container
@@ -39,6 +40,7 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
     { id: 'performance', label: 'Performance', short: 'Perf' },
     { id: 'calendar', label: 'Calendar' },
     { id: 'agents', label: 'Agents' },
+    { id: 'shadow', label: 'Shadow', short: 'Lab' },
     { id: 'guardian', label: 'Guardian', short: 'Guard' },
     { id: 'lab', label: 'Lab' },
   ];
@@ -252,6 +254,9 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
 
         {/* Lab Tab */}
         {activeNav === 'lab' && <Lab />}
+
+        {/* Shadow Lab Tab */}
+        {activeNav === 'shadow' && <ShadowLab />}
 
         {/* Guardian Tab */}
         {activeNav === 'guardian' && <GuardianPage />}
