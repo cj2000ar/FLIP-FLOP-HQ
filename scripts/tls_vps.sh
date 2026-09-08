@@ -26,11 +26,19 @@ LETSENCRYPT_TOS=$(grep -E '^LETSENCRYPT_TOS_AGREED=' "$ENV_FILE" | tail -1 | cut
 log "Domain: $FLIPFLOP_DOMAIN"
 log "Email: $LETSENCRYPT_EMAIL"
 
-# Verify domain resolves to droplet
+# Verify domain resolves to droplet (retry with backoff)
 log "Verifying DNS resolution..."
-RESOLVED=$(dig +short "$FLIPFLOP_DOMAIN" A 2>/dev/null | tail -1)
+RESOLVED=""
+for i in {1..30}; do
+  RESOLVED=$(dig +short "$FLIPFLOP_DOMAIN" A @8.8.8.8 2>/dev/null | tail -1)
+  if [[ "$RESOLVED" == "208.68.36.209" ]]; then
+    log "DNS verified: $FLIPFLOP_DOMAIN → $RESOLVED"
+    break
+  fi
+  log "  attempt $i/30: got '$RESOLVED', retrying in 2s..."
+  sleep 2
+done
 [[ "$RESOLVED" == "208.68.36.209" ]] || err "Domain $FLIPFLOP_DOMAIN does not resolve to 208.68.36.209 (got: $RESOLVED)"
-log "DNS verified: $FLIPFLOP_DOMAIN → $RESOLVED"
 
 # Install certbot if needed
 log "Checking certbot..."
