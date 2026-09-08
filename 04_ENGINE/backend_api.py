@@ -18,6 +18,52 @@ logger = logging.getLogger(__name__)
 DB_DIR = Path("databases")
 FRESHNESS_THRESHOLD_SECONDS = 300  # 5 minutes
 
+# Tier-based access control
+TIER_TOKENS = {
+    'prod_control': 'TIER_CONTROL_PC_TOKEN_SECRET',  # Control PC (full access)
+    'external_read': 'TIER_EXTERNAL_READ_TOKEN_SECRET',  # External users (read-only)
+}
+
+USER_TIERS = {
+    'prod_control': {'name': 'Production Control', 'level': 3, 'permissions': ['read', 'write', 'admin']},
+    'external_read': {'name': 'External User', 'level': 1, 'permissions': ['read']},
+    'internal': {'name': 'Internal Service', 'level': 2, 'permissions': ['read', 'write']},
+}
+
+def require_auth(tier='internal'):
+    """Decorator to require authentication"""
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = request.headers.get('Authorization', '').replace('Bearer ', '')
+
+            # Check token
+            current_tier = None
+            for tier_name, tier_token in TIER_TOKENS.items():
+                if token == tier_token:
+                    current_tier = tier_name
+                    break
+
+            # Allow internal services (localhost only)
+            if not current_tier and request.remote_addr in ['127.0.0.1', 'localhost']:
+                current_tier = 'internal'
+
+            if not current_tier:
+                return jsonify({'error': 'Unauthorized', 'tier_required': tier}), 401
+
+            # Check tier level
+            required_level = USER_TIERS[tier]['level']
+            current_level = USER_TIERS[current_tier]['level']
+
+            if current_level < required_level:
+                return jsonify({'error': 'Insufficient permissions', 'current_tier': current_tier}), 403
+
+            # Store tier in request context
+            request.user_tier = current_tier
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
+
 
 def get_latest_market_db():
     """Get latest market data database"""
