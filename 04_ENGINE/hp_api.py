@@ -41,6 +41,10 @@ from guardian_package_verifier import (
 )
 from guardian_v2_launcher import GuardianV2Launcher
 
+# Import Canary Executor (Gate 5)
+from canary_executor import CanaryExecutor, CanaryStatus
+from gate_5_canary import Gate5CanaryIntegration
+
 # Import NinjaTrader Bridge
 from ninjatrader_bridge import (
     NinjaTraderBridge, ReplaySession, TradeEvent, TradeSide,
@@ -1070,6 +1074,90 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
         return {
             "status": "OPERATIONAL",
             "guardian_exit_code": 78,
+            "authority": "ZERO",
+            "live_enabled": False,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+
+    # ========================================================================
+    # MARKET REPLAY + CANARY EXECUTOR (Gate 5 Integration)
+    # ========================================================================
+
+    class CanaryRunRequest(BaseModel):
+        strategy_name: str
+        instrument: str
+        trades_data: List[Dict] = []
+        correlation_id: Optional[str] = None
+
+    @app.post("/canary/run", response_model=dict)
+    def run_canary_execution(request: CanaryRunRequest):
+        """
+        POST /canary/run - Execute canary trades for Gate 5 evaluation
+        Runs small-scale test trades and returns Gate 5 evidence.
+        """
+        correlation_id = request.correlation_id or str(uuid4())
+
+        integration = Gate5CanaryIntegration()
+        canary_result, evidence = integration.run_canary_and_generate_evidence(
+            request.strategy_name,
+            request.instrument,
+            request.trades_data,
+            correlation_id
+        )
+
+        gate5_verdict = integration.get_canary_status_for_gate_5(canary_result)
+
+        return {
+            "correlation_id": correlation_id,
+            "canary_id": canary_result.canary_id,
+            "strategy_name": canary_result.strategy_name,
+            "status": canary_result.status.value,
+            "gate5_verdict": gate5_verdict.value,
+            "error_rate": canary_result.error_rate,
+            "avg_latency_ms": canary_result.avg_latency_ms,
+            "max_latency_ms": canary_result.max_latency_ms,
+            "pnl_dollars": canary_result.pnl_dollars,
+            "total_trades": canary_result.total_trades,
+            "successful_trades": canary_result.successful_trades,
+            "failed_trades": canary_result.failed_trades,
+            "rollback_triggered": canary_result.triggered_rollback,
+            "reasoning": integration.generate_gate5_reasoning(canary_result),
+            "evidence": {
+                "evidence_type": evidence.evidence_type,
+                "source_system": evidence.source_system,
+                "checksum": evidence.checksum
+            }
+        }
+
+    @app.get("/canary/result/{canary_id}")
+    def get_canary_result(canary_id: str):
+        """GET /canary/result/{canary_id} - Retrieve canary execution result"""
+        executor = CanaryExecutor()
+        result = executor.get_canary_result(canary_id)
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Canary {canary_id} not found")
+        return result
+
+    @app.get("/canary/trades/{canary_id}")
+    def get_canary_trades(canary_id: str):
+        """GET /canary/trades/{canary_id} - Retrieve canary trades"""
+        executor = CanaryExecutor()
+        trades = executor.get_canary_trades(canary_id)
+        return {
+            "canary_id": canary_id,
+            "trade_count": len(trades),
+            "trades": trades
+        }
+
+    @app.get("/canary/health")
+    def canary_executor_health():
+        """GET /canary/health - Canary executor health status"""
+        return {
+            "status": "OPERATIONAL",
+            "component": "Canary Executor (Gate 5)",
+            "error_rate_threshold": 0.05,
+            "latency_threshold_ms": 200,
+            "canary_trade_size": 5,
             "authority": "ZERO",
             "live_enabled": False,
             "timestamp": datetime.utcnow().isoformat()
