@@ -71,7 +71,7 @@ export const ShadowLab: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8002';
+  const apiUrl = typeof window !== 'undefined' && window.location ? 'http://localhost:8000' : 'http://localhost:8000';
 
   // Load strategies
   useEffect(() => {
