@@ -35,6 +35,12 @@ from guardian_engine import (
     AuthorityLevel, VerdictType, GateID, DecisionCartridge
 )
 
+# Import Guardian V2 launcher components
+from guardian_package_verifier import (
+    GuardianPackageVerifier, ArtifactManifest, VerificationStatus, VerificationEvent
+)
+from guardian_v2_launcher import GuardianV2Launcher
+
 # Import NinjaTrader Bridge
 from ninjatrader_bridge import (
     NinjaTraderBridge, ReplaySession, TradeEvent, TradeSide,
@@ -975,6 +981,99 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
         ]
 
         return gates_info
+
+    # ========================================================================
+    # V2 LAUNCHER ENDPOINTS (Guardian Package Verification)
+    # ========================================================================
+
+    class V2LauncherManifestRequest(BaseModel):
+        strategy_hash: str
+        engine_hash: str
+        ui_hash: str
+        passport_hash: str
+        created_at: Optional[str] = None
+
+    class VerificationEventResponse(BaseModel):
+        event_id: str
+        correlation_id: str
+        artifact_type: str
+        expected_hash: str
+        actual_hash: str
+        status: str
+        event_time: str
+        verified_at: str
+        exit_code: int
+
+    @app.post("/v2/launcher/verify", response_model=dict)
+    def verify_package_v2(request: V2LauncherManifestRequest):
+        """
+        POST /v2/launcher/verify - Verify artifacts before V2 launch
+        Returns verification status and events.
+        Exit code 78 on Guardian verification failure.
+        """
+        correlation_id = str(uuid4())
+        verifier = GuardianPackageVerifier()
+
+        manifest = ArtifactManifest(
+            strategy_hash=request.strategy_hash,
+            engine_hash=request.engine_hash,
+            ui_hash=request.ui_hash,
+            passport_hash=request.passport_hash,
+            created_at=request.created_at or datetime.utcnow().isoformat()
+        )
+
+        # Mock artifact paths for testing
+        artifact_paths = {
+            "strategy": "/tmp/strategy.py",
+            "engine": "/tmp/engine.py",
+            "ui": "/tmp/ui.js",
+            "passport": "/tmp/passport.json"
+        }
+
+        overall_status, events = verifier.verify_package(
+            manifest, artifact_paths, correlation_id
+        )
+
+        return {
+            "correlation_id": correlation_id,
+            "overall_status": overall_status.value,
+            "exit_code": 78 if overall_status != VerificationStatus.PASS else 0,
+            "event_count": len(events),
+            "events": [
+                {
+                    "event_id": e.event_id,
+                    "correlation_id": e.correlation_id,
+                    "artifact_type": e.artifact_type,
+                    "status": e.status.value,
+                    "exit_code": e.exit_code
+                }
+                for e in events
+            ]
+        }
+
+    @app.get("/v2/launcher/events/{correlation_id}")
+    def get_verification_events_v2(correlation_id: str):
+        """
+        GET /v2/launcher/events/{correlation_id} - Retrieve verification events
+        """
+        verifier = GuardianPackageVerifier()
+        events = verifier.get_verification_events(correlation_id)
+        return {
+            "correlation_id": correlation_id,
+            "event_count": len(events),
+            "events": events
+        }
+
+    @app.get("/v2/launcher/health")
+    def v2_launcher_health():
+        """GET /v2/launcher/health - V2 launcher health status"""
+        return {
+            "status": "OPERATIONAL",
+            "guardian_exit_code": 78,
+            "authority": "ZERO",
+            "live_enabled": False,
+            "timestamp": datetime.utcnow().isoformat()
+        }
 
     return app
 
