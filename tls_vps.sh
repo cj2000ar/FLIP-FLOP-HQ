@@ -13,6 +13,9 @@ SITE=/etc/nginx/sites-available/flipflop
 log()   { echo -e "\033[0;32m[TLS]\033[0m $*"; }
 abort() { echo -e "\033[0;31m[ABORT]\033[0m $*"; exit 1; }
 
+export DEBIAN_FRONTEND=noninteractive
+command -v dig >/dev/null 2>&1 || apt-get install -y -qq dnsutils >/dev/null
+
 log "Preflight: $DOMAIN must resolve to this host ($DROPLET_IP)"
 RESOLVED="$(dig +short "$DOMAIN" A 2>/dev/null | tail -n1 || true)"
 [ -n "$RESOLVED" ] || abort "$DOMAIN does not resolve. Fix DNS first."
