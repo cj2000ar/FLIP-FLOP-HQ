@@ -266,6 +266,53 @@ def guardian_calibration():
     })
 
 
+@app.route('/scripts/submit', methods=['POST'])
+@check_freshness
+def submit_script():
+    """Submit custom strategy script for testing"""
+    try:
+        data = request.get_json()
+        script_code = data.get('code', '')
+        script_name = data.get('name', 'custom_strategy')
+
+        if not script_code:
+            return jsonify({'error': 'No script code provided'}), 400
+
+        # Import validator here to avoid circular imports
+        try:
+            from script_sandbox import ScriptValidator, SafeScriptExecutor
+        except ImportError:
+            return jsonify({'error': 'Script execution unavailable'}), 503
+
+        # Validate script
+        validator = ScriptValidator()
+        validation = validator.validate(script_code)
+
+        if not validation['valid']:
+            return jsonify({
+                'status': 'VALIDATION_FAILED',
+                'errors': validation['errors'],
+                'script_name': script_name
+            }), 400
+
+        # Execute script in sandbox
+        executor = SafeScriptExecutor()
+        result = executor.execute(script_code, timeout=300, memory_limit=512)
+
+        return jsonify({
+            'status': 'EXECUTED',
+            'script_name': script_name,
+            'result': result,
+            'timestamp': datetime.utcnow().isoformat(),
+            'sandbox': True,
+            'authority': 'ZERO'
+        })
+
+    except Exception as e:
+        logger.error(f"Script submission error: {e}")
+        return jsonify({'error': str(e), 'status': 'ERROR'}), 500
+
+
 if __name__ == '__main__':
     logger.info("FlipFlop HQ Backend API starting on localhost:8000")
     app.run(host='127.0.0.1', port=8000, debug=False)
