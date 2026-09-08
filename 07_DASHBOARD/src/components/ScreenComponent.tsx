@@ -11,6 +11,10 @@ import Brand from './Brand';
 import Lab from './Lab';
 import GuardianPage from './GuardianPage';
 import ShadowLab from './ShadowLab';
+import TradesView from './TradesView';
+import PerformanceView from './PerformanceView';
+import CalendarView from './CalendarView';
+import AgentsView from './AgentsView';
 
 /**
  * ScreenComponent - Main responsive UI container
@@ -252,6 +256,18 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
           </div>
         )}
 
+        {/* Trades Tab */}
+        {activeNav === 'trades' && <TradesView />}
+
+        {/* Performance Tab */}
+        {activeNav === 'performance' && <PerformanceView />}
+
+        {/* Calendar Tab */}
+        {activeNav === 'calendar' && <CalendarView />}
+
+        {/* Agents Tab */}
+        {activeNav === 'agents' && <AgentsView />}
+
         {/* Lab Tab */}
         {activeNav === 'lab' && <Lab />}
 
@@ -260,24 +276,6 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
 
         {/* Guardian Tab */}
         {activeNav === 'guardian' && <GuardianPage />}
-
-        {/* Other tabs - Placeholder */}
-        {['trades', 'performance', 'calendar', 'agents'].includes(activeNav) && (
-          <div
-            role="main"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 'var(--spacing-8)',
-            }}
-          >
-            <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
-              <p style={{ fontSize: 'var(--font-size-lg)' }}>{activeNav.toUpperCase()} section</p>
-              <p style={{ fontSize: 'var(--font-size-sm)' }}>Coming soon</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Mobile Bottom Navigation */}
