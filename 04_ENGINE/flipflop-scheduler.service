@@ -1,0 +1,42 @@
+[Unit]
+Description=FlipFlop HQ Autonomous Scheduler
+After=network-online.target
+Wants=network-online.target
+Documentation=file:///opt/flipflop/docs/DEPLOYMENT.md
+
+[Service]
+Type=simple
+User=flipflop
+Group=flipflop
+WorkingDirectory=/opt/flipflop
+ExecStart=/usr/bin/python3 -u /opt/flipflop/scheduler_service.py
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+TimeoutStopSec=30
+
+MemoryLimit=16G
+CPUQuota=400%
+MemoryAccounting=true
+CPUAccounting=true
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/flipflop/data /opt/flipflop/databases /var/log/flipflop
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=flipflop-scheduler
+
+Environment="PYTHONUNBUFFERED=1"
+Environment="AUTHORITY=ZERO"
+Environment="LIVE=OFF"
+
+# Source API keys from /etc/flipflop/secrets/
+EnvironmentFile=-/etc/flipflop/secrets/market-api.env
+
+[Install]
+WantedBy=multi-user.target

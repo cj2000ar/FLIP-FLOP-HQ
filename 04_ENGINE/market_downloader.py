@@ -21,6 +21,11 @@ from typing import Optional, List, Dict, Any
 from uuid import uuid4
 import time
 
+try:
+    import alpaca_trade_api as tradeapi
+except ImportError:
+    tradeapi = None
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -276,15 +281,62 @@ class MarketDownloader:
         return results
 
     def _fetch_bars(self, instrument: str, date: str) -> List[Dict[str, Any]]:
-        """
-        Fetch bars for instrument on date.
-        Replace with actual broker API integration.
-        """
-        # Placeholder: generate synthetic data for testing
+        """Fetch real bars from Alpaca SIP feed"""
+        api_key = os.environ.get("ALPACA_API_KEY")
+        api_secret = os.environ.get("ALPACA_API_SECRET")
+
+        if not api_key or not api_secret or not tradeapi:
+            logger.warning(f"Alpaca credentials missing or library not installed, using synthetic")
+            return self._fetch_bars_synthetic(instrument, date)
+
+        try:
+            rest_api = tradeapi.REST(
+                api_key, api_secret,
+                base_url="https://api.alpaca.markets",
+                api_version="v2"
+            )
+
+            # Verify date is past trading hours (after 4 PM ET / 8 PM UTC)
+            now = datetime.utcnow()
+            date_dt = datetime.strptime(date, "%Y%m%d")
+            market_close = date_dt.replace(hour=20, minute=0, tzinfo=None)  # 4 PM ET = 8 PM UTC
+
+            if now < market_close:
+                logger.warning(f"Data for {date} not yet available (before market close)")
+                return []
+
+            # Fetch bars
+            bars = rest_api.get_bars(
+                instrument,
+                "1Min",
+                start=date_dt.strftime("%Y-%m-%d"),
+                end=date_dt.strftime("%Y-%m-%d"),
+                feed="sip"
+            )
+
+            result = []
+            for bar in bars:
+                result.append({
+                    "time": bar.t.strftime("%H%M"),
+                    "open": float(bar.o),
+                    "high": float(bar.h),
+                    "low": float(bar.l),
+                    "close": float(bar.c),
+                    "volume": int(bar.v)
+                })
+
+            logger.info(f"Alpaca SIP fetch {instrument}/{date}: {len(result)} bars")
+            return result
+
+        except Exception as e:
+            logger.error(f"Alpaca fetch failed: {str(e)}")
+            return []
+
+    def _fetch_bars_synthetic(self, instrument: str, date: str) -> List[Dict[str, Any]]:
+        """Synthetic fallback for testing only"""
         bars = []
         times = ["0930", "1000", "1030", "1100", "1130", "1200",
                 "1230", "1300", "1330", "1400", "1430", "1500", "1530", "1600"]
-
         base_price = 5000.0
         for i, time_str in enumerate(times):
             bars.append({
@@ -295,7 +347,6 @@ class MarketDownloader:
                 "close": base_price + i + 1,
                 "volume": 1000000 + i * 50000
             })
-
         return bars
 
 
