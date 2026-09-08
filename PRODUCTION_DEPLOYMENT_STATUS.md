@@ -59,17 +59,45 @@ ssh -o PubkeyAuthentication=no root@208.68.36.209 "bash /root/install_vps.sh"
 
 ## Security
 
-- fail2ban installed and enabled. The droplet was taking sustained SSH
-  brute-force traffic against root (observed from 91.92.40.37) within
-  hours of creation.
-- Root login over password is still enabled. Recommended next: add an
-  SSH key, then set `PermitRootLogin prohibit-password` and
-  `PasswordAuthentication no`.
-- No TLS yet. The dashboard and API are served over plain HTTP.
+Hardened 2026-09-07. Verified effective config, not just written config:
+
+```
+passwordauthentication no
+kbdinteractiveauthentication no
+permitrootlogin without-password
+pubkeyauthentication yes
+```
+
+- SSH is key-only. Password auth is refused outright — a password
+  attempt now returns `Permission denied (publickey)`.
+- ufw active, ingress limited to 22/80/443.
+- fail2ban on sshd: 3 retries, 10m window, 24h ban.
+- The droplet took sustained root brute-force within hours of creation
+  (354 failed password attempts logged; 91.92.40.37, 193.47.62.69).
+  That traffic can no longer succeed.
+
+Two gotchas worth remembering for this host:
+
+1. sshd resolves options **first-value-wins**, and DigitalOcean images
+   ship both `50-cloud-init.conf` and `60-cloudimg-settings.conf` with
+   `PasswordAuthentication yes`. A `99-` drop-in silently loses to them.
+   Hardening lives in `00-hardening.conf` so it sorts first.
+2. The DigitalOcean agent (DOTTY) rewrites `authorized_keys`. Keys that
+   must persist go in `authorized_keys2`, which sshd also reads.
+
+Backups from the hardening run: `/etc/ssh/sshd_config.bak.*` and
+`/etc/ssh/sshd_config.d.bak.*`. Rollback if ever locked out (via the
+DigitalOcean web console):
+
+```bash
+rm /etc/ssh/sshd_config.d/00-hardening.conf && systemctl restart ssh
+```
 
 ## Not Yet Done
 
-- TLS certificate (Let's Encrypt / certbot) and a domain name
+- **TLS.** Dashboard and API are still plain HTTP. Blocked on
+  registering a domain; once DNS points at 208.68.36.209, certbot can
+  issue and nginx gets a 443 server block plus an 80 redirect.
 - PostgreSQL (currently the app's default local storage)
 - Prometheus / Grafana / AlertManager on the droplet
 - Automated backups
