@@ -1,5 +1,10 @@
 app.tar.gz
 .env
+*.db
+*.sqlite
+*.sqlite3
+google-client.json
+client_secret_*.json
 .pytest_cache/
 __pycache__/
 *.pyc

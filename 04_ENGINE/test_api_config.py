@@ -70,3 +70,45 @@ class TestMainHonoursEnvironment:
         hp_api.main()
 
         assert (tmp_path / "hp_infra.db").exists()
+
+
+def _cors_options(app):
+    from fastapi.middleware.cors import CORSMiddleware
+    for m in app.user_middleware:
+        if m.cls is CORSMiddleware:
+            return m.kwargs
+    raise AssertionError("CORSMiddleware not registered")
+
+
+class TestCorsFromEnvironment:
+    def test_origins_come_from_env(self, monkeypatch):
+        monkeypatch.setenv("CORS_ORIGINS", "https://flipflophq.com, http://localhost:5176")
+
+        opts = _cors_options(hp_api.create_app())
+
+        assert opts["allow_origins"] == ["https://flipflophq.com", "http://localhost:5176"]
+
+    def test_default_is_local_dev_only(self, monkeypatch):
+        monkeypatch.delenv("CORS_ORIGINS", raising=False)
+
+        opts = _cors_options(hp_api.create_app())
+
+        assert "*" not in opts["allow_origins"]
+        assert all(o.startswith("http://localhost") or o.startswith("http://127.0.0.1")
+                   for o in opts["allow_origins"])
+
+    def test_empty_env_disables_cross_origin(self, monkeypatch):
+        # Production serves dashboard and API from one origin via nginx,
+        # so no cross-origin access should be granted at all.
+        monkeypatch.setenv("CORS_ORIGINS", "")
+
+        opts = _cors_options(hp_api.create_app())
+
+        assert opts["allow_origins"] == []
+
+    def test_credentials_never_allowed(self, monkeypatch):
+        monkeypatch.setenv("CORS_ORIGINS", "https://flipflophq.com")
+
+        opts = _cors_options(hp_api.create_app())
+
+        assert opts.get("allow_credentials", False) is False

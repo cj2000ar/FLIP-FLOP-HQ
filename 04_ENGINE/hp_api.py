@@ -149,11 +149,20 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
     )
     app.state.hp = hp
 
-    # Add CORS middleware for cross-origin requests from dashboard
+    # Cross-origin access is only needed when the dashboard dev server and
+    # the API run on different ports. In production nginx serves both from
+    # one origin, so CORS_ORIGINS is set empty and nothing cross-origin is
+    # granted. Credentials are never allowed: nothing here uses cookies,
+    # and "*" plus credentials would let any site drive the API.
+    cors_env = os.getenv('CORS_ORIGINS')
+    if cors_env is None:
+        cors_origins = ["http://localhost:5173", "http://localhost:5176", "http://127.0.0.1:5173"]
+    else:
+        cors_origins = [o.strip() for o in cors_env.split(',') if o.strip()]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
+        allow_origins=cors_origins,
+        allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
     )
