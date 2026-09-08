@@ -15,6 +15,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 import sqlite3
 import json
+import uvicorn
 
 from hp_infra import (
     HPInfrastructure,
@@ -129,13 +130,24 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
         os.makedirs(db_dir, exist_ok=True)
         logger.info(f"HP Infrastructure: Using database path {db_path}")
 
-        hp = HPInfrastructure(db_path=db_path)
+        hmac_secret = os.getenv('HP_HMAC_SECRET')
+        if hmac_secret:
+            hp = HPInfrastructure(db_path=db_path, hmac_secret=hmac_secret)
+        else:
+            # The library default is public in source control, so any token it
+            # signs is forgeable. Fine for local dev; never for a reachable host.
+            logger.warning(
+                "HP_HMAC_SECRET is not set; fencing tokens are signed with the "
+                "public default secret and can be forged"
+            )
+            hp = HPInfrastructure(db_path=db_path)
 
     app = FastAPI(
         title="HP 24/7 Infrastructure API",
         description="FlipFlop HQ Phase 2 - Machine health, fencing, storage",
         version="1.0.0"
     )
+    app.state.hp = hp
 
     # Add CORS middleware for cross-origin requests from dashboard
     app.add_middleware(
@@ -958,15 +970,15 @@ def create_app(hp: Optional[HPInfrastructure] = None) -> FastAPI:
     return app
 
 
-if __name__ == "__main__":
-    import uvicorn
-
-    # Create HP infrastructure
-    hp = HPInfrastructure(db_path="hp_infra.db")
-
-    # Create FastAPI app
-    app = create_app(hp)
-
-    # Run server on configurable port
+def main() -> None:
+    # create_app() with no argument builds HPInfrastructure from the
+    # environment (FLIPFLOP_DB_PATH, HP_HMAC_SECRET), so production and
+    # local dev go through the same path.
+    app = create_app()
+    host = os.getenv('API_HOST', '0.0.0.0')
     port = int(os.getenv('API_PORT', 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host=host, port=port)
+
+
+if __name__ == "__main__":
+    main()
