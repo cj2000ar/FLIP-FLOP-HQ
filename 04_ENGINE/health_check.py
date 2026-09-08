@@ -67,7 +67,7 @@ class HealthChecker:
             if not db_files:
                 return {'ok': False, 'message': 'No market data databases found'}
 
-            latest_db = max(db_files, key=os.path.getctime')
+            latest_db = max(db_files, key=os.path.getctime)
             conn = sqlite3.connect(str(latest_db))
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM market_bars")
@@ -94,7 +94,7 @@ class HealthChecker:
                     'degraded': True
                 }
 
-            latest_db = max(db_files, key=os.path.getctime')
+            latest_db = max(db_files, key=os.path.getctime)
             file_age_hours = (datetime.utcnow() - datetime.fromtimestamp(
                 os.path.getctime(latest_db)
             )).total_seconds() / 3600
