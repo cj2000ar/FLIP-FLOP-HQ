@@ -1,73 +1,75 @@
 # FlipFlop HQ Production Deployment Status
 
-## Current Status: DEPLOYING
+## Status: LIVE
 
-**Deployment Date:** 2026-09-07  
-**Target Server:** DigitalOcean Droplet (flipflop-hq)  
-**IP Address:** 208.68.36.209  
-**Region:** NYC1  
-**OS:** Ubuntu 24.04.4 LTS  
+**Deployed:** 2026-09-07
+**Host:** DigitalOcean droplet `flipflop-hq`
+**IP:** 208.68.36.209
+**Region:** NYC1
+**OS:** Ubuntu 24.04.4 LTS (1 vCPU, 1 GB RAM, 25 GB SSD)
 
-## Deployment Progress
+## Live URLs
 
-### Phase 1: System Dependencies
-- [ ] Python 3.12
-- [ ] PostgreSQL 15
-- [ ] Nginx
-- [ ] Supervisor
-- [ ] Node.js (npm)
+| Surface | URL | Status |
+|---|---|---|
+| Dashboard | http://208.68.36.209/ | 200 |
+| API health | http://208.68.36.209/api/health | 200 |
+| Guardian gates | http://208.68.36.209/api/guardian/gates | 200 (8 gates) |
+| Shadow Lab | http://208.68.36.209/api/shadow/strategies | 200 |
+| Swagger UI | http://208.68.36.209/api/docs | 200 |
+| OpenAPI schema | http://208.68.36.209/api/openapi.json | 200 |
 
-### Phase 2: Application Setup
-- [ ] FastAPI backend
-- [ ] React dashboard
-- [ ] Guardian enforcement system
-- [ ] NinjaTrader Bridge
+The API binds to loopback only. Port 8000 is not reachable from the
+public internet; all access goes through nginx on port 80.
 
-### Phase 3: Configuration
-- [ ] Database initialization
-- [ ] Supervisor process manager
-- [ ] Nginx reverse proxy
-- [ ] Prometheus monitoring
-- [ ] Grafana dashboards
+## Authority Invariants (verified live in dashboard header)
 
-### Phase 4: Verification
-- [ ] Health check (GET /health)
-- [ ] Guardian endpoints (POST /guardian/evaluate)
-- [ ] Shadow Lab endpoints (GET /shadow/strategies)
-- [ ] Dashboard (HTTP on port 80)
+- Authority: ZERO
+- Live: OFF
+- Broker: NONE
+- Control: NONE
 
-## Access
+## Architecture
 
-```bash
-ssh root@208.68.36.209
-# Password: [set during droplet creation]
+```
+internet :80 -> nginx -> /            static dashboard (/opt/flipflop/dashboard)
+                      -> /api/        127.0.0.1:8000 (uvicorn, hp_api.py)
 ```
 
-## Key Endpoints (When Ready)
+- App root: `/opt/flipflop`
+- Virtualenv: `/opt/ffvenv` (isolated; Ubuntu 24.04 blocks system-wide
+  pip under PEP 668)
+- Service: `flipflop-api.service`, systemd, `Restart=always`
+- Logs: `/var/log/flipflop-api.log`, `journalctl -u flipflop-api`
 
-- API Health: `http://208.68.36.209:8000/health`
-- Dashboard: `http://208.68.36.209/` (via Nginx)
-- API Docs: `http://208.68.36.209:8000/docs`
-- Guardian: `POST http://208.68.36.209:8000/guardian/evaluate`
-
-## Authority Settings
-
-- Authority: ZERO (LOCKED)
-- Live Trading: OFF
-- Broker Orders: NONE
-
-## Logs (After Deployment)
+## Operations
 
 ```bash
-ssh root@208.68.36.209
-tail -f /var/log/flipflop/api.log
-tail -f /var/log/nginx/access.log
+systemctl status flipflop-api
+systemctl restart flipflop-api
+journalctl -u flipflop-api -n 50 --no-pager
 ```
 
-## Next Steps
+Redeploy after code changes (from the Windows workstation):
 
-1. Verify API responds with 200 OK
-2. Check dashboard loads
-3. Test Guardian enforcement gates
-4. Configure TLS certificates
-5. Setup monitoring alerts
+```bash
+scp -o PubkeyAuthentication=no app.tar.gz install_vps.sh root@208.68.36.209:/root/
+ssh -o PubkeyAuthentication=no root@208.68.36.209 "bash /root/install_vps.sh"
+```
+
+## Security
+
+- fail2ban installed and enabled. The droplet was taking sustained SSH
+  brute-force traffic against root (observed from 91.92.40.37) within
+  hours of creation.
+- Root login over password is still enabled. Recommended next: add an
+  SSH key, then set `PermitRootLogin prohibit-password` and
+  `PasswordAuthentication no`.
+- No TLS yet. The dashboard and API are served over plain HTTP.
+
+## Not Yet Done
+
+- TLS certificate (Let's Encrypt / certbot) and a domain name
+- PostgreSQL (currently the app's default local storage)
+- Prometheus / Grafana / AlertManager on the droplet
+- Automated backups
