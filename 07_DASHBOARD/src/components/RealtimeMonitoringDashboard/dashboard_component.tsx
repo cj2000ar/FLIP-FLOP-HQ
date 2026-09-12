@@ -3,7 +3,7 @@
  * Authority-ZERO locked, live_enabled=false (read-only, paper-only)
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   useMetricsState,
   useMetricsFetch,
@@ -71,19 +71,44 @@ export const RealtimeMonitoringDashboard: React.FC<DashboardProps> = ({
   }, [machineId, fencingToken, wsUrl]);
 
   // Poll metrics every second
-  useMetricsPolling(
-    fetchMetrics,
-    (_data: unknown) => {
-      // Update state from API response
+  // Stable callback: useMetricsPolling re-arms its interval whenever this identity changes.
+  const onPolledMetrics = useCallback(
+    (data: unknown) => {
+      const { batch, health } = (data ?? {}) as {
+        batch?: { trades?: unknown; pnl_history?: unknown };
+        health?: {
+          is_fresh?: boolean;
+          cpu_percent?: number;
+          memory_percent?: number;
+          db_size_bytes?: number;
+          uptime_seconds?: number;
+        };
+      };
+      if (batch?.trades) updateTrades(batch.trades as TradeRecord[]);
+      if (batch?.pnl_history) updatePnlHistory(batch.pnl_history as { timestamp: number; value: number }[]);
+      if (health) {
+        updateSystemHealth({
+          cpuPercent: health.cpu_percent ?? 0,
+          memoryPercent: health.memory_percent ?? 0,
+          dbSizeBytes: health.db_size_bytes ?? 0,
+          uptime: (health.uptime_seconds ?? 0) * 1000,
+          isHealthy: health.is_fresh ?? false,
+        });
+      }
     },
-    1000
+    [updateTrades, updatePnlHistory, updateSystemHealth]
   );
+
+  useMetricsPolling(fetchMetrics, onPolledMetrics, 1000);
 
   const handleWebSocketUpdate = (update: MetricsUpdate) => {
     switch (update.type) {
       case 'heartbeat':
         updateSystemHealth({
-          uptime: update.data?.uptime as number,
+          uptime: ((update.data?.uptime as number) ?? 0) * 1000,
+          cpuPercent: (update.data?.cpu_percent as number) ?? state.systemHealth.cpuPercent,
+          memoryPercent: (update.data?.memory_percent as number) ?? state.systemHealth.memoryPercent,
+          dbSizeBytes: (update.data?.db_size_bytes as number) ?? state.systemHealth.dbSizeBytes,
           isHealthy: true,
         });
         break;

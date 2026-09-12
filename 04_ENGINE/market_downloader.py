@@ -229,6 +229,7 @@ class MarketDownloader:
                         close_price=bar_data['close'],
                         volume=bar_data['volume'],
                         recorded_at=time.time(),
+                        data_source="SYNTHETIC" if bar_data.get("synthetic") else "MARKET_DOWNLOADER",
                         integrity_hash=""
                     )
 
@@ -345,7 +346,8 @@ class MarketDownloader:
                 "high": base_price + i + 2,
                 "low": base_price + i - 1,
                 "close": base_price + i + 1,
-                "volume": 1000000 + i * 50000
+                "volume": 1000000 + i * 50000,
+                "synthetic": True,  # test fallback; must never be read as market evidence
             })
         return bars
 

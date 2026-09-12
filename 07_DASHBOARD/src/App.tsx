@@ -13,6 +13,7 @@ import {
   createMockBatchStatus,
   createMockArchiveEntries,
 } from './types';
+import { apiGet, MACHINE_ID } from './labApiClient';
 import './fonts.css';
 import './brand.css';
 import './styles.css';
@@ -23,6 +24,14 @@ import './styles.css';
  * Live: OFF (paper-only, no real orders)
  * Read-only operational dashboard
  */
+
+interface ApiFreshness {
+  is_fresh: boolean;
+  age_seconds: number;
+  warning_level: 'fresh' | 'warning' | 'stale';
+  last_update: string | null;
+  stale_since: string | null;
+}
 
 const App: React.FC = () => {
   const [guardianState, setGuardianState] = useState<GuardianStateSnapshot>(
@@ -37,30 +46,38 @@ const App: React.FC = () => {
   const [archives] = useState<ArchiveEntry[]>(createMockArchiveEntries());
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Simulate truth-age refresh (every 5 seconds)
+  // Truth-age from the API heartbeat (every 5 seconds). Unreachable API = stale.
   useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      setTruthBar((prev) => ({
-        ...prev,
-        age_seconds: Math.min(prev.age_seconds + 5, 300),
-        warning_level:
-          prev.age_seconds + 5 < 10 ? 'fresh' : prev.age_seconds + 5 < 30 ? 'warning' : 'stale',
-      }));
-    }, 5000);
-
-    return () => clearInterval(refreshInterval);
-  }, []);
-
-  // Check for stale condition every 2 seconds
-  useEffect(() => {
-    const staleCheckInterval = setInterval(() => {
-      if (truthBar.age_seconds > 30) {
-        // Data is stale - this triggers the modal overlay
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const f = await apiGet<ApiFreshness>(`/heartbeat/${encodeURIComponent(MACHINE_ID)}/freshness`);
+        if (cancelled) return;
+        setTruthBar((prev) => ({
+          ...prev,
+          is_fresh: f.is_fresh,
+          age_seconds: f.age_seconds < 0 ? 999 : f.age_seconds,
+          warning_level: f.warning_level,
+          last_update: f.last_update ? Date.parse(f.last_update) : prev.last_update,
+          stale_since: f.stale_since ? Date.parse(f.stale_since) : undefined,
+        }));
+      } catch {
+        if (cancelled) return;
+        setTruthBar((prev) => ({
+          ...prev,
+          is_fresh: false,
+          age_seconds: Math.min(prev.age_seconds + 5, 999),
+          warning_level: 'stale',
+        }));
       }
-    }, 2000);
-
-    return () => clearInterval(staleCheckInterval);
-  }, [truthBar.age_seconds]);
+    };
+    void poll();
+    const refreshInterval = setInterval(poll, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(refreshInterval);
+    };
+  }, []);
 
   // Keyboard shortcut: toggle admin mode (Ctrl+Shift+A)
   useEffect(() => {
@@ -80,13 +97,8 @@ const App: React.FC = () => {
   }, []);
 
   const handleRefresh = () => {
-    // Reset truth-age to fresh
-    setTruthBar((prev) => ({
-      ...prev,
-      age_seconds: 0,
-      is_fresh: true,
-      warning_level: 'fresh',
-    }));
+    // Re-touch the API so its heartbeat for this machine is fresh; the poll picks it up.
+    void apiGet(`/heartbeat/${encodeURIComponent(MACHINE_ID)}/freshness`).catch(() => undefined);
 
     // Reload all data (in real app, would fetch from API)
     setGuardianState(createMockGuardianState());

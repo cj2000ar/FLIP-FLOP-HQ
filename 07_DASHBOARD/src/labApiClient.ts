@@ -85,6 +85,11 @@ async function getToken(): Promise<string> {
   return tokenInFlight;
 }
 
+/** Resolve the current fencing token (issuing one in dev). Used by the monitor WebSocket. */
+export function getFencingToken(): Promise<string> {
+  return getToken();
+}
+
 export function resetToken(): void {
   cachedToken = null;
   storeToken(null);
@@ -108,6 +113,20 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
   if (res.status === 401 || res.status === 403) throw new AuthError();
   if (!res.ok) throw new Error(`${path}: ${res.status} ${res.statusText}`);
   return (await res.json()) as T;
+}
+
+/**
+ * Authenticated streaming GET (SSE). Returns the raw Response so the caller can
+ * read `body`. One retry with a fresh token on 401/403, like apiGet.
+ */
+export async function apiStream(path: string, signal?: AbortSignal): Promise<Response> {
+  let res = await fetchWithAuth(path, signal);
+  if (res.status === 401 || res.status === 403) {
+    resetToken();
+    res = await fetchWithAuth(path, signal);
+  }
+  if (res.status === 401 || res.status === 403) throw new AuthError();
+  return res;
 }
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,67 @@
+/* TradingView Lightweight Charts surface — ported from UI_CHALLENGER_REACT_MOBILE_V1 (E:) */
+.chart-view{--line:rgba(226,233,238,.105);--line-soft:rgba(255,255,255,.055);--white:#f7f7f8;--silver:#c7ccd0;--muted:#a3a8a5;--dim:#7f8581;--amber:#d8ae4c;display:grid;gap:10px;padding:4px 0 24px}
+.chart-view-title{display:flex;align-items:end;justify-content:space-between;gap:16px;padding:0 2px 4px}
+.chart-view-title>div{display:grid;gap:3px}
+.chart-view-title span{color:var(--dim);font-size:9px;font-weight:850;letter-spacing:.14em}
+.chart-view-title strong{font-size:22px;letter-spacing:-.04em;color:var(--white)}
+.chart-view-title small{color:var(--muted);font-size:10px;text-align:right}
+
+.chart-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0;padding:9px;border:1px solid var(--line);border-radius:15px;background:rgba(0,0,0,.97)}
+.chart-tool-section{display:flex;align-items:center;gap:8px}
+.chart-tool-section>span{color:var(--dim);font-size:9px;font-weight:850;letter-spacing:.14em}
+.chart-tool-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-left:auto}
+.toolbar-group{display:flex;gap:3px;padding:3px;border:1px solid var(--line-soft);border-radius:11px;background:#000;white-space:nowrap}
+.toolbar-group button,.indicator-toggle{min-width:42px;min-height:38px;padding:0 10px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);font-size:10px;font-weight:850;cursor:pointer}
+.toolbar-group button:hover,.indicator-toggle:hover{color:#fff}
+.toolbar-group button.active,.indicator-toggle.active{border-color:rgba(199,204,208,.28);background:#080808;color:#fff;box-shadow:inset 0 -2px var(--silver)}
+.toolbar-group button:disabled{opacity:.26;cursor:not-allowed;filter:saturate(.25)}
+.indicator-toggle{flex:0 0 auto;border-color:var(--line-soft);white-space:nowrap}
+.indicator-toggle.synthetic.active{border-color:rgba(216,174,76,.5);color:var(--amber);box-shadow:inset 0 -2px var(--amber)}
+.chart-style-group button{min-width:58px}
+.chart-range-group button{min-width:38px}
+.sim-badge{flex:0 0 auto;padding:8px 11px;border:1px solid rgba(216,174,76,.28);border-radius:999px;color:var(--amber);font-size:9px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+
+.chart-canvas{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0;padding:14px;border:1px solid var(--line);border-radius:18px;background:#000;box-shadow:0 18px 58px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.025)}
+
+.real-chart{position:relative;min-width:0;overflow:hidden;border:1px solid var(--line-soft);border-radius:14px;background:#000;box-shadow:inset 0 1px rgba(255,255,255,.02)}
+.real-chart-host{min-height:305px;width:100%;touch-action:pan-y pinch-zoom}
+.real-chart.is-empty .real-chart-host{height:230px;min-height:230px}
+.real-chart-focus{height:100%;min-height:520px}
+.real-chart-focus .real-chart-host{height:calc(100% - 34px);min-height:486px}
+.real-chart-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:34px;padding:8px 12px;border-top:1px solid var(--line-soft)}
+.real-chart-status{color:var(--muted);font-size:11px}
+.real-chart-attribution{color:var(--muted);font-size:10px;text-decoration:none}
+.real-chart-attribution:hover{color:#fff}
+.real-chart-empty{position:absolute;z-index:2;inset:0 0 34px;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.94);color:var(--silver);font-size:13px;text-align:center;pointer-events:none}
+
+.real-chart-truth{position:absolute;z-index:3;top:10px;left:10px;display:flex;max-width:calc(100% - 20px);align-items:center;gap:6px;overflow:hidden;pointer-events:none}
+.real-chart-truth span{display:inline-flex;min-height:26px;flex:0 0 auto;align-items:center;gap:6px;padding:5px 8px;border:1px solid rgba(226,233,238,.1);border-radius:999px;background:rgba(0,0,0,.78);box-shadow:0 8px 22px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(14px);color:#8f949d;font-size:8px;font-weight:850;letter-spacing:.075em;white-space:nowrap}
+.real-chart-truth b{color:#f1f3f5;font-weight:900}
+.real-chart-truth .chart-synthetic{border-color:rgba(216,174,76,.5);color:var(--amber)}
+.chart-stream i{width:6px;height:6px;border-radius:50%;background:#d8ae4c;box-shadow:0 0 10px rgba(216,174,76,.45)}
+.chart-stream-live{color:#70bd8d!important}
+.chart-stream-live i{background:#27935c;box-shadow:0 0 12px rgba(39,147,92,.65)}
+.chart-stream-offline{color:#ba666b!important}
+.chart-stream-offline i{background:#9a343a;box-shadow:0 0 12px rgba(154,52,58,.55)}
+.chart-age b{color:#c7ccd0}
+.chart-go-live{display:inline-flex;min-height:26px;align-items:center;gap:6px;padding:5px 9px;border:1px solid rgba(39,147,92,.3);border-radius:999px;background:rgba(2,12,8,.9);color:#70bd8d;font-size:8px;font-weight:900;letter-spacing:.08em;pointer-events:auto;cursor:pointer}
+.chart-go-live i{width:6px;height:6px;border-radius:50%;background:#27935c;box-shadow:0 0 12px rgba(39,147,92,.62)}
+.chart-go-live:hover{border-color:rgba(70,179,116,.55);background:#06150e}
+
+.chart-ohlc{position:absolute;z-index:3;top:45px;left:12px;display:flex;align-items:center;gap:10px;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.68);backdrop-filter:blur(10px);color:#747a83;font-size:9px;font-weight:850;letter-spacing:.04em;pointer-events:none}
+.chart-ohlc b{color:#c7ccd0}
+.chart-ohlc .positive{color:#70bd8d}
+.chart-ohlc .negative{color:#ba666b}
+
+@media (max-width:760px){
+  .chart-view-title small{display:none}
+  .chart-view-title strong{font-size:19px}
+  .toolbar-group button,.indicator-toggle{min-width:44px;min-height:44px}
+  .chart-tool-actions{margin-left:0}
+  .real-chart-truth{top:8px;right:8px;left:8px;gap:5px}
+  .real-chart-truth .chart-capture,.real-chart-truth .chart-age{display:none}
+  .chart-go-live{margin-left:auto}
+  .chart-ohlc{top:42px;right:8px;left:8px;justify-content:space-between;gap:4px;padding:5px 7px;font-size:8px}
+  .real-chart-focus{min-height:calc(100dvh - 310px)}
+  .real-chart-focus .real-chart-host{min-height:calc(100dvh - 344px)}
+}

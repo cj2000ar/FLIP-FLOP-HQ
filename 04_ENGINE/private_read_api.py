@@ -18,14 +18,18 @@ Endpoints (8 total):
 11. /quantum/lanes - Four research lanes
 12. /gates - Guardian 8-gate verdicts
 13. /batch/latest - Latest batch summary (paper only)
-14. /heartbeat/{machine_id}/freshness - Truth-bar heartbeat
+14. /heartbeat/{machine_id}/freshness - Truth-bar heartbeat + host metrics
+15. /ws - WebSocket: auth message first, then heartbeat push every 5s (read-only)
+16. /charts/bars?symbol&timeframe&limit&include_synthetic - OHLCV for TradingView Lightweight Charts
+17. /charts/realtime?symbol&timeframe - SSE stream of new bars (event: chart-bar)
 
 Auth: Machine-ID + Fencing-Token headers
 Bitemporal: event_time ≤ knowledge_time enforced
 Port: 8000 (same as guardian_api)
 """
 
-from fastapi import FastAPI, HTTPException, Header, Query, Request
+from fastapi import FastAPI, HTTPException, Header, Query, Request, WebSocket, WebSocketDisconnect
+import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any, Literal
@@ -37,7 +41,9 @@ import time
 from uuid import uuid4
 import json
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
+from starlette.responses import Response, StreamingResponse
+import glob
+import sqlite3
 
 # Centralized logging (structured JSON, file rotation)
 try:
@@ -732,6 +738,39 @@ class HeartbeatFreshnessModel(BaseModel):
     warning_level: Literal["fresh", "warning", "stale"]
     stale_since: Optional[str] = None
     last_update: Optional[str] = None
+    # Host metrics for the monitoring dashboard (this API process / this box)
+    cpu_percent: float = 0.0
+    memory_percent: float = 0.0
+    db_size_bytes: int = 0
+    uptime_seconds: float = 0.0
+
+
+_PROCESS_START = time.time()
+_DB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "databases")
+
+
+def _host_metrics() -> Dict[str, Any]:
+    """CPU / memory / on-disk DB size. psutil optional: zeros if missing."""
+    cpu, mem = 0.0, 0.0
+    try:
+        import psutil
+        cpu = psutil.cpu_percent(interval=None)
+        mem = psutil.virtual_memory().percent
+    except Exception:
+        pass
+    db_bytes = 0
+    try:
+        for name in os.listdir(_DB_DIR):
+            if name.endswith((".db", ".duckdb", ".sqlite")):
+                db_bytes += os.path.getsize(os.path.join(_DB_DIR, name))
+    except OSError:
+        pass
+    return {
+        "cpu_percent": cpu,
+        "memory_percent": mem,
+        "db_size_bytes": db_bytes,
+        "uptime_seconds": round(time.time() - _PROCESS_START, 1),
+    }
 
 
 # Arena from strategy_intelligence_master (frozen CONTROL baseline)
@@ -1291,7 +1330,7 @@ async def get_heartbeat_freshness(
     if last is None:
         return HeartbeatFreshnessModel(
             machine_id=hb_machine_id, age_seconds=-1.0, is_fresh=False,  # -1 = never seen (JSON has no inf)
-            warning_level="stale", stale_since=None, last_update=None,
+            warning_level="stale", stale_since=None, last_update=None, **_host_metrics(),
         )
     age = time.time() - last
     level = "fresh" if age < 10 else "warning" if age <= 30 else "stale"
@@ -1299,7 +1338,212 @@ async def get_heartbeat_freshness(
     return HeartbeatFreshnessModel(
         machine_id=hb_machine_id, age_seconds=round(age, 3), is_fresh=level == "fresh",
         warning_level=level, stale_since=None if level != "stale" else last_iso, last_update=last_iso,
+        **_host_metrics(),
     )
+
+
+
+
+# ============================================================================
+# CHART BARS (market_data_*.db written by market_downloader)
+# ============================================================================
+
+_BASE_TIMEFRAME_MIN = 30  # market_downloader stores 30-minute session bars
+_REAL_SOURCES = {"ALPACA_SIP", "NINJATRADER", "NINJA_FEED"}
+_TF_MINUTES = {"1m": 1, "3m": 3, "5m": 5, "15m": 15, "30m": 30, "60m": 60, "1h": 60, "4h": 240, "1D": 1440, "1d": 1440}
+
+
+class ChartBarModel(BaseModel):
+    time: int
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: int
+    symbol: str
+    timeframe: str
+    synthetic: bool
+    source: str
+
+
+class ChartBarsResponse(BaseModel):
+    bars: List[ChartBarModel]
+    derived: bool
+    base_timeframe: str
+    source: str
+    notice: Optional[str] = None
+
+
+def _bar_epoch(date_str: str, time_str: str) -> int:
+    """'20260908' + '0930' (America/New_York session clock) -> unix seconds."""
+    from zoneinfo import ZoneInfo
+    dt = datetime.strptime(date_str + time_str, "%Y%m%d%H%M").replace(tzinfo=ZoneInfo("America/New_York"))
+    return int(dt.timestamp())
+
+
+def _load_base_bars(symbol: str) -> List[Dict[str, Any]]:
+    """All stored bars for a symbol across every market_data_*.db, oldest first."""
+    rows: List[Dict[str, Any]] = []
+    for db in sorted(glob.glob(os.path.join(_DB_DIR, "market_data_*.db"))):
+        try:
+            conn = sqlite3.connect(db)
+            cur = conn.execute(
+                "SELECT date, time, open_price, high_price, low_price, close_price, volume, data_source "
+                "FROM market_bars WHERE instrument = ? ORDER BY date, time",
+                [symbol],
+            )
+            for date_str, time_str, o, h, l, c, v, src in cur.fetchall():
+                # Synthetic unless the producer is a known real feed. The downloader's
+                # synthetic fallback writes data_source=MARKET_DOWNLOADER with placeholder prices.
+                synthetic = src not in _REAL_SOURCES
+                rows.append({
+                    "time": _bar_epoch(date_str, time_str),
+                    "open": float(o), "high": float(h), "low": float(l), "close": float(c),
+                    "volume": int(v), "synthetic": synthetic, "source": src,
+                })
+            conn.close()
+        except sqlite3.Error as e:
+            logger.warning(f"chart bars: skipping {db}: {e}")
+    rows.sort(key=lambda r: r["time"])
+    return rows
+
+
+def _resample(rows: List[Dict[str, Any]], minutes: int) -> List[Dict[str, Any]]:
+    """Bucket base bars into `minutes` frames (>= base). Synthetic if any input is."""
+    if minutes <= _BASE_TIMEFRAME_MIN:
+        return rows
+    span = minutes * 60
+    out: Dict[int, Dict[str, Any]] = {}
+    for r in rows:
+        bucket = r["time"] - (r["time"] % span)
+        cur = out.get(bucket)
+        if cur is None:
+            out[bucket] = {**r, "time": bucket}
+        else:
+            cur["high"] = max(cur["high"], r["high"])
+            cur["low"] = min(cur["low"], r["low"])
+            cur["close"] = r["close"]
+            cur["volume"] += r["volume"]
+            cur["synthetic"] = cur["synthetic"] or r["synthetic"]
+    return [out[k] for k in sorted(out)]
+
+
+def _chart_bars(symbol: str, timeframe: str, limit: int, include_synthetic: bool) -> ChartBarsResponse:
+    minutes = _TF_MINUTES.get(timeframe)
+    base = f"{_BASE_TIMEFRAME_MIN}m"
+    if minutes is None:
+        return ChartBarsResponse(bars=[], derived=False, base_timeframe=base, source="NONE",
+                                 notice=f"Unknown timeframe {timeframe}")
+    if minutes < _BASE_TIMEFRAME_MIN:
+        return ChartBarsResponse(bars=[], derived=False, base_timeframe=base, source="NONE",
+                                 notice=f"Pipeline stores {base} bars; {timeframe} cannot be derived from coarser data.")
+    rows = _load_base_bars(symbol)
+    sources = sorted({r["source"] for r in rows})
+    if not include_synthetic:
+        rows = [r for r in rows if not r["synthetic"]]
+    rows = _resample(rows, minutes)[-max(1, min(limit, 5000)):]
+    bars = [ChartBarModel(**r, symbol=symbol, timeframe=timeframe) for r in rows]
+    notice = None
+    if not bars:
+        notice = (f"No bars stored for {symbol}." if include_synthetic
+                  else f"No real bars for {symbol}; stored bars are synthetic (sources: {', '.join(sources) or 'none'}).")
+    return ChartBarsResponse(bars=bars, derived=minutes > _BASE_TIMEFRAME_MIN, base_timeframe=base,
+                             source=", ".join(sources) or "NONE", notice=notice)
+
+
+@app.get("/charts/bars", response_model=ChartBarsResponse)
+async def get_chart_bars(
+    symbol: str = Query("NQ"),
+    timeframe: str = Query("30m"),
+    limit: int = Query(2400, ge=1, le=5000),
+    include_synthetic: bool = Query(False, description="Include bars flagged synthetic (SIM view only)"),
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /charts/bars - OHLCV for TradingView Lightweight Charts. Synthetic bars excluded by default."""
+    await validate_auth(machine_id, fencing_token)
+    return _chart_bars(symbol.upper(), timeframe, limit, include_synthetic)
+
+
+@app.get("/charts/realtime")
+async def stream_chart_bars(
+    symbol: str = Query("NQ"),
+    timeframe: str = Query("30m"),
+    include_synthetic: bool = Query(False),
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """
+    GET /charts/realtime - Server-Sent Events. Polls the bar store every 5s and emits
+    `event: chart-bar` for bars newer than the last one sent; `event: ping` otherwise.
+    """
+    await validate_auth(machine_id, fencing_token)
+    sym = symbol.upper()
+
+    async def gen():
+        last_time = 0
+        initial = _chart_bars(sym, timeframe, 1, include_synthetic).bars
+        if initial:
+            last_time = initial[-1].time
+        yield f"event: ready\ndata: {json.dumps({'symbol': sym, 'timeframe': timeframe, 'last_time': last_time})}\n\n"
+        while True:
+            await asyncio.sleep(5)
+            bars = _chart_bars(sym, timeframe, 50, include_synthetic).bars
+            fresh = [b for b in bars if b.time >= last_time]  # >= so a still-forming bucket updates
+            for b in fresh:
+                yield f"event: chart-bar\ndata: {b.model_dump_json()}\n\n"
+                last_time = max(last_time, b.time)
+            if not fresh:
+                yield f"event: ping\ndata: {int(time.time())}\n\n"
+
+    return StreamingResponse(gen(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.websocket("/ws")
+async def metrics_websocket(websocket: WebSocket):
+    """
+    WS /ws - Live monitoring feed. Read-only; nothing sent here changes state.
+
+    Protocol (JSON text frames):
+      client -> {"type":"auth","machine_id":..,"fencing_token":..}   first frame, 10s deadline
+      server -> {"type":"heartbeat","timestamp":ms,"data":{"uptime":s,...host metrics}}  every 5s
+      client -> {"type":"subscribe"|"unsubscribe","channel":..} -> ack   |  {"type":"ping"} -> heartbeat
+    """
+    await websocket.accept()
+    try:
+        try:
+            first = await asyncio.wait_for(websocket.receive_json(), timeout=10)
+        except asyncio.TimeoutError:
+            await websocket.send_json({"type": "error", "timestamp": int(time.time() * 1000), "error": "auth timeout"})
+            await websocket.close(code=4401)
+            return
+        machine_id = first.get("machine_id") if isinstance(first, dict) else None
+        token = first.get("fencing_token") if isinstance(first, dict) else None
+        if first.get("type") != "auth" or not machine_id or not token or not _validate_token_locally(token, machine_id):
+            await websocket.send_json({"type": "error", "timestamp": int(time.time() * 1000), "error": "unauthorized"})
+            await websocket.close(code=4403)
+            return
+        _LAST_SEEN[machine_id] = time.time()
+
+        def heartbeat():
+            return {"type": "heartbeat", "timestamp": int(time.time() * 1000), "data": _host_metrics() | {"uptime": round(time.time() - _PROCESS_START, 1)}}
+
+        await websocket.send_json(heartbeat())
+        while True:
+            try:
+                msg = await asyncio.wait_for(websocket.receive_json(), timeout=5)
+            except asyncio.TimeoutError:
+                await websocket.send_json(heartbeat())
+                continue
+            _LAST_SEEN[machine_id] = time.time()
+            kind = msg.get("type") if isinstance(msg, dict) else None
+            if kind == "ping":
+                await websocket.send_json(heartbeat())
+            elif kind in ("subscribe", "unsubscribe"):
+                await websocket.send_json({"type": "ack", "timestamp": int(time.time() * 1000), "data": {"channel": msg.get("channel"), "action": kind}})
+    except WebSocketDisconnect:
+        return
 
 
 @app.options("/{full_path:path}")

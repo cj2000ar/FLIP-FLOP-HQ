@@ -4,7 +4,7 @@
  */
 
 export interface MetricsUpdate {
-  type: 'heartbeat' | 'gates' | 'batch' | 'trades' | 'health' | 'error';
+  type: 'heartbeat' | 'gates' | 'batch' | 'trades' | 'health' | 'error' | 'ack';
   timestamp: number;
   data?: Record<string, unknown>;
   error?: string;

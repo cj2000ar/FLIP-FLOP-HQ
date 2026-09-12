@@ -9,6 +9,8 @@ import BatchSummary from './BatchSummary';
 import ArchiveViewer from './ArchiveViewer';
 import Brand from './Brand';
 import Lab from './Lab';
+import MonitorPage from './MonitorPage';
+import ChartView from '../chart/ChartView';
 import GuardianPage from './GuardianPage';
 import ShadowLab from './ShadowLab';
 import TradesView from './TradesView';
@@ -47,6 +49,8 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
     { id: 'shadow', label: 'Shadow', short: 'Lab' },
     { id: 'guardian', label: 'Guardian', short: 'Guard' },
     { id: 'lab', label: 'Lab' },
+    { id: 'monitor', label: 'Monitor', short: 'Mon' },
+    { id: 'chart', label: 'Chart' },
   ];
 
   // Detect form factor based on window width
@@ -270,6 +274,15 @@ export const ScreenComponent: React.FC<ScreenComponentProps> = ({
 
         {/* Lab Tab */}
         {activeNav === 'lab' && <Lab />}
+
+        {/* Monitor Tab (real-time, read-only) */}
+        {activeNav === 'monitor' && <MonitorPage />}
+
+        {/* Chart Tab (TradingView Lightweight Charts, read-only) */}
+        {activeNav === 'chart' && <ChartView />}
+
+        {/* Monitor Tab (real-time, read-only) */}
+        {activeNav === 'monitor' && <MonitorPage />}
 
         {/* Shadow Lab Tab */}
         {activeNav === 'shadow' && <ShadowLab />}

@@ -97,6 +97,17 @@ const mockResponses: Record<string, unknown> = {
   'http://localhost:8000/guardian/calibration': [],
   'http://localhost:8000/promotion/gates': PROMOTION_GATES,
   'http://localhost:8000/quantum/lanes': QUANTUM_LANES,
+  'http://localhost:8000/batch/latest': {
+    ...bitemporal, batch_id: 'PAPER-NONE', verdict_status: 'NO_BATCH', alert_array: [],
+    pnl_summary: { pnl: 0, trades: 0, win_rate: 0 }, risk_metrics: {}, trades: [], pnl_history: [],
+  },
+  'http://localhost:8000/gates': [],
+  'http://localhost:8000/charts/bars': { bars: [], derived: false, base_timeframe: '30m', source: 'NONE', notice: 'mock' },
+  'http://localhost:8000/heartbeat/dashboard-local/freshness': {
+    machine_id: 'dashboard-local', age_seconds: 0.2, is_fresh: true, warning_level: 'fresh',
+    stale_since: null, last_update: '2026-09-11T00:00:00Z',
+    cpu_percent: 12.5, memory_percent: 40.0, db_size_bytes: 1024, uptime_seconds: 60,
+  },
 };
 
 global.fetch = vi.fn((url: string | Request, init?: RequestInit) => {
