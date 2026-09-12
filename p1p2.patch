@@ -1,0 +1,764 @@
+diff --git a/base/src/security/authz.mjs b/work/src/security/authz.mjs
+index f289201..1ed1ed6 100644
+--- a/base/src/security/authz.mjs
++++ b/work/src/security/authz.mjs
+@@ -1,5 +1,64 @@
+ export const ROLES = Object.freeze(["ROOT_OWNER","ADMIN","USER","VIEWER"]);
+ 
++// Every session-protected route names exactly one action. Unknown action or
++// unknown role is denied. No action grants LIVE, broker, CONTROL, routing,
++// or order authority; those have no action name and cannot be added by data.
++export const ACTIONS = Object.freeze([
++  "auth.session",
++  "auth.device.register",
++  "read.product",
++  "read.platform.config",
++  "read.edge.rootDashboard",
++  "ai.ask",
++  "realtime.subscribe",
++  "write.notifications.self",
++  "write.alerts.ack",
++  "write.shadow",
++  "write.shadow.marketMark",
++  "write.preview",
++  "admin.ops",
++  "admin.security",
++]);
++
++const BASE = ["auth.session","auth.device.register","read.product","ai.ask","realtime.subscribe","write.notifications.self"];
++
++// Frozen arrays, not Sets: Object.freeze does not stop Set.prototype.add.
++export const PERMISSIONS = Object.freeze({
++  ROOT_OWNER: Object.freeze([...ACTIONS]),
++  ADMIN: Object.freeze([
++    ...BASE,
++    "read.platform.config",
++    "write.alerts.ack",
++    "write.shadow",
++    "write.shadow.marketMark",
++    "write.preview",
++    "admin.ops",
++  ]),
++  USER: Object.freeze([
++    ...BASE,
++    "write.alerts.ack",
++    "write.shadow",
++    "write.preview",
++  ]),
++  VIEWER: Object.freeze([...BASE]),
++});
++
++export function can(session, action) {
++  if (!session || !ROLES.includes(session.role)) return false;
++  if (!ACTIONS.includes(action)) return false;
++  return PERMISSIONS[session.role].includes(action);
++}
++
++export function rootOnlyAction(action) {
++  return ACTIONS.includes(action) && ROLES.every(r => r === "ROOT_OWNER" || !PERMISSIONS[r].includes(action));
++}
++
++export function permissionMatrix() {
++  const out = {};
++  for (const action of ACTIONS) out[action] = ROLES.filter(r => PERMISSIONS[r].includes(action));
++  return out;
++}
++
+ export function canReadAccount(session, accountId) {
+   if (!session || !ROLES.includes(session.role)) return false;
+   if (session.role === "ROOT_OWNER") return true;
+diff --git a/base/src/server.mjs b/work/src/server.mjs
+index f048ba2..437242b 100644
+--- a/base/src/server.mjs
++++ b/work/src/server.mjs
+@@ -15,6 +15,7 @@ import {verifyGatewayRequest,validateEnvelope,enforceSequence} from "./services/
+ import {AuthService} from "./services/auth-service.mjs";
+ import {AccountService} from "./services/account-service.mjs";
+ import {FixedWindowLimiter} from "./security/rate-limit.mjs";
++import {can,rootOnlyAction} from "./security/authz.mjs";
+ import {AlertService} from "./services/alerts.mjs";
+ import {LiveEventAlertBridge} from "./services/live-event-alert-bridge.mjs";
+ import {RealtimeHub} from "./services/realtime-hub.mjs";
+@@ -129,15 +130,18 @@ function requireSession(req,res){
+   if(!r.ok){sendJson(res,401,r);return null;}
+   return {...r.session,authSource:extracted.source};
+ }
+-function rootOnlySession(req,res){
++function requireAction(req,res,action){
+   const s=requireSession(req,res);
+   if(!s)return null;
+-  if(s.role!=="ROOT_OWNER"){
+-    sendJson(res,403,{ok:false,code:"ROOT_REQUIRED"});
++  if(!can(s,action)){
++    sendJson(res,403,{ok:false,code:rootOnlyAction(action)?"ROOT_REQUIRED":"ACTION_DENIED",action,role:s.role});
+     return null;
+   }
+   return s;
+ }
++function rootOnlySession(req,res){
++  return requireAction(req,res,"read.edge.rootDashboard");
++}
+ function readJsonFileSafe(filePath){
+   if(!filePath)return null;
+   try{
+@@ -401,7 +405,7 @@ if(method==="POST"&&u.pathname==="/api/auth/browser-login"){
+ if(method==="POST"&&u.pathname==="/api/auth/browser-logout"){
+   const sec=browserRequestSecurity(req);
+   if(!sec.sameOrigin)return sendJson(res,403,{ok:false,code:"CROSS_SITE_REQUEST_BLOCKED"});
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"auth.session"); if(!session)return;
+   const result=auth.logout(session);
+   res.setHeader("Set-Cookie",clearSessionCookie({secure:sec.secure}));
+   evidence.append({category:"BROWSER_AUTH_LOGOUT",source:"LOCAL_CORE",payload:{userId:session.userId}});
+@@ -418,32 +422,32 @@ if(method==="POST"&&u.pathname==="/api/auth/browser-logout"){
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/auth/logout"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"auth.session"); if(!session)return;
+       const result=auth.logout(session);
+       evidence.append({category:"AUTH_LOGOUT",source:"LOCAL_CORE",payload:{userId:session.userId}});
+       return sendJson(res,200,result);
+     }
+ 
+     if(method==="GET"&&u.pathname==="/api/me"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"auth.session"); if(!session)return;
+       return sendJson(res,200,{ok:true,user:{userId:session.userId,displayName:session.displayName,role:session.role,accountScopes:session.accountScopes}});
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/devices/register"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"auth.device.register"); if(!session)return;
+       const result=auth.registerDevice(session,await jsonBody(req));
+       evidence.append({category:"DEVICE_REGISTER",source:"LOCAL_CORE",payload:{ok:result.ok,userId:session.userId,deviceId:result.device?.deviceId??null}});
+       return sendJson(res,result.ok?201:400,result);
+     }
+ 
+     if(method==="GET"&&u.pathname==="/api/admin/users"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"admin.security"); if(!session)return;
+       const result=auth.listUsers(session);
+       return sendJson(res,result.ok?200:403,result);
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/admin/users"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"admin.security"); if(!session)return;
+       const result=auth.createUser(session,await jsonBody(req));
+       evidence.append({category:"USER_CREATE",source:"LOCAL_CORE",payload:{ok:result.ok,actor:session.userId,newUserId:result.user?.userId??null}});
+       return sendJson(res,result.ok?201:403,result);
+@@ -451,95 +455,95 @@ if(method==="POST"&&u.pathname==="/api/auth/browser-logout"){
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/admin/sessions"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   return sendJson(res,200,auth.listSessions(session,{userId:u.searchParams.get("userId")??null}));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/admin/devices"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   return sendJson(res,200,auth.listDevices(session,{userId:u.searchParams.get("userId")??null}));
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/admin/sessions/revoke"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   const result=auth.revokeSession(session,await jsonBody(req));
+   evidence.append({category:"SESSION_REVOKE",source:"OWNER_SECURITY",payload:{actor:session.userId,result}});
+   return sendJson(res,result.ok?200:404,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/admin/devices/revoke"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   const result=auth.revokeDevice(session,await jsonBody(req));
+   evidence.append({category:"DEVICE_REVOKE",source:"OWNER_SECURITY",payload:{actor:session.userId,result}});
+   return sendJson(res,result.ok?200:404,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/admin/users/active"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   const result=auth.setUserActive(session,await jsonBody(req));
+   evidence.append({category:"USER_ACTIVE_CHANGE",source:"OWNER_SECURITY",payload:{actor:session.userId,result}});
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/admin/sessions/prune"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   const result=auth.pruneExpiredSessions(session,await jsonBody(req));
+   return sendJson(res,result.ok?200:403,result);
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/admin/account-assignments"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"admin.security"); if(!session)return;
+   return sendJson(res,200,accounts.listAssignments(session,{userId:u.searchParams.get("userId")??null}));
+ }
+ 
+     if(method==="POST"&&u.pathname==="/api/admin/accounts"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"admin.security"); if(!session)return;
+       const result=accounts.createAccount(session,await jsonBody(req));
+       evidence.append({category:"ACCOUNT_CREATE",source:"LOCAL_CORE",payload:{ok:result.ok,actor:session.userId,accountId:result.account?.accountId??null}});
+       return sendJson(res,result.ok?201:403,result);
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/admin/account-assignments"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"admin.security"); if(!session)return;
+       const result=accounts.assign(session,await jsonBody(req));
+       evidence.append({category:"ACCOUNT_ASSIGN",source:"LOCAL_CORE",payload:{...result,actor:session.userId}});
+       return sendJson(res,result.ok?200:403,result);
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/admin/account-assignments/remove"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"admin.security"); if(!session)return;
+       const result=accounts.unassign(session,await jsonBody(req));
+       evidence.append({category:"ACCOUNT_UNASSIGN",source:"OWNER_SECURITY",payload:{...result,actor:session.userId}});
+       return sendJson(res,result.ok?200:403,result);
+     }
+ 
+     if(method==="GET"&&u.pathname==="/api/accounts"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"read.product"); if(!session)return;
+       return sendJson(res,200,accounts.listFor(session));
+     }
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/alerts"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const limit=Number(u.searchParams.get("limit")??50);
+   const unack=u.searchParams.get("unacknowledgedOnly")==="true";
+   return sendJson(res,200,alerts.listFor(session,{limit,unacknowledgedOnly:unack}));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/notifications/status"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,alerts.transportStatus(session));
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/notifications/subscriptions"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.notifications.self"); if(!session)return;
+   const result=alerts.registerSubscription(session,await jsonBody(req));
+   evidence.append({category:"NOTIFICATION_SUBSCRIPTION",source:"LOCAL_CORE",payload:{userId:session.userId,result}});
+   return sendJson(res,result.ok?201:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/notifications/preferences"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.notifications.self"); if(!session)return;
+   const body=await jsonBody(req);
+   const targetUserId=body.userId??session.userId;
+   const result=alerts.setPreferences(session,targetUserId,body);
+@@ -548,7 +552,7 @@ if(method==="POST"&&u.pathname==="/api/notifications/preferences"){
+ }
+ 
+ if(method==="POST"&&u.pathname.startsWith("/api/alerts/")&&u.pathname.endsWith("/ack")){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.alerts.ack"); if(!session)return;
+   const parts=u.pathname.split("/");
+   const alertId=parts[3]??"";
+   const result=alerts.acknowledge(session,alertId);
+@@ -557,8 +561,7 @@ if(method==="POST"&&u.pathname.startsWith("/api/alerts/")&&u.pathname.endsWith("
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/admin/alerts/test"){
+-  const session=requireSession(req,res); if(!session)return;
+-  if(session.role!=="ROOT_OWNER") return sendJson(res,403,{ok:false,code:"ROOT_REQUIRED"});
++  const session=requireAction(req,res,"admin.ops"); if(!session)return;
+   const body=await jsonBody(req);
+   const result=alerts.createAlert({
+     userId:body.userId??session.userId,
+@@ -577,7 +580,7 @@ if(method==="POST"&&u.pathname==="/api/admin/alerts/test"){
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/live-events/missed"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const deviceId=u.searchParams.get("deviceId")??"";
+   const raw=u.searchParams.get("afterSeq");
+   const parsed=raw==null?null:Number(raw);
+@@ -586,61 +589,61 @@ if(method==="GET"&&u.pathname==="/api/live-events/missed"){
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/live-events/cursor"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.notifications.self"); if(!session)return;
+   const result=reliability.advanceCursor(session,await jsonBody(req));
+   return sendJson(res,result.ok?200:409,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/notifications/delivery-receipt"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.notifications.self"); if(!session)return;
+   const result=reliability.recordDelivery(session,await jsonBody(req));
+   return sendJson(res,result.ok?201:403,result);
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/reliability/health"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,reliability.health());
+ }
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/readiness"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,buildReadiness());
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/canonical-ledger/verify"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,canonicalLedger.verify());
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/shadow/active"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,maxShadow.activeFor(session));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/shadow/history"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,maxShadow.historyFor(session,{limit:Number(u.searchParams.get("limit")??100)}));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/shadow/performance"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,maxShadow.performance(session));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/shadow/calendar"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,maxShadow.calendar(session));
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/shadow/intents"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow"); if(!session)return;
+   const result=maxShadow.createIntent(session,await jsonBody(req));
+   return sendJson(res,result.ok?201:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname.endsWith("/fill")&&u.pathname.startsWith("/api/shadow/")){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow"); if(!session)return;
+   const shadowId=u.pathname.split("/")[3]??"";
+   const body=await jsonBody(req); body.shadowId=shadowId;
+   const result=maxShadow.fill(session,body);
+@@ -648,33 +651,33 @@ if(method==="POST"&&u.pathname.endsWith("/fill")&&u.pathname.startsWith("/api/sh
+ }
+ 
+ if(method==="POST"&&u.pathname.endsWith("/protect")&&u.pathname.startsWith("/api/shadow/")){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow"); if(!session)return;
+   const shadowId=u.pathname.split("/")[3]??"";
+   const result=maxShadow.protect(session,{shadowId,...await jsonBody(req)});
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname.endsWith("/close")&&u.pathname.startsWith("/api/shadow/")){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow"); if(!session)return;
+   const shadowId=u.pathname.split("/")[3]??"";
+   const result=maxShadow.close(session,{shadowId,...await jsonBody(req)});
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/shadow/market-mark"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow.marketMark"); if(!session)return;
+   const result=maxShadow.mark(await jsonBody(req));
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/shadow/session-flatten"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"write.shadow"); if(!session)return;
+   const result=maxShadow.sessionFlatten(session,await jsonBody(req));
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="GET"&&u.pathname.startsWith("/api/funded/mirror/")){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const shadowId=u.pathname.split("/").pop()??"";
+   const result=maxShadow.fundedMirrorCard(session,shadowId);
+   return sendJson(res,result.ok?200:400,result);
+@@ -682,41 +685,41 @@ if(method==="GET"&&u.pathname.startsWith("/api/funded/mirror/")){
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/search"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const q=u.searchParams.get("q")??"";
+   return sendJson(res,200,{ok:true,query:q,results:productGraph.search(q)});
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/search/resolve"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,productGraph.resolve(u.searchParams.get("q")??""));
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/copilot/interpret"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"ai.ask"); if(!session)return;
+   const body=await jsonBody(req);
+   return sendJson(res,200,copilotRouter.interpret(body.text));
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/ai/status"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,aiCopilot.status());
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/ai/ask"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"ai.ask"); if(!session)return;
+   const body=await jsonBody(req,16384);
+   const result=await aiCopilot.answer(session,{text:body.text});
+   return sendJson(res,result.ok?200:400,result);
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/charts/contract"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,{ok:true,contract:charts.engineContract()});
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/charts/bars"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const result=charts.bars({
+     symbol:u.searchParams.get("symbol"),
+     timeframe:u.searchParams.get("timeframe"),
+@@ -728,7 +731,7 @@ if(method==="GET"&&u.pathname==="/api/charts/bars"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/charts/annotations"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const result=charts.annotations(session,{
+     symbol:u.searchParams.get("symbol"),
+     fromUtc:u.searchParams.get("fromUtc")??undefined,
+@@ -738,7 +741,7 @@ if(method==="GET"&&u.pathname==="/api/charts/annotations"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/charts/realtime"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const symbol=String(u.searchParams.get("symbol")??"").toUpperCase();
+   const timeframe=String(u.searchParams.get("timeframe")??"");
+   const clientId=`CHART_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+@@ -770,7 +773,7 @@ if(method==="GET"&&u.pathname==="/api/charts/realtime"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/charts/realtime/status"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,{
+     ok:true,
+     connectedClients:chartStreamHub.count(),
+@@ -782,22 +785,22 @@ if(method==="GET"&&u.pathname==="/api/charts/realtime/status"){
+ 
+ 
+ if(method==="GET"&&u.pathname==="/api/platform/config"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.platform.config"); if(!session)return;
+   return sendJson(res,200,{ok:true,config:runtimeConfig});
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/platform/modules"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,{ok:true,validation:moduleRegistry.validate(),modules:moduleRegistry.list(),order:moduleRegistry.dependencyOrder()});
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/platform/supervisor"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,supervisor.snapshot());
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/deep-link/build"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const type=u.searchParams.get("type");
+   const id=u.searchParams.get("id");
+   const tradeId=u.searchParams.get("tradeId");
+@@ -806,12 +809,12 @@ if(method==="GET"&&u.pathname==="/api/deep-link/build"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/deep-link/parse"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   return sendJson(res,200,parseDeepLink(u.searchParams.get("path")??""));
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/copilot/context"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"ai.ask"); if(!session)return;
+   const body=await jsonBody(req);
+   const result=buildCopilotContext({
+     session,
+@@ -826,7 +829,7 @@ if(method==="POST"&&u.pathname==="/api/copilot/context"){
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/provenance/metric"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const body=await jsonBody(req);
+   const result=buildMetricProvenance(body);
+   return sendJson(res,result.ok?200:400,result);
+@@ -862,7 +865,7 @@ if(method==="POST"&&u.pathname==="/api/ninja-readonly/ingest"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/ninja-readonly/status"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"read.product"); if(!session)return;
+   const accountIds=session.role==="ROOT_OWNER"||session.accountScopes?.includes("*")
+     ? null
+     : (session.accountScopes??[]);
+@@ -881,7 +884,7 @@ if(method==="GET"&&u.pathname==="/api/pwa/status"){
+ }
+ 
+ if(method==="GET"&&u.pathname==="/api/realtime/events"){
+-  const session=requireSession(req,res); if(!session)return;
++  const session=requireAction(req,res,"realtime.subscribe"); if(!session)return;
+   const clientId=`SSE_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+   res.writeHead(200,{
+     "Content-Type":"text/event-stream",
+@@ -901,8 +904,7 @@ if(method==="GET"&&u.pathname==="/api/realtime/events"){
+ }
+ 
+ if(method==="POST"&&u.pathname==="/api/ninja-readonly/validate"){
+-  const session=requireSession(req,res); if(!session)return;
+-  if(session.role!=="ROOT_OWNER")return sendJson(res,403,{ok:false,code:"ROOT_REQUIRED"});
++  const session=requireAction(req,res,"admin.ops"); if(!session)return;
+   const result=validateNinjaReadonlyEnvelope(await jsonBody(req,262144));
+   return sendJson(res,result.ok?200:400,result);
+ }
+@@ -945,24 +947,24 @@ if(method==="POST"&&u.pathname==="/api/ninja-readonly/validate"){
+     }
+ 
+     if(method==="GET"&&u.pathname==="/api/instruments"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"read.product"); if(!session)return;
+       return sendJson(res,200,{passports:Object.values(INSTRUMENT_PASSPORTS)});
+     }
+ 
+     if(method==="GET"&&u.pathname==="/api/evidence/verify"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"read.product"); if(!session)return;
+       return sendJson(res,200,evidence.verify());
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/tune-up/preview"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"write.preview"); if(!session)return;
+       const result=tuneUp(await jsonBody(req));
+       evidence.append({category:"TUNE_UP_PREVIEW",source:"LOCAL_CORE",payload:{userId:session.userId,result}});
+       return sendJson(res,200,result);
+     }
+ 
+     if(method==="POST"&&u.pathname==="/api/guardian/preflight"){
+-      const session=requireSession(req,res); if(!session)return;
++      const session=requireAction(req,res,"write.preview"); if(!session)return;
+       const result=guardianPreflight(await jsonBody(req));
+       evidence.append({category:"GUARDIAN_PREFLIGHT",source:"LOCAL_CORE",payload:{userId:session.userId,result}});
+       return sendJson(res,200,result);
+diff --git a/work/tests/authz-matrix.test.mjs b/work/tests/authz-matrix.test.mjs
+new file mode 100644
+index 0000000..dcfdd6c
+--- /dev/null
++++ b/work/tests/authz-matrix.test.mjs
+@@ -0,0 +1,159 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++import {fileURLToPath} from "node:url";
++import {ROLES,ACTIONS,PERMISSIONS,can,rootOnlyAction,permissionMatrix,canMutateLiveAuthority} from "../src/security/authz.mjs";
++import {CoreDb} from "../src/storage/db.mjs";
++import {AuthService} from "../src/services/auth-service.mjs";
++
++const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
++const server=fs.readFileSync(path.join(root,"src","server.mjs"),"utf8");
++
++// The approved matrix, written out in full so a drift in authz.mjs fails here.
++const EXPECTED={
++  "auth.session":            ["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "auth.device.register":    ["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "read.product":            ["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "read.platform.config":    ["ROOT_OWNER","ADMIN"],
++  "read.edge.rootDashboard": ["ROOT_OWNER"],
++  "ai.ask":                  ["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "realtime.subscribe":      ["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "write.notifications.self":["ROOT_OWNER","ADMIN","USER","VIEWER"],
++  "write.alerts.ack":        ["ROOT_OWNER","ADMIN","USER"],
++  "write.shadow":            ["ROOT_OWNER","ADMIN","USER"],
++  "write.shadow.marketMark": ["ROOT_OWNER","ADMIN"],
++  "write.preview":           ["ROOT_OWNER","ADMIN","USER"],
++  "admin.ops":               ["ROOT_OWNER","ADMIN"],
++  "admin.security":          ["ROOT_OWNER"],
++};
++
++function sessionFor(role){return {sessionId:"s",userId:`u-${role}`,role,accountScopes:role==="ROOT_OWNER"?["*"]:["A1"]};}
++
++test("matrix matches the approved table exactly, for every role and action",()=>{
++  assert.deepEqual(Object.keys(EXPECTED).sort(),[...ACTIONS].sort());
++  assert.deepEqual(permissionMatrix(),EXPECTED);
++  for(const action of ACTIONS){
++    for(const role of ROLES){
++      const expected=EXPECTED[action].includes(role);
++      assert.equal(can(sessionFor(role),action),expected,`${role} ${action}`);
++    }
++  }
++});
++
++test("deny by default: unknown action, unknown role, missing session",()=>{
++  for(const role of ROLES){
++    assert.equal(can(sessionFor(role),"write.orders"),false);
++    assert.equal(can(sessionFor(role),""),false);
++    assert.equal(can(sessionFor(role),undefined),false);
++  }
++  assert.equal(can({role:"SUPERUSER"},"read.product"),false);
++  assert.equal(can(null,"read.product"),false);
++  assert.equal(can({},"read.product"),false);
++});
++
++test("VIEWER is strictly read-only: no product-state writes",()=>{
++  const v=sessionFor("VIEWER");
++  for(const action of ACTIONS.filter(a=>a.startsWith("write.")||a.startsWith("admin.")))
++    if(action!=="write.notifications.self") assert.equal(can(v,action),false,action);
++  assert.equal(can(v,"read.product"),true);
++  assert.equal(can(v,"write.notifications.self"),true);
++});
++
++test("USER has no admin and no market-mark; ADMIN has ops only, never security",()=>{
++  const u=sessionFor("USER"),a=sessionFor("ADMIN");
++  assert.equal(can(u,"admin.ops"),false);
++  assert.equal(can(u,"admin.security"),false);
++  assert.equal(can(u,"write.shadow.marketMark"),false);
++  assert.equal(can(u,"read.platform.config"),false);
++  assert.equal(can(a,"admin.ops"),true);
++  assert.equal(can(a,"admin.security"),false);
++  assert.equal(can(a,"read.edge.rootDashboard"),false);
++});
++
++test("only ROOT_OWNER holds security administration and the root dashboard",()=>{
++  assert.equal(rootOnlyAction("admin.security"),true);
++  assert.equal(rootOnlyAction("read.edge.rootDashboard"),true);
++  assert.equal(rootOnlyAction("admin.ops"),false);
++  assert.equal(rootOnlyAction("nope"),false);
++  for(const action of ACTIONS) assert.equal(can(sessionFor("ROOT_OWNER"),action),true,action);
++});
++
++test("no action can express LIVE, broker, CONTROL, routing, or order authority",()=>{
++  for(const action of ACTIONS)
++    assert.doesNotMatch(action,/live|broker|order|control|passport|rout/i);
++  for(const role of ROLES) assert.equal(canMutateLiveAuthority(sessionFor(role)),false);
++  assert.throws(()=>{ACTIONS.push("write.orders");},TypeError);
++  assert.throws(()=>{PERMISSIONS.VIEWER.push("admin.security");},TypeError);
++  assert.throws(()=>{PERMISSIONS.VIEWER[0]="admin.security";},TypeError);
++  assert.throws(()=>{PERMISSIONS.NEWROLE=[...ACTIONS];},TypeError);
++  assert.equal(can({role:"VIEWER"},"admin.security"),false);
++});
++
++test("permissions hold for real sessions issued by AuthService",()=>{
++  const dir=fs.mkdtempSync(path.join(os.tmpdir(),"ff-authz-"));
++  const db=new CoreDb(path.join(dir,"core.sqlite"));
++  const auth=new AuthService(db,{sessionSecret:"S".repeat(40),sessionTtlSeconds:3600});
++  auth.createRoot({secret:"root-login-secret-123"});
++  const rootS=auth.login({userId:"root-owner",secret:"root-login-secret-123"}).session;
++  for(const role of ["ADMIN","USER","VIEWER"])
++    assert.equal(auth.createUser(rootS,{userId:role.toLowerCase(),displayName:role,role,secret:"family-secret-123"}).ok,true);
++  const live=(id)=>auth.authenticate(auth.login({userId:id,secret:"family-secret-123"}).token).session;
++  assert.equal(can(rootS,"admin.security"),true);
++  assert.equal(can(live("admin"),"admin.ops"),true);
++  assert.equal(can(live("admin"),"admin.security"),false);
++  assert.equal(can(live("user"),"write.shadow"),true);
++  assert.equal(can(live("user"),"write.shadow.marketMark"),false);
++  assert.equal(can(live("viewer"),"write.shadow"),false);
++  assert.equal(can(live("viewer"),"write.alerts.ack"),false);
++  assert.equal(can(live("viewer"),"read.product"),true);
++  db.close();
++});
++
++// Structural: every session-protected route goes through the matrix.
++test("server routes: requireSession is only called inside requireAction",()=>{
++  const routeCalls=server.match(/const session=requireSession\(/g)??[];
++  const helperCalls=server.match(/const s=requireSession\(req,res\);/g)??[];
++  assert.equal(routeCalls.length,0,"no route calls requireSession directly");
++  assert.equal(helperCalls.length,1,"exactly one requireSession call, inside requireAction");
++  assert.match(server,/function requireAction\(req,res,action\)/);
++  assert.match(server,/if\(!can\(s,action\)\)/);
++  assert.match(server,/code:rootOnlyAction\(action\)\?"ROOT_REQUIRED":"ACTION_DENIED"/);
++});
++
++test("server routes: each gated route names a known action",()=>{
++  const used=[...server.matchAll(/requireAction\(req,res,"([^"]+)"\)/g)].map(m=>m[1]);
++  assert.ok(used.length>=60,`expected >=60 gated routes, found ${used.length}`);
++  for(const a of used) assert.ok(ACTIONS.includes(a),`unknown action in server.mjs: ${a}`);
++});
++
++test("server routes: inventory pins route-to-action mapping for the sensitive ones",()=>{
++  const gate=(routeRe,action)=>{
++    const m=server.match(routeRe);
++    assert.ok(m,`route not found: ${routeRe}`);
++    const after=server.slice(m.index,m.index+400);
++    assert.match(after,new RegExp(`requireAction\\(req,res,"${action.replace(/\./g,"\\.")}"\\)`),`${routeRe} -> ${action}`);
++  };
++  gate(/u\.pathname==="\/api\/shadow\/market-mark"/,"write.shadow.marketMark");
++  gate(/u\.pathname==="\/api\/shadow\/intents"/,"write.shadow");
++  gate(/u\.pathname==="\/api\/shadow\/session-flatten"/,"write.shadow");
++  gate(/u\.pathname\.endsWith\("\/ack"\)/,"write.alerts.ack");
++  gate(/u\.pathname==="\/api\/admin\/alerts\/test"/,"admin.ops");
++  gate(/u\.pathname==="\/api\/ninja-readonly\/validate"/,"admin.ops");
++  gate(/u\.pathname==="\/api\/platform\/config"/,"read.platform.config");
++  gate(/u\.pathname==="\/api\/admin\/users"\)\{\s*const session=requireAction/,"admin.security");
++  gate(/u\.pathname==="\/api\/admin\/sessions\/revoke"/,"admin.security");
++  gate(/u\.pathname==="\/api\/admin\/devices\/revoke"/,"admin.security");
++  gate(/u\.pathname==="\/api\/admin\/account-assignments\/remove"/,"admin.security");
++  gate(/u\.pathname==="\/api\/tune-up\/preview"/,"write.preview");
++  gate(/u\.pathname==="\/api\/guardian\/preflight"/,"write.preview");
++  gate(/u\.pathname==="\/api\/devices\/register"/,"auth.device.register");
++  gate(/u\.pathname==="\/api\/realtime\/events"/,"realtime.subscribe");
++  assert.match(server,/function rootOnlySession\(req,res\)\{\s*return requireAction\(req,res,"read\.edge\.rootDashboard"\);/);
++});
++
++test("server: no inline ROOT_OWNER checks remain on routes now covered by the matrix",()=>{
++  const inline=server.match(/if\(session\.role!=="ROOT_OWNER"\)\s*return sendJson/g)??[];
++  assert.equal(inline.length,0,"inline role checks replaced by requireAction");
++});
+diff --git a/base/tests/real-chart-server-wiring-v23.test.mjs b/work/tests/real-chart-server-wiring-v23.test.mjs
+index 6e61df3..3346a47 100644
+--- a/base/tests/real-chart-server-wiring-v23.test.mjs
++++ b/work/tests/real-chart-server-wiring-v23.test.mjs
+@@ -14,7 +14,8 @@ test("server aggregates accepted MARKET_TICK envelopes into chart bars",()=>{
+ 
+ test("chart realtime endpoint is authenticated SSE",()=>{
+   assert.match(s,/pathname==="\/api\/charts\/realtime"/);
+-  assert.match(s,/const session=requireSession\(req,res\)/);
++  const realtime=s.slice(s.indexOf('pathname==="/api/charts/realtime"'));
++  assert.match(realtime,/const session=requireAction\(req,res,"read\.product"\)/);
+   assert.match(s,/Content-Type":"text\/event-stream"/);
+   assert.match(s,/chartStreamHub\.subscribe/);
+ });
