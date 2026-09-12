@@ -98,7 +98,7 @@ class CredentialRotator:
             conn.execute("""
                 UPDATE owner_credentials
                 SET password_hash = ?, password_set_at = CURRENT_TIMESTAMP,
-                    password_expires_at = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ? DAY)
+                    password_expires_at = CURRENT_TIMESTAMP + (? * INTERVAL 1 DAY)
                 WHERE owner_id = ?
             """, [new_hash, self.policy.password_expires_days, owner_id])
 
@@ -129,7 +129,7 @@ class CredentialRotator:
         Returns: (success, message)
         """
         try:
-            if not new_mfa_secret or len(new_mfa_secret) < 20:
+            if not new_mfa_secret or len(new_mfa_secret) < 16:
                 return False, "Invalid MFA secret"
 
             conn = duckdb.connect(self.db_path)
@@ -152,7 +152,7 @@ class CredentialRotator:
             conn.execute("""
                 UPDATE owner_credentials
                 SET mfa_secret = ?, mfa_secret_set_at = CURRENT_TIMESTAMP,
-                    mfa_secret_expires_at = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ? DAY)
+                    mfa_secret_expires_at = CURRENT_TIMESTAMP + (? * INTERVAL 1 DAY)
                 WHERE owner_id = ?
             """, [new_mfa_secret, self.policy.mfa_secret_expires_days, owner_id])
 
@@ -183,9 +183,9 @@ class CredentialRotator:
             results = conn.execute("""
                 SELECT owner_id, password_expires_at, mfa_secret_expires_at
                 FROM owner_credentials
-                WHERE (password_expires_at <= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ? DAY)
+                WHERE (password_expires_at <= CURRENT_TIMESTAMP + (? * INTERVAL 1 DAY)
                        AND password_expires_at IS NOT NULL)
-                   OR (mfa_secret_expires_at <= DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ? DAY)
+                   OR (mfa_secret_expires_at <= CURRENT_TIMESTAMP + (? * INTERVAL 1 DAY)
                        AND mfa_secret_expires_at IS NOT NULL)
             """, [days_ahead, days_ahead]).fetchall()
 

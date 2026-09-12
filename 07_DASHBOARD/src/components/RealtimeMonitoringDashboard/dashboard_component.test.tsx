@@ -1,8 +1,8 @@
+import { vi, type Mock } from 'vitest';
 /**
  * Dashboard Component Unit Tests
  */
 
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { RealtimeMonitoringDashboard } from './dashboard_component';
@@ -17,12 +17,12 @@ describe('RealtimeMonitoringDashboard', () => {
 
   beforeEach(() => {
     // Mock WebSocket
-    global.WebSocket = jest.fn(() => ({
+    global.WebSocket = vi.fn(() => ({
       readyState: 1,
-      send: jest.fn(),
-      close: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
       onopen: null,
       onmessage: null,
       onerror: null,
@@ -30,16 +30,16 @@ describe('RealtimeMonitoringDashboard', () => {
     })) as any;
 
     // Mock fetch
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({}),
       })
-    ) as jest.Mock;
+    ) as Mock;
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render dashboard container', () => {
@@ -101,8 +101,8 @@ describe('RealtimeMonitoringDashboard', () => {
   });
 
   it('should render filter controls', () => {
-    render(<RealtimeMonitoringDashboard {...defaultProps} />);
-    const dateInputs = screen.getAllByRole('textbox');
+    const { container } = render(<RealtimeMonitoringDashboard {...defaultProps} />);
+    const dateInputs = container.querySelectorAll('input[type="date"]');
     expect(dateInputs.length).toBeGreaterThan(0);
   });
 
@@ -125,7 +125,7 @@ describe('RealtimeMonitoringDashboard', () => {
   });
 
   it('should handle CSV download', () => {
-    const createElementSpy = jest.spyOn(document, 'createElement');
+    const createElementSpy = vi.spyOn(document, 'createElement');
     render(<RealtimeMonitoringDashboard {...defaultProps} />);
 
     const downloadButton = screen.getByText('Download CSV');
@@ -145,8 +145,8 @@ describe('RealtimeMonitoringDashboard', () => {
   });
 
   it('should handle date range filtering', () => {
-    render(<RealtimeMonitoringDashboard {...defaultProps} />);
-    const dateInputs = screen.getAllByRole('textbox');
+    const { container } = render(<RealtimeMonitoringDashboard {...defaultProps} />);
+    const dateInputs = Array.from(container.querySelectorAll('input[type="date"]'));
     expect(dateInputs.length).toBeGreaterThan(0);
 
     // User can interact with date inputs
@@ -155,7 +155,7 @@ describe('RealtimeMonitoringDashboard', () => {
   });
 
   it('should call onAuthError callback on connection error', async () => {
-    const onAuthError = jest.fn();
+    const onAuthError = vi.fn();
     render(
       <RealtimeMonitoringDashboard
         {...defaultProps}
@@ -171,7 +171,7 @@ describe('RealtimeMonitoringDashboard', () => {
 
   it('should format currency correctly', () => {
     render(<RealtimeMonitoringDashboard {...defaultProps} />);
-    const pnlValue = screen.getByText(/\$0\.00/);
-    expect(pnlValue).toBeInTheDocument();
+    const pnlValues = screen.getAllByText(/\$0\.00/);
+    expect(pnlValues.length).toBeGreaterThan(0);
   });
 });

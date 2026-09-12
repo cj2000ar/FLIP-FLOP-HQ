@@ -144,8 +144,9 @@ class TestSchemaValidator:
 
     def test_validate_missing_column(self):
         """Should detect missing column"""
-        expected = SCHEMA_0002.copy()
-        actual = SCHEMA_0002.copy()
+        import copy
+        expected = copy.deepcopy(SCHEMA_0002)
+        actual = copy.deepcopy(SCHEMA_0002)
 
         # Remove a column from first table
         if actual['tables'] and actual['tables'][0]['columns']:

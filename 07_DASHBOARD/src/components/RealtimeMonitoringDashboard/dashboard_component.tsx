@@ -3,13 +3,12 @@
  * Authority-ZERO locked, live_enabled=false (read-only, paper-only)
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useMetricsState,
   useMetricsFetch,
   useMetricsPolling,
   calculateTradeMetrics,
-  StrategyMetrics,
   TradeRecord,
   SystemHealth,
 } from './metrics_updater';
@@ -31,7 +30,7 @@ export const RealtimeMonitoringDashboard: React.FC<DashboardProps> = ({
   fencingToken,
   onAuthError,
 }) => {
-  const { state, updateStrategy, updateTrades, updateSystemHealth, updatePnlHistory } =
+  const { state, updateTrades, updateSystemHealth, updatePnlHistory } =
     useMetricsState();
 
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'reconnecting'>(
@@ -74,8 +73,7 @@ export const RealtimeMonitoringDashboard: React.FC<DashboardProps> = ({
   // Poll metrics every second
   useMetricsPolling(
     fetchMetrics,
-    (data: unknown) => {
-      const typed = data as { batch?: unknown; gates?: unknown; health?: unknown };
+    (_data: unknown) => {
       // Update state from API response
     },
     1000
@@ -94,7 +92,7 @@ export const RealtimeMonitoringDashboard: React.FC<DashboardProps> = ({
           updateTrades(update.data.trades as TradeRecord[]);
         }
         if (update.data?.pnl_history) {
-          updatePnlHistory(update.data.pnl_history);
+          updatePnlHistory(update.data.pnl_history as { timestamp: number; value: number }[]);
         }
         break;
       case 'health':
@@ -106,14 +104,6 @@ export const RealtimeMonitoringDashboard: React.FC<DashboardProps> = ({
   const handleDownloadCSV = () => {
     const csv = generateTradesCsv(state.trades);
     downloadFile(csv, `trades_${Date.now()}.csv`, 'text/csv');
-  };
-
-  const handleStartSimulator = () => {
-    console.log('[READ-ONLY] Simulator start requested (Authority=ZERO, cannot execute)');
-  };
-
-  const handleStopSimulator = () => {
-    console.log('[READ-ONLY] Simulator stop requested (Authority=ZERO, cannot execute)');
   };
 
   const filteredTrades = state.trades.filter((trade) => {

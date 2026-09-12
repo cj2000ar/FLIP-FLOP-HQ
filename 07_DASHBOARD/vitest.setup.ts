@@ -1,5 +1,16 @@
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
+import {
+  ARENA, EXPERIMENTS, QUEUE, AGENDA_SLOTS, WOUNDS, CALIBRATION, PROMOTION_GATES,
+} from './src/lab/labData';
+
+// jsdom has no blob URL support; CSV download uses it.
+if (typeof URL.createObjectURL !== 'function') {
+  URL.createObjectURL = vi.fn(() => 'blob:mock');
+}
+if (typeof URL.revokeObjectURL !== 'function') {
+  URL.revokeObjectURL = vi.fn();
+}
 
 const mockResponses: Record<string, unknown> = {
   'http://localhost:8000/vault/items': {
@@ -49,40 +60,13 @@ const mockResponses: Record<string, unknown> = {
       { id: 'ORDER_FLOW', name: 'Order Flow', lineage: 'Research', dna: ['order-flow', 'tape'] },
     ],
   },
-  'http://localhost:8000/experiments': {
-    experiments: [
-      {
-        id: 'exp-001',
-        name: 'RR500 Spread Test',
-        hypothesis: 'Wider spreads improve algo',
-        parameters: 'spread=2pts',
-        datasetRole: 'IN_SAMPLE',
-        runs: 5,
-        status: 'COMPLETED',
-        result: 'PASS',
-      },
-    ],
-  },
-  'http://localhost:8000/queue': {
-    queue: [
-      { id: 'q1', title: 'Video 1', state: 'CAPTURED', why: 'Waiting processing' },
-    ],
-  },
-  'http://localhost:8000/agenda/events': {
-    events: [
-      { code: 'NFP', name: 'Non-Farm Payroll', importance: 'HIGH', status: 'NOT_CONNECTED' },
-    ],
-  },
-  'http://localhost:8000/guardian/wounds': {
-    wounds: [
-      { id: 'w1', title: 'Wound 1', detail: 'Test wound', status: 'OPEN', tone: 'bad' },
-    ],
-  },
-  'http://localhost:8000/guardian/calibration': {
-    calibration: [
-      { id: 'c1', title: 'Cal 1', detail: 'Test cal', status: 'ACTIVE', tone: 'ok' },
-    ],
-  },
+  'http://localhost:8000/arena': { arena: ARENA },
+  'http://localhost:8000/experiments': { experiments: EXPERIMENTS },
+  'http://localhost:8000/queue': { queue: QUEUE },
+  'http://localhost:8000/agenda/events': { events: AGENDA_SLOTS },
+  'http://localhost:8000/guardian/wounds': { wounds: WOUNDS },
+  'http://localhost:8000/guardian/calibration': { calibration: CALIBRATION },
+  'http://localhost:8000/promotion/gates': { gates: PROMOTION_GATES },
 };
 
 global.fetch = vi.fn((url: string | Request) => {

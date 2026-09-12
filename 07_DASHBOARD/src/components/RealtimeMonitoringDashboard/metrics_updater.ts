@@ -215,11 +215,13 @@ export function useMetricsPolling(
   intervalMs: number = 1000
 ) {
   React.useEffect(() => {
-    const interval = setInterval(() => {
+    const tick = () => {
       fetchFn()
         .then(onUpdate)
         .catch((error) => console.error('Polling error:', error));
-    }, intervalMs);
+    };
+    tick();
+    const interval = setInterval(tick, intervalMs);
 
     return () => clearInterval(interval);
   }, [fetchFn, onUpdate, intervalMs]);

@@ -4,7 +4,7 @@ interface Trade {
   id: string;
   symbol: string;
   entry_time: string;
-  exit_time: string;
+  exit_time: string | null;
   entry_price: number;
   exit_price: number;
   quantity: number;

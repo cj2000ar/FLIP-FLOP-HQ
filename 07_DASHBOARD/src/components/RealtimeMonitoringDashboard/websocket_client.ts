@@ -21,6 +21,8 @@ export interface WebSocketClientConfig {
   onStatusChange: (status: 'connected' | 'disconnected' | 'reconnecting') => void;
 }
 
+const WS_OPEN = 1; // WebSocket.OPEN (spec constant; mocked constructors do not carry statics)
+
 export class WebSocketClient {
   private ws: WebSocket | null = null;
   private config: WebSocketClientConfig;
@@ -90,7 +92,7 @@ export class WebSocketClient {
   public send(data: Record<string, unknown>): void {
     const message = JSON.stringify(data);
 
-    if (this.ws?.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       this.ws.send(message);
     } else {
       this.messageQueue.push(message);
@@ -135,7 +137,7 @@ export class WebSocketClient {
    * Check if connected
    */
   public isConnected(): boolean {
-    return this.ws?.readyState === WebSocket.OPEN;
+    return this.ws !== null && this.ws.readyState === WS_OPEN;
   }
 
   /**
@@ -166,7 +168,7 @@ export class WebSocketClient {
    * Flush queued messages after connection
    */
   private flushQueue(): void {
-    while (this.messageQueue.length > 0 && this.ws?.readyState === WebSocket.OPEN) {
+    while (this.messageQueue.length > 0 && this.ws && this.ws.readyState === WS_OPEN) {
       const message = this.messageQueue.shift();
       if (message) {
         this.ws.send(message);

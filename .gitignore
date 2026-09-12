@@ -12,3 +12,6 @@ venv/
 .venv/
 node_modules/
 RESEARCH/
+
+# runtime logs
+04_ENGINE/logs/

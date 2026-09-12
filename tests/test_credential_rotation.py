@@ -72,7 +72,7 @@ class TestPasswordValidation:
         """Should accept valid password"""
         rotator = CredentialRotator(":memory:")
 
-        assert rotator._validate_password("MyP@ssw0rd") is True
+        assert rotator._validate_password("MyP@ssw0rd!!") is True
 
 
 class TestPasswordHashing:

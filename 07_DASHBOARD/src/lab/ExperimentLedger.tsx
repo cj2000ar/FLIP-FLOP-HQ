@@ -49,6 +49,7 @@ export default function ExperimentLedger() {
           Hypothesis, parameters, dataset role, runs, results, costs, rejection reason and next gate. An entry cannot be
           edited once registered. Failures stay visible so the same idea cannot be re-tested as if it were new.
         </p>
+        <p>A FAILED or REJECTED entry cannot be reopened or reused; a new hypothesis needs a new registration.</p>
       </div>
 
       {loading && (

@@ -68,9 +68,10 @@ export default function StrategyVault() {
           Videos, links, scripts and claims keep URL, capture status, rules, data needs, evidence grade and family DNA.
           Ingesting an item correctly proves nothing about a strategy and grants no authority.
         </p>
+        <p>Unreviewed shorts stay UNREVIEWED until watched: never invent content from thumbnail or title.</p>
       </div>
 
-      {loading && (
+      {loading && items.length === 0 && (
         <div className="hq-panel lab-card" style={{ gridColumn: '1 / -1' }}>
           <div className="lab-empty" style={{ padding: 'var(--spacing-4)' }}>
             <p>Loading vault data...</p>
@@ -89,7 +90,7 @@ export default function StrategyVault() {
         </div>
       )}
 
-      {!loading && !error && (
+      {(!loading || items.length > 0) && !error && (
         <>
           <div className="hq-panel lab-card" style={{ gridColumn: '1 / -1' }}>
             <h3>

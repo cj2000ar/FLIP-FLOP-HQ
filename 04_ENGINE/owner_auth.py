@@ -122,7 +122,9 @@ class OwnerAuthenticator:
         session = self.sessions[session_token]
 
         # Check expiration
-        expires_at = datetime.fromisoformat(session['expires_at'])
+        expires_at = session['expires_at']
+        if isinstance(expires_at, str):
+            expires_at = datetime.fromisoformat(expires_at)
         if datetime.utcnow() > expires_at:
             del self.sessions[session_token]
             logger.warning(f"Session expired for {session['owner_id']}")

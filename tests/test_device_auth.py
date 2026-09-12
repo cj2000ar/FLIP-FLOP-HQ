@@ -28,6 +28,15 @@ def temp_db():
     mf.init_migrations_table()
     mf.apply_all_pending()
 
+    # device_registrations.owner_id has an FK to owner_credentials
+    import duckdb
+    conn = duckdb.connect(str(db_path))
+    conn.execute("""
+        INSERT INTO owner_credentials (owner_id, password_hash, mfa_secret)
+        VALUES ('owner1', 'hash123$abc', 'secret123')
+    """)
+    conn.close()
+
     yield str(db_path)
 
     # Cleanup

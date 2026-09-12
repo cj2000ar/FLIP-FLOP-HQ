@@ -21,7 +21,7 @@ class DeviceInfo:
     browser_name: str  # "Chrome", "Safari", "Firefox"
     browser_version: str
     hardware_id: str  # Hashed machine/device ID
-    user_agent: str
+    user_agent: str = ""
     timestamp: str = None
 
     def __post_init__(self):
@@ -39,10 +39,11 @@ class DeviceFingerprinter:
 
     def generate_fingerprint(self, device_info: DeviceInfo) -> str:
         """
-        Generate stable device fingerprint from device info
-        Fingerprint = SHA256(OS + version + browser + version + hardware_id)
+        Generate stable device fingerprint from device info.
+        Fingerprint = SHA256(hardware_id). OS/browser are stored as metadata only:
+        binding is to the machine, so browser/OS updates do not trigger re-challenge.
         """
-        data = f"{device_info.os_name}|{device_info.os_version}|{device_info.browser_name}|{device_info.browser_version}|{device_info.hardware_id}"
+        data = device_info.hardware_id
         fingerprint = hashlib.sha256(data.encode()).hexdigest()
         logger.debug(f"Generated fingerprint: {fingerprint[:16]}... for {device_info.os_name} / {device_info.browser_name}")
         return fingerprint

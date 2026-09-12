@@ -3,8 +3,9 @@
 -- This migration records the baseline state before device-bound auth additions
 
 -- Baseline migrations table (if not already present from pre-migration era)
+CREATE SEQUENCE IF NOT EXISTS migrations_id_seq;
 CREATE TABLE IF NOT EXISTS migrations (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY DEFAULT nextval('migrations_id_seq'),
     migration_number INTEGER NOT NULL UNIQUE,
     name TEXT NOT NULL,
     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

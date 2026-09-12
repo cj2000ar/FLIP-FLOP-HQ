@@ -169,10 +169,13 @@ class MigrationState:
             ).fetchall()
 
             if not existing:
-                conn.execute("""
-                    INSERT INTO migration_state (migration_number, current_status, current_checksum)
-                    VALUES (?, ?, ?)
-                """, [migration_number, status, checksum])
+                ts_col = {'APPLIED': 'applied_at', 'FAILED': 'failed_at',
+                          'ROLLED_BACK': 'rolled_back_at'}.get(status, 'updated_at')
+                conn.execute(f"""
+                    INSERT INTO migration_state
+                    (migration_number, current_status, current_checksum, failure_reason, {ts_col})
+                    VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                """, [migration_number, status, checksum, failure_reason])
             else:
                 # Update existing
                 update_sql = "UPDATE migration_state SET current_status = ?"
@@ -219,6 +222,15 @@ class MigrationState:
             if result:
                 conn.close()
                 return False  # Already locked
+
+            exists = conn.execute(
+                "SELECT 1 FROM migration_state WHERE migration_number = ?", [migration_number]
+            ).fetchall()
+            if not exists:
+                conn.execute(
+                    "INSERT INTO migration_state (migration_number, current_status) VALUES (?, 'PENDING')",
+                    [migration_number]
+                )
 
             conn.execute("""
                 UPDATE migration_state

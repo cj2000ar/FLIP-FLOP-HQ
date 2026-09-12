@@ -38,8 +38,10 @@ CREATE TABLE IF NOT EXISTS migration_dependencies (
     dependency_id TEXT PRIMARY KEY,
     migration_number INTEGER NOT NULL,
     depends_on_migration INTEGER NOT NULL,
-    UNIQUE(migration_number, depends_on_migration),
-    FOREIGN KEY(migration_number) REFERENCES migration_state(migration_number)
+    -- No FK to migration_state: dependencies are declared ahead of the
+    -- migration they describe (0004 declares its own dep before it is recorded),
+    -- and DuckDB enforces FKs eagerly. Ordering is checked in migration_ledger.py.
+    UNIQUE(migration_number, depends_on_migration)
 );
 
 -- Migration checksums: track version history
@@ -53,14 +55,14 @@ CREATE TABLE IF NOT EXISTS migration_checksums (
 
 -- Initialize default migration state for 0001-0003
 INSERT OR IGNORE INTO migration_state
-(migration_number, current_status, applied_at)
-SELECT migration_number, 'APPLIED', applied_at
+(migration_number, current_status, current_checksum, applied_at)
+SELECT migration_number, 'APPLIED', checksum, applied_at
 FROM migrations
 WHERE status = 'APPLIED';
 
 INSERT OR IGNORE INTO migration_state
-(migration_number, current_status, rolled_back_at)
-SELECT migration_number, 'ROLLED_BACK', applied_at
+(migration_number, current_status, current_checksum, rolled_back_at)
+SELECT migration_number, 'ROLLED_BACK', checksum, applied_at
 FROM migrations
 WHERE status = 'ROLLED_BACK';
 

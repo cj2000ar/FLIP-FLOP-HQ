@@ -61,6 +61,7 @@ export default function GuardianLedgers() {
 
       <div className="hq-panel lab-card" style={{ gridColumn: '1 / -1' }}>
         <h3>Trust architecture</h3>
+        <p>V03 PATH is post-decision</p>
         <div className="lab-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 8 }}>
           {GUARDIAN_CORE.map((g) => (
             <div key={g.id} className="lab-ticket">

@@ -98,7 +98,9 @@ class RecoveryCodeManager:
                 return False, "Recovery code already used"
 
             # Check if expired
-            if expires_at and datetime.fromisoformat(expires_at) < datetime.utcnow():
+            if isinstance(expires_at, str):
+                expires_at = datetime.fromisoformat(expires_at)
+            if expires_at and expires_at < datetime.utcnow():
                 logger.warning(f"Recovery code {recovery_code_id} expired")
                 conn.close()
                 return False, "Recovery code expired"

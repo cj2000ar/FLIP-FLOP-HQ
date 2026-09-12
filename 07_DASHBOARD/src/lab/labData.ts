@@ -183,15 +183,15 @@ export const ARENA: ArenaEntry[] = [
   },
   {
     id: 'survivor-pair',
-    name: 'SURVIVOR',
+    name: 'SURVIVOR_PAIR',
     state: 'SURVIVOR',
     version: 'v2.1',
     summary: 'Research-grade survivor pair',
     metrics: [
       { label: 'Correlation', value: '0.764' },
-      { label: 'Status', value: 'APPROVED' },
+      { label: 'Grade', value: 'RESEARCH' },
     ],
-    note: 'Holdout consumed/blocked'
+    note: 'Research-grade only. Not LIVE-eligible.'
   },
   {
     id: 'v03-vector',
@@ -200,7 +200,7 @@ export const ARENA: ArenaEntry[] = [
     version: 'v1.0',
     summary: 'V03 vector rejected',
     metrics: [
-      { label: 'Status', value: 'REJECTED' },
+      { label: 'Verdict', value: 'Did not beat CONTROL' },
     ],
     note: 'Holdout consumed/blocked'
   },
@@ -213,8 +213,10 @@ export const EXPERIMENTS: Experiment[] = [
   { id: 'C', name: 'Exp C', hypothesis: 'H3', parameters: 'p3', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
   { id: 'D', name: 'Exp D', hypothesis: 'H4', parameters: 'p4', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
   { id: 'E', name: 'Exp E', hypothesis: 'H5', parameters: 'p5', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
-  { id: 'F', name: 'Exp F', hypothesis: 'H6', parameters: 'p6', datasetRole: 'HOLDOUT', runs: 0, status: 'FAILED', result: 'FAILED', rejectionReason: 'TECHNICALLY_INVALID_UNSCOREABLE', nextGate: 'G1' },
+  { id: 'F', name: 'Exp F', hypothesis: 'H6', parameters: 'p6', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
   { id: 'G', name: 'Exp G', hypothesis: 'H7', parameters: 'p7', datasetRole: 'IN_SAMPLE', runs: 0, status: 'PRE_REGISTERED', result: 'PASS', nextGate: 'G1' },
+  { id: 'H1', name: 'V03 holdout', hypothesis: 'V03 vector beats CONTROL on holdout', parameters: 'v03 defaults', datasetRole: 'HOLDOUT', runs: 1, status: 'FAILED', result: 'Holdout consumed; CONTROL not beaten', nextGate: 'none (closed)' },
+  { id: 'R1', name: 'Reserve slice', hypothesis: 'Reserve holdout usable for re-test', parameters: 'n/a', datasetRole: 'HOLDOUT', runs: 0, status: 'REJECTED', result: 'Unscoreable', rejectionReason: 'TECHNICALLY_INVALID_UNSCOREABLE', nextGate: 'none (closed)' },
 ];
 
 // Type definitions only - data fetched from API
@@ -250,15 +252,15 @@ export const AGENDA_FEEDS: LedgerEntry[] = [];
 
 // Type definitions only - data fetched from API
 export const GUARDIAN_CORE: LedgerEntry[] = [
-  { id: 'core1', title: 'CORE NOW', detail: 'Core path 1', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core2', title: 'CORE NOW', detail: 'Core path 2', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core3', title: 'CORE NOW', detail: 'Core path 3', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core4', title: 'CORE NOW', detail: 'Core path 4', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core5', title: 'CORE NOW', detail: 'Core path 5', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core6', title: 'CORE NOW', detail: 'Core path 6', status: 'CORE NOW', tone: 'ok' },
-  { id: 'core7', title: 'CORE NOW', detail: 'Core path 7', status: 'CORE NOW', tone: 'ok' },
-  { id: 'build1', title: 'BUILD SOON', detail: 'Build path 1', status: 'BUILD SOON', tone: 'warn' },
-  { id: 'build2', title: 'BUILD SOON', detail: 'Build path 2', status: 'BUILD SOON', tone: 'warn' },
+  { id: 'cartridges', title: 'Decision Cartridges', detail: 'Every decision packaged with inputs, thresholds and outcome.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'calibration', title: 'Calibration Ledger', detail: 'Threshold changes recorded with who, why and evidence.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'bitemporal', title: 'Bitemporal Event Store', detail: 'event_time and knowledge_time kept separately; past never rewritten.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'wounds', title: 'Wound Registry', detail: 'Each reproduced incident becomes a permanent scenario.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'overrides', title: 'Override Ledger', detail: 'Manual overrides with state before, state after and outcome.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'replay', title: 'Deterministic Replay', detail: 'Market Replay sessions reproduce decisions bit-identically.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'fencing', title: 'Fencing Tokens', detail: 'machine_id + fencing token on every read; stale writers rejected.', status: 'CORE NOW', tone: 'ok' },
+  { id: 'forward-proof', title: 'Nightly forward proof', detail: 'Bit-identical forward replay not yet proven.', status: 'BUILD SOON', tone: 'warn' },
+  { id: 'forward-cartridges', title: 'Forward cartridges', detail: 'Cartridges for forward (non-replay) sessions.', status: 'BUILD SOON', tone: 'warn' },
 ];
 
 // Type definitions only - data fetched from API
@@ -290,7 +292,12 @@ export const PROMOTION_GATES: PromotionGateItem[] = [
 ];
 
 // Type definitions only - data fetched from API
-export const QUANTUM_LANES: QuantumLane[] = [];
+export const QUANTUM_LANES: QuantumLane[] = [
+  { id: 'real', name: 'Real Quantum', definition: 'Executed on quantum hardware.', status: 'NO EVIDENCE', tone: 'bad' },
+  { id: 'simulator', name: 'Quantum Simulator', definition: 'Classical simulation of a quantum circuit.', status: 'NO EVIDENCE', tone: 'bad' },
+  { id: 'inspired', name: 'Quantum-inspired', definition: 'Classical algorithm borrowing quantum ideas (annealing, tensor networks).', status: 'NOT_STARTED', tone: 'muted' },
+  { id: 'classical', name: 'Classical benchmark', definition: 'Same data, costs, splits and metrics. Every lane is scored against this.', status: 'REQUIRED BASELINE', tone: 'info' },
+];
 
 export const QUANTUM_RULE =
   '"Quant Mirror" is a real project lineage. "Quantum" is a creative/technical direction with no recovered evidence of quantum hardware or an executed quantum algorithm improving trading. No technique gets credit for sounding advanced: same data, costs, splits and metrics as its classical baseline, or no promotion.';

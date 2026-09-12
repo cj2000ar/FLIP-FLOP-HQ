@@ -262,6 +262,11 @@ class TestRollbackSafety:
         conn = duckdb.connect(db_path)
         import uuid
         batch_id = str(uuid.uuid4())
+        for log_id in ('log1', 'log2'):
+            conn.execute(
+                "INSERT INTO auth_audit_log (log_id, event_type, status) VALUES (?, 'LOGIN', 'SUCCESS')",
+                [log_id]
+            )
         conn.execute("""
             INSERT INTO evidence_ledger
             (batch_id, batch_sequence, start_log_id, end_log_id, log_count, batch_hash)

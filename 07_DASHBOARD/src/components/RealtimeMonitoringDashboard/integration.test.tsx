@@ -1,23 +1,22 @@
+import { vi, type Mock } from 'vitest';
 /**
  * Integration Tests - Dashboard with WebSocket and Metrics
  */
 
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { RealtimeMonitoringDashboard } from './dashboard_component';
-import { WebSocketClient } from './websocket_client';
 import { calculateTradeMetrics, TradeRecord } from './metrics_updater';
 
 describe('Dashboard Integration Tests', () => {
   beforeEach(() => {
     // Mock WebSocket
-    global.WebSocket = jest.fn(() => ({
+    global.WebSocket = vi.fn(() => ({
       readyState: 1,
-      send: jest.fn(),
-      close: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
       onopen: null,
       onmessage: null,
       onerror: null,
@@ -25,7 +24,7 @@ describe('Dashboard Integration Tests', () => {
     })) as any;
 
     // Mock fetch
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({
@@ -34,11 +33,11 @@ describe('Dashboard Integration Tests', () => {
           health: { cpuPercent: 45, memoryPercent: 60 },
         }),
       })
-    ) as jest.Mock;
+    ) as Mock;
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should initialize dashboard with WebSocket connection', async () => {
@@ -123,7 +122,7 @@ describe('Dashboard Integration Tests', () => {
   });
 
   it('should process WebSocket updates', async () => {
-    const onAuthError = jest.fn();
+    const onAuthError = vi.fn();
 
     render(
       <RealtimeMonitoringDashboard
@@ -153,8 +152,8 @@ describe('Dashboard Integration Tests', () => {
 
     await waitFor(() => {
       // Should display P&L in currency format
-      const pnlValue = screen.getByText(/\$/);
-      expect(pnlValue).toBeInTheDocument();
+      const pnlValues = screen.getAllByText(/\$/);
+      expect(pnlValues.length).toBeGreaterThan(0);
     });
   });
 
@@ -204,7 +203,7 @@ describe('Dashboard Integration Tests', () => {
     );
 
     await waitFor(() => {
-      const calls = (global.fetch as jest.Mock).mock.calls;
+      const calls = (global.fetch as Mock).mock.calls;
       if (calls.length > 0) {
         const lastCall = calls[calls.length - 1];
         if (lastCall[1]) {
@@ -249,8 +248,6 @@ describe('Dashboard Integration Tests', () => {
   });
 
   it('should maintain data freshness with polling', async () => {
-    jest.useFakeTimers();
-
     render(
       <RealtimeMonitoringDashboard
         apiBaseUrl="http://localhost:8000"
@@ -264,20 +261,18 @@ describe('Dashboard Integration Tests', () => {
       expect(global.fetch).toHaveBeenCalled();
     });
 
-    // Fast-forward 1 second for polling
-    jest.advanceTimersByTime(1000);
+    // Wait past one 1s polling interval
+    await new Promise((resolve) => setTimeout(resolve, 1100));
 
     await waitFor(() => {
       // Should have made additional fetch calls
-      expect((global.fetch as jest.Mock).mock.calls.length).toBeGreaterThan(3);
+      expect((global.fetch as Mock).mock.calls.length).toBeGreaterThan(3);
     });
-
-    jest.useRealTimers();
   });
 
   it('should handle export to CSV', async () => {
-    const createElementSpy = jest.spyOn(document, 'createElement');
-    const appendChildSpy = jest.spyOn(document, 'appendChild');
+    const createElementSpy = vi.spyOn(document, 'createElement');
+    const appendChildSpy = vi.spyOn(document, 'appendChild');
 
     render(
       <RealtimeMonitoringDashboard

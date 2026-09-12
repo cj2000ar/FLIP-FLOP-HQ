@@ -55,10 +55,16 @@ class RetentionPolicyManager:
             policy_id = str(uuid.uuid4())
 
             conn.execute("""
-                INSERT OR REPLACE INTO retention_policies
+                INSERT INTO retention_policies
                 (policy_id, event_type, retention_days, archive_after_days,
                  deletion_allowed, compliance_hold, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT (event_type) DO UPDATE SET
+                    retention_days = excluded.retention_days,
+                    archive_after_days = excluded.archive_after_days,
+                    deletion_allowed = excluded.deletion_allowed,
+                    compliance_hold = excluded.compliance_hold,
+                    updated_at = now()
             """, [policy_id, event_type, retention_days, archive_after_days,
                   deletion_allowed, compliance_hold])
 
@@ -184,9 +190,9 @@ class EvidenceArchiver:
             WHERE NOT EXISTS (
                 SELECT 1 FROM evidence_archival ea WHERE ea.batch_id = el.batch_id
             )
-            AND el.sealed_at < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL (
-                SELECT MIN(rp.archive_after_days) FROM retention_policies rp
-            ) DAY)
+            AND el.sealed_at < CURRENT_TIMESTAMP - (
+                (SELECT MIN(rp.archive_after_days) FROM retention_policies rp) * INTERVAL 1 DAY
+            )
         """).fetchall()
 
         conn.close()

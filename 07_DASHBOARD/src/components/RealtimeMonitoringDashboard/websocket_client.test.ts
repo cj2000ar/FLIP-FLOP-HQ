@@ -1,8 +1,9 @@
+import { vi } from 'vitest';
 /**
  * WebSocket Client Unit Tests
  */
 
-import { WebSocketClient, MetricsUpdate } from './websocket_client';
+import { WebSocketClient } from './websocket_client';
 
 describe('WebSocketClient', () => {
   let client: WebSocketClient;
@@ -16,21 +17,21 @@ describe('WebSocketClient', () => {
       fencingToken: 'token-123',
       reconnectAttempts: 3,
       reconnectDelayMs: 100,
-      onUpdate: jest.fn(),
-      onError: jest.fn(),
-      onStatusChange: jest.fn(),
+      onUpdate: vi.fn(),
+      onError: vi.fn(),
+      onStatusChange: vi.fn(),
     };
 
     // Mock WebSocket
     mockWebSocket = {
       readyState: 0,
-      send: jest.fn(),
-      close: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
+      send: vi.fn(),
+      close: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     };
 
-    global.WebSocket = jest.fn(() => mockWebSocket) as any;
+    global.WebSocket = vi.fn(() => mockWebSocket) as any;
   });
 
   it('should construct with valid config', () => {

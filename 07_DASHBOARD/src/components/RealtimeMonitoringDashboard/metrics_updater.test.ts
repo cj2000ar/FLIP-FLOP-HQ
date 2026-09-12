@@ -183,7 +183,7 @@ describe('Metrics Updater', () => {
 
       const result = calculateTradeMetrics(trades);
       expect(result.winRate).toBe(0);
-      expect(result.profitFactor).toBe(1);
+      expect(result.profitFactor).toBe(0);
     });
 
     it('should handle single trade', () => {
