@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { QUEUE_STATES, type QueueItem } from './labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet, toQueueItem, type ApiQueueItem } from '../labApiClient';
 
 export default function ShadowQueue() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
@@ -14,19 +14,7 @@ export default function ShadowQueue() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/queue`, { headers: API_HEADERS });
-
-        if (res.status === 401 || res.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch queue: ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        setQueue(data.queue || []);
+        setQueue((await apiGet<ApiQueueItem[]>('/queue')).map(toQueueItem));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load queue');
       } finally {

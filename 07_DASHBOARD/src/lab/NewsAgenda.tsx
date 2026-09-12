@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { AGENDA_CONTRACT, AGENDA_FEEDS, type AgendaSlot } from './labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet, toAgendaSlot, type ApiEventSlot } from '../labApiClient';
 
 const FIELDS = ['Actual', 'Forecast', 'Previous', 'Revision', 'NQ response', 'Signals', 'CONTROL result'];
 
@@ -16,19 +16,7 @@ export default function NewsAgenda() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/agenda/events`, { headers: API_HEADERS });
-
-        if (res.status === 401 || res.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch agenda events: ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        setEvents(data.events || []);
+        setEvents((await apiGet<ApiEventSlot[]>('/agenda/events')).map(toAgendaSlot));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load agenda events');
       } finally {
@@ -99,7 +87,7 @@ export default function NewsAgenda() {
                   <div style={{ fontWeight: 400, color: 'var(--hq-muted-2)', fontSize: 11 }}>{s.name}</div>
                 </td>
                 <td>
-                  <Badge status={s.importance} tone={s.importance === 'HIGH' ? 'warn' : 'muted'} />
+                  <Badge status={s.importance} tone={s.importance === 'HIGH' || s.importance === 'CRITICAL' ? 'warn' : 'muted'} />
                 </td>
                 {FIELDS.map((f) => (
                   <td key={f} style={{ fontFamily: 'var(--font-geist-mono)', color: 'var(--hq-muted-2)' }}>

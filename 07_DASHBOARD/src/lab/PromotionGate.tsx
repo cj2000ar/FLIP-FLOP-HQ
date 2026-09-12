@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { type PromotionGateItem } from './labData';
+import { apiGet } from '../labApiClient';
 
-const API_BASE = 'http://localhost:8000';
+const CANDIDATE = 'rr500-control';
 
 export default function PromotionGate() {
   const [gates, setGates] = useState<PromotionGateItem[]>([]);
@@ -15,19 +16,7 @@ export default function PromotionGate() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/promotion/gates`);
-
-        if (res.status === 401 || res.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch promotion gates: ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        setGates(data.gates || []);
+        setGates(await apiGet<PromotionGateItem[]>(`/promotion/gates?candidate=${CANDIDATE}`));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load promotion gates');
       } finally {

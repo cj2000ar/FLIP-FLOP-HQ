@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { type Experiment } from './labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet, toExperiment, type ApiExperiment } from '../labApiClient';
 
 export default function ExperimentLedger() {
   const [experiments, setExperiments] = useState<Experiment[]>([]);
@@ -14,19 +14,7 @@ export default function ExperimentLedger() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/experiments`, { headers: API_HEADERS });
-
-        if (res.status === 401 || res.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch experiments: ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        setExperiments(data.experiments || []);
+        setExperiments((await apiGet<ApiExperiment[]>('/experiments')).map(toExperiment));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load experiments');
       } finally {

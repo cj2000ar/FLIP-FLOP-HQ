@@ -20,8 +20,8 @@ export interface VaultItem {
   kind: 'video' | 'script' | 'paper';
   title: string;
   source: string;
-  extraction: ExtractionStatus;
-  evidence: EvidenceGrade;
+  extraction: ExtractionStatus | string; // API sends extracted rules as text
+  evidence: EvidenceGrade | string;      // API sends evidence notes as text
   family: string[];
   dna: string;
   dataNeeds: string[];
@@ -53,7 +53,7 @@ export interface Experiment {
   name: string;
   hypothesis: string;
   parameters: string;
-  datasetRole: 'IN_SAMPLE' | 'OUT_OF_SAMPLE' | 'HOLDOUT' | 'FORWARD' | 'DEV_ONLY';
+  datasetRole: 'IN_SAMPLE' | 'OUT_OF_SAMPLE' | 'HOLDOUT' | 'FORWARD' | 'DEV_ONLY' | 'TRAIN' | 'RESERVE' | string;
   runs: number;
   status: ExperimentStatus;
   result: string;
@@ -85,8 +85,8 @@ export interface QueueItem {
 export interface AgendaSlot {
   code: string;
   name: string;
-  importance: 'HIGH' | 'MEDIUM';
-  status: 'NOT_CONNECTED';
+  importance: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | string;
+  status: 'NOT_CONNECTED' | 'SCHEDULED' | 'OCCURRED' | string;
 }
 
 export interface LedgerEntry {

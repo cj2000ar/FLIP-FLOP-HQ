@@ -13,6 +13,12 @@ Endpoints (8 total):
 6. /guardian/overrides - Override ledger
 7. /guardian/calibration - Calibration ledger
 8. /agenda/events - Event slots / calendar
+9. /arena/strategies - CONTROL vs challengers
+10. /promotion/gates?candidate= - 16-gate checklist; /promotion/verdict?candidate=
+11. /quantum/lanes - Four research lanes
+12. /gates - Guardian 8-gate verdicts
+13. /batch/latest - Latest batch summary (paper only)
+14. /heartbeat/{machine_id}/freshness - Truth-bar heartbeat
 
 Auth: Machine-ID + Fencing-Token headers
 Bitemporal: event_time ≤ knowledge_time enforced
@@ -657,6 +663,159 @@ EVENTS_DATA = [
 ]
 
 
+
+class ArenaMetricModel(BaseModel):
+    label: str
+    value: str
+
+
+class ArenaEntryModel(BitemporalBase):
+    """Arena card: CONTROL or challenger"""
+    id: str
+    name: str
+    state: Literal["CONTROL", "SHADOW_RUNNING", "PROMOTION_CANDIDATE", "REJECTED", "SURVIVOR"]
+    version: str
+    summary: str
+    metrics: List[ArenaMetricModel]
+    note: str
+
+
+class PromotionGateModel(BaseModel):
+    """One of the 16 promotion gates"""
+    id: int
+    name: str
+    requirement: str
+    status: Literal["PASS", "PARTIAL", "NOT_PROVEN", "PENDING"]
+    evidence: str
+
+
+class PromotionVerdictModel(BaseModel):
+    candidate: str
+    pass_count: int
+    gate_count: int
+    blocking_gates: List[int]
+    final_verdict: Literal["BLOCKED", "READY FOR REVIEW"]
+    live_authority: Literal["BLOCKED"] = "BLOCKED"
+
+
+class QuantumLaneModel(BaseModel):
+    id: str
+    name: str
+    definition: str
+    status: str
+    tone: str
+
+
+class GuardianGateModel(BitemporalBase):
+    """Guardian 8-gate verdict"""
+    gate_id: str
+    verdict: Literal["PASS", "FAIL", "NOT_PROVEN"]
+    evidence_id: Optional[str] = None
+    truth_age_seconds: int
+
+
+class BatchSummaryModel(BitemporalBase):
+    """Latest batch summary (paper only; Authority ZERO)"""
+    batch_id: str
+    verdict_status: str
+    alert_array: List[str]
+    pnl_summary: Dict[str, Any]
+    risk_metrics: Dict[str, Any]
+    trades: List[Dict[str, Any]]
+    pnl_history: List[Dict[str, Any]]
+
+
+class HeartbeatFreshnessModel(BaseModel):
+    machine_id: str
+    age_seconds: float
+    is_fresh: bool
+    warning_level: Literal["fresh", "warning", "stale"]
+    stale_since: Optional[str] = None
+    last_update: Optional[str] = None
+
+
+# Arena from strategy_intelligence_master (frozen CONTROL baseline)
+ARENA_DATA = [
+    {
+        "id": "rr500-control",
+        "name": "RR500_CONTROL",
+        "state": "CONTROL",
+        "version": "v3.3.1",
+        "summary": "12-trade Market Replay baseline",
+        "metrics": [
+            {"label": "Win Rate", "value": "83.33%"},
+            {"label": "Profit Factor", "value": "7.5"},
+            {"label": "Trades", "value": "+416"},
+            {"label": "PnL", "value": "+$2,080"},
+        ],
+        "note": "Frozen CONTROL baseline. Immutable; replaced only by formal promotion.",
+    },
+    {
+        "id": "survivor-pair",
+        "name": "SURVIVOR_PAIR",
+        "state": "SURVIVOR",
+        "version": "v2.1",
+        "summary": "Research-grade survivor pair",
+        "metrics": [
+            {"label": "Correlation", "value": "0.764"},
+            {"label": "Grade", "value": "RESEARCH"},
+        ],
+        "note": "Research-grade only. Not LIVE-eligible.",
+    },
+    {
+        "id": "v03-vector",
+        "name": "V03_VECTOR",
+        "state": "REJECTED",
+        "version": "v1.0",
+        "summary": "V03 vector rejected on holdout",
+        "metrics": [
+            {"label": "Verdict", "value": "Did not beat CONTROL"},
+        ],
+        "note": "Holdout consumed/blocked",
+    },
+]
+
+# 16 promotion gates (GUARDIAN_GATE_IMPLEMENTATION_GUIDE / M06 release gate)
+PROMOTION_GATES_DATA = [
+    {"id": 1, "name": "Pre-registration", "requirement": "Hypothesis, parameters and dataset role frozen before any run", "status": "PASS", "evidence": "Experiment ledger A-G"},
+    {"id": 2, "name": "Data integrity", "requirement": "Replay dataset complete, checksummed, no gaps", "status": "NOT_PROVEN", "evidence": "Replay dataset incomplete (8/12 trades untested)"},
+    {"id": 3, "name": "Leakage audit", "requirement": "No post-decision information in any feature", "status": "PASS", "evidence": "Wound W-002 closed for V03 path"},
+    {"id": 4, "name": "Determinism", "requirement": "Bit-identical replay across two runs", "status": "PASS", "evidence": "SESSION_E2_PROVEN, DELTA_MS = 0"},
+    {"id": 5, "name": "Out-of-sample", "requirement": "Positive expectancy on untouched out-of-sample slice", "status": "NOT_PROVEN", "evidence": "Not run"},
+    {"id": 6, "name": "Holdout", "requirement": "Single-use holdout consumed with a recorded verdict", "status": "PASS", "evidence": "V03 holdout consumed (FAILED, recorded)"},
+    {"id": 7, "name": "Sensitivity", "requirement": "Stable under parameter perturbation", "status": "NOT_PROVEN", "evidence": "Sensitivity untested"},
+    {"id": 8, "name": "Regime dependence", "requirement": "Performance reported per session and volatility regime", "status": "NOT_PROVEN", "evidence": "Not run"},
+    {"id": 9, "name": "Drawdown", "requirement": "Max drawdown inside the liability ladder", "status": "PASS", "evidence": "Combined loss cap enforced in V3.3.1"},
+    {"id": 10, "name": "Execution realism", "requirement": "Slippage, latency and fill assumptions documented", "status": "NOT_PROVEN", "evidence": "Latency tax observed, not modeled"},
+    {"id": 11, "name": "Skipped winners", "requirement": "Blocked/skipped signals reported, not hidden", "status": "PASS", "evidence": "Signal ledger emits blocked/skipped"},
+    {"id": 12, "name": "Cost model", "requirement": "Commissions and fees identical to CONTROL", "status": "PASS", "evidence": "Shared cost profile"},
+    {"id": 13, "name": "Forward sim", "requirement": "REALTIME_SIM evidence grade reached", "status": "NOT_PROVEN", "evidence": "Only MARKET_REPLAY grade"},
+    {"id": 14, "name": "Guardian review", "requirement": "Guardian verdict recorded with evidence ids", "status": "PASS", "evidence": "M06 certification report"},
+    {"id": 15, "name": "Wound clearance", "requirement": "No OPEN wound on this lineage", "status": "NOT_PROVEN", "evidence": "W-002 OPEN"},
+    {"id": 16, "name": "Owner approval", "requirement": "Recorded in Override Ledger; cannot override gates 1-15", "status": "PENDING", "evidence": "Awaiting gates 1-15"},
+]
+
+QUANTUM_LANES_DATA = [
+    {"id": "real", "name": "Real Quantum", "definition": "Executed on quantum hardware.", "status": "NO EVIDENCE", "tone": "bad"},
+    {"id": "simulator", "name": "Quantum Simulator", "definition": "Classical simulation of a quantum circuit.", "status": "NO EVIDENCE", "tone": "bad"},
+    {"id": "inspired", "name": "Quantum-inspired", "definition": "Classical algorithm borrowing quantum ideas (annealing, tensor networks).", "status": "NOT_STARTED", "tone": "muted"},
+    {"id": "classical", "name": "Classical benchmark", "definition": "Same data, costs, splits and metrics. Every lane is scored against this.", "status": "REQUIRED BASELINE", "tone": "info"},
+]
+
+# Guardian 8 gates (GUARDIAN_DOMAIN_SPEC_FROZEN_V1)
+GUARDIAN_GATES_DATA = [
+    {"gate_id": "G1_AUTHORITY", "verdict": "PASS", "evidence_id": "M01_REGISTER_FROZEN"},
+    {"gate_id": "G2_LIVE_LOCK", "verdict": "PASS", "evidence_id": "LIVE_AUTHORITY=BLOCKED"},
+    {"gate_id": "G3_DATA_FRESHNESS", "verdict": "NOT_PROVEN", "evidence_id": None},
+    {"gate_id": "G4_DETERMINISM", "verdict": "PASS", "evidence_id": "SESSION_E2_PROVEN"},
+    {"gate_id": "G5_CANARY", "verdict": "NOT_PROVEN", "evidence_id": None},
+    {"gate_id": "G6_RISK_CAP", "verdict": "PASS", "evidence_id": "GUARDIAN_THRESHOLDS"},
+    {"gate_id": "G7_WOUNDS", "verdict": "NOT_PROVEN", "evidence_id": "W-002"},
+    {"gate_id": "G8_OWNER", "verdict": "NOT_PROVEN", "evidence_id": None},
+]
+
+_LAST_SEEN = {}  # machine_id -> unix seconds of last authenticated request
+
 # ============================================================================
 # FASTAPI APP
 # ============================================================================
@@ -765,6 +924,7 @@ async def validate_auth(
     if not _validate_token_locally(fencing_token, machine_id):
         raise HTTPException(status_code=403, detail="Fencing-Token expired or invalid")
 
+    _LAST_SEEN[machine_id] = time.time()
     logger.info(f"Auth successful for machine_id={machine_id}, token valid")
     return machine_id
 
@@ -1030,6 +1190,116 @@ async def get_agenda_events(
         results.append(EventSlotModel(**event_copy))
 
     return results
+
+
+
+@app.get("/arena/strategies", response_model=List[ArenaEntryModel])
+async def get_arena_strategies(
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /arena/strategies - CONTROL (frozen) plus challengers."""
+    await validate_auth(machine_id, fencing_token)
+    now_seconds, _ = get_now()
+    return [ArenaEntryModel(**add_bitemporal_fields(a.copy(), now_seconds)) for a in ARENA_DATA]
+
+
+@app.get("/promotion/gates", response_model=List[PromotionGateModel])
+async def get_promotion_gates(
+    candidate: Optional[str] = Query(None, description="Candidate id (only rr500-control lineage exists)"),
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /promotion/gates?candidate= - 16-gate checklist. Same 16 gates for every candidate."""
+    await validate_auth(machine_id, fencing_token)
+    return [PromotionGateModel(**g) for g in PROMOTION_GATES_DATA]
+
+
+@app.get("/promotion/verdict", response_model=PromotionVerdictModel)
+async def get_promotion_verdict(
+    candidate: Optional[str] = Query("rr500-control"),
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /promotion/verdict?candidate= - BLOCKED while any gate is NOT_PROVEN."""
+    await validate_auth(machine_id, fencing_token)
+    blocking = [g["id"] for g in PROMOTION_GATES_DATA if g["status"] == "NOT_PROVEN"]
+    passed = sum(1 for g in PROMOTION_GATES_DATA if g["status"] == "PASS")
+    return PromotionVerdictModel(
+        candidate=candidate or "rr500-control",
+        pass_count=passed,
+        gate_count=len(PROMOTION_GATES_DATA),
+        blocking_gates=blocking,
+        final_verdict="BLOCKED" if blocking else "READY FOR REVIEW",
+    )
+
+
+@app.get("/quantum/lanes", response_model=List[QuantumLaneModel])
+async def get_quantum_lanes(
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /quantum/lanes - Real / Simulator / Inspired / Classical benchmark."""
+    await validate_auth(machine_id, fencing_token)
+    return [QuantumLaneModel(**l) for l in QUANTUM_LANES_DATA]
+
+
+@app.get("/gates", response_model=List[GuardianGateModel])
+async def get_guardian_gates(
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /gates - Guardian 8-gate verdicts with truth age."""
+    await validate_auth(machine_id, fencing_token)
+    now_seconds, _ = get_now()
+    results = []
+    for g in GUARDIAN_GATES_DATA:
+        row = add_bitemporal_fields(g.copy(), now_seconds)
+        row["truth_age_seconds"] = now_seconds - row["event_time"]
+        results.append(GuardianGateModel(**row))
+    return results
+
+
+@app.get("/batch/latest", response_model=BatchSummaryModel)
+async def get_batch_latest(
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /batch/latest - Latest paper batch. No live batch exists (Authority ZERO)."""
+    await validate_auth(machine_id, fencing_token)
+    now_seconds, _ = get_now()
+    return BatchSummaryModel(**add_bitemporal_fields({
+        "batch_id": "PAPER-NONE",
+        "verdict_status": "NO_BATCH",
+        "alert_array": ["AUTHORITY=ZERO", "LIVE=OFF", "BROKER_ORDERS=NONE"],
+        "pnl_summary": {"pnl": 0.0, "trades": 0, "win_rate": 0.0},
+        "risk_metrics": {"max_drawdown": 0.0, "exposure": 0.0},
+        "trades": [],
+        "pnl_history": [],
+    }, now_seconds))
+
+
+@app.get("/heartbeat/{hb_machine_id}/freshness", response_model=HeartbeatFreshnessModel)
+async def get_heartbeat_freshness(
+    hb_machine_id: str,
+    machine_id: str = Header(None, alias="Machine-ID"),
+    fencing_token: str = Header(None, alias="Fencing-Token"),
+):
+    """GET /heartbeat/{machine_id}/freshness - age < 10s fresh, 10-30s warning, > 30s stale."""
+    await validate_auth(machine_id, fencing_token)
+    last = _LAST_SEEN.get(hb_machine_id)
+    if last is None:
+        return HeartbeatFreshnessModel(
+            machine_id=hb_machine_id, age_seconds=-1.0, is_fresh=False,  # -1 = never seen (JSON has no inf)
+            warning_level="stale", stale_since=None, last_update=None,
+        )
+    age = time.time() - last
+    level = "fresh" if age < 10 else "warning" if age <= 30 else "stale"
+    last_iso = datetime.utcfromtimestamp(last).isoformat() + "Z"
+    return HeartbeatFreshnessModel(
+        machine_id=hb_machine_id, age_seconds=round(age, 3), is_fresh=level == "fresh",
+        warning_level=level, stale_since=None if level != "stale" else last_iso, last_update=last_iso,
+    )
 
 
 @app.options("/{full_path:path}")

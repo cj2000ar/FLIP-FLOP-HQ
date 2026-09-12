@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import '../lab/lab.css';
 import { AUTHORITY_BANNER } from '../lab/labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet } from '../labApiClient';
 import StrategyVault from '../lab/StrategyVault';
 import StrategyArena from '../lab/StrategyArena';
 import ExperimentLedger from '../lab/ExperimentLedger';
@@ -67,13 +67,13 @@ function LabContent({ initialSection = 'vault' }: { initialSection?: LabSectionI
         setGlobalLoading(true);
         // Parallel pre-fetch all API endpoints
         await Promise.all([
-          fetch(`${API_BASE}/vault/items`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/vault/families`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/experiments`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/queue`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/agenda/events`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/guardian/wounds`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/guardian/calibration`, { headers: API_HEADERS }),
+          apiGet('/vault/items'),
+          apiGet('/vault/families'),
+          apiGet('/experiments'),
+          apiGet('/queue'),
+          apiGet('/agenda/events'),
+          apiGet('/guardian/wounds'),
+          apiGet('/guardian/calibration'),
         ]);
       } catch (err) {
         // Silently fail pre-fetch - individual components will handle errors

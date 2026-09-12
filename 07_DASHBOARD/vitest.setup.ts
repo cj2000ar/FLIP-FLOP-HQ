@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 import {
-  ARENA, EXPERIMENTS, QUEUE, AGENDA_SLOTS, WOUNDS, CALIBRATION, PROMOTION_GATES,
+  ARENA, EXPERIMENTS, QUEUE, AGENDA_SLOTS, PROMOTION_GATES, QUANTUM_LANES,
 } from './src/lab/labData';
 
 // jsdom has no blob URL support; CSV download uses it.
@@ -12,66 +12,110 @@ if (typeof URL.revokeObjectURL !== 'function') {
   URL.revokeObjectURL = vi.fn();
 }
 
+/**
+ * The mock speaks the API wire contract (PRIVATE_READ_API_SPEC_DRAFT.md): bare
+ * arrays, snake_case, free-text extraction/evidence — so the client normalizers
+ * are exercised, not bypassed. Content mirrors labData, the frozen Lab spec.
+ */
+const bitemporal = { event_time: 1_757_600_000, knowledge_time: '2026-09-11T00:00:00Z' };
+
 const mockResponses: Record<string, unknown> = {
-  'http://localhost:8000/vault/items': {
-    items: [
-      {
-        id: 'rr500-ctrl-v3',
-        kind: 'script',
-        title: 'RR500 Quant Mirror V3.3.1',
-        source: 'Internal',
-        extraction: 'VERIFIED',
-        evidence: 'MARKET_REPLAY',
-        family: ['RR500'],
-        dna: 'price-flow-order',
-        dataNeeds: [],
-      },
-      {
-        id: 'ifvg-short',
-        kind: 'video',
-        title: 'IFVG Short Algo',
-        source: 'Pietro Valastro',
-        extraction: 'UNREVIEWED',
-        evidence: 'CLIP_ONLY',
-        family: ['IFVG'],
-        dna: 'fvg-logic',
-        dataNeeds: ['fill-data'],
-      },
-      {
-        id: 'order-flow-tape',
-        kind: 'video',
-        title: 'Order Flow Tape Reading',
-        source: 'Pietro Valastro',
-        extraction: 'UNREVIEWED',
-        evidence: 'CLIP_ONLY',
-        family: ['ORDER_FLOW'],
-        dna: 'order-flow-tape',
-        dataNeeds: ['tape-data'],
-      },
-    ],
-  },
-  'http://localhost:8000/vault/families': {
-    families: [
-      { id: 'rr500', name: 'RR500 / FlipFlop Quant Mirror', lineage: 'Core', dna: ['price', 'flow'] },
-      { id: 'ifvg', name: 'IFVG / FVG', lineage: 'Support', dna: ['fvg'] },
-      { id: 'ut', name: 'UT / NUMKI', lineage: 'Support', dna: ['levels'] },
-      { id: 'kilo', name: 'KiloView', lineage: 'Support', dna: ['volume'] },
-      { id: 'session', name: 'Session / Market Structure Book', lineage: 'Support', dna: ['session'] },
-      { id: 'ORDER_FLOW', name: 'Order Flow', lineage: 'Research', dna: ['order-flow', 'tape'] },
-    ],
-  },
-  'http://localhost:8000/arena': { arena: ARENA },
-  'http://localhost:8000/experiments': { experiments: EXPERIMENTS },
-  'http://localhost:8000/queue': { queue: QUEUE },
-  'http://localhost:8000/agenda/events': { events: AGENDA_SLOTS },
-  'http://localhost:8000/guardian/wounds': { wounds: WOUNDS },
-  'http://localhost:8000/guardian/calibration': { calibration: CALIBRATION },
-  'http://localhost:8000/promotion/gates': { gates: PROMOTION_GATES },
+  'http://localhost:8000/vault/items': [
+    {
+      ...bitemporal,
+      id: 'rr500-ctrl-v3',
+      kind: 'script',
+      title: 'RR500 Quant Mirror V3.3.1',
+      source: 'Internal',
+      extraction: 'VERIFIED',
+      evidence: 'MARKET_REPLAY',
+      family: 'RR500',
+      dna: 'price-flow-order',
+      data_needs: null,
+    },
+    {
+      ...bitemporal,
+      id: 'ifvg-short',
+      kind: 'video',
+      title: 'IFVG Short Algo',
+      source: 'Pietro Valastro',
+      extraction: 'UNREVIEWED',
+      evidence: 'CLIP_ONLY',
+      family: 'IFVG',
+      dna: 'fvg-logic',
+      data_needs: 'fill-data',
+    },
+    {
+      ...bitemporal,
+      id: 'order-flow-tape',
+      kind: 'video',
+      title: 'Order Flow Tape Reading',
+      source: 'Pietro Valastro',
+      extraction: 'UNREVIEWED',
+      evidence: 'CLIP_ONLY',
+      family: 'ORDER_FLOW',
+      dna: 'order-flow-tape',
+      data_needs: 'tape-data, footprint',
+    },
+  ],
+  'http://localhost:8000/vault/families': [
+    { id: 'F-RR500', name: 'RR500 / FlipFlop Quant Mirror', lineage: 'Core', dna: 'price, flow' },
+    { id: 'F-IFVG', name: 'IFVG / FVG', lineage: 'Support', dna: 'fvg' },
+    { id: 'F-UT', name: 'UT / NUMKI', lineage: 'Support', dna: 'levels' },
+    { id: 'F-KILO', name: 'KiloView', lineage: 'Support', dna: 'volume' },
+    { id: 'F-SESSION', name: 'Session / Market Structure Book', lineage: 'Support', dna: 'session' },
+    { id: 'F-ORDER_FLOW', name: 'Order Flow', lineage: 'Research', dna: 'order-flow, tape' },
+  ],
+  'http://localhost:8000/arena/strategies': ARENA.map((a) => ({ ...bitemporal, ...a })),
+  'http://localhost:8000/experiments': EXPERIMENTS.map((e) => ({
+    ...bitemporal,
+    id: e.id,
+    name: e.name,
+    hypothesis: e.hypothesis,
+    parameters: e.parameters,
+    dataset_role: e.datasetRole,
+    runs: e.runs,
+    status: e.status,
+    result: e.result,
+    rejection_reason: e.rejectionReason ?? null,
+    next_gate: e.nextGate,
+    created_at: '2026-09-01T00:00:00Z',
+    completed_at: null,
+  })),
+  'http://localhost:8000/queue': QUEUE.map((q) => ({ ...bitemporal, ...q })),
+  'http://localhost:8000/agenda/events': AGENDA_SLOTS.map((s) => ({
+    ...bitemporal,
+    code: s.code,
+    name: s.name,
+    importance: s.importance,
+    status: s.status,
+    tone: 'routine',
+  })),
+  'http://localhost:8000/guardian/wounds': [
+    { ...bitemporal, id: 'w1', title: 'Wound 1', detail: 'Test wound', status: 'OPEN', tone: 'alert' },
+  ],
+  'http://localhost:8000/guardian/calibration': [],
+  'http://localhost:8000/promotion/gates': PROMOTION_GATES,
+  'http://localhost:8000/quantum/lanes': QUANTUM_LANES,
 };
 
-global.fetch = vi.fn((url: string | Request) => {
+global.fetch = vi.fn((url: string | Request, init?: RequestInit) => {
   const urlStr = typeof url === 'string' ? url : url.url;
   const baseUrl = urlStr.split('?')[0];
+
+  if (baseUrl === 'http://localhost:8000/dev/issue-token' && init?.method === 'POST') {
+    return Promise.resolve(
+      new Response(JSON.stringify({ token: 'test-token-0000', machine_id: 'dashboard-local', expires_in_seconds: 86400 }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+  }
+
+  const headers = (init?.headers ?? {}) as Record<string, string>;
+  if (!headers['Fencing-Token'] || !headers['Machine-ID']) {
+    return Promise.resolve(new Response(JSON.stringify({ detail: 'Missing auth headers' }), { status: 401 }));
+  }
 
   const data = mockResponses[baseUrl];
   if (data) {

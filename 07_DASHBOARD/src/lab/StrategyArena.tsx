@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { type ArenaEntry } from './labData';
-
-const API_BASE = 'http://localhost:8000';
+import { apiGet } from '../labApiClient';
 
 export default function StrategyArena() {
   const [arena, setArena] = useState<ArenaEntry[]>([]);
@@ -15,19 +14,7 @@ export default function StrategyArena() {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${API_BASE}/arena`);
-
-        if (res.status === 401 || res.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(`Failed to fetch arena: ${res.statusText}`);
-        }
-
-        const data = await res.json();
-        setArena(data.arena || []);
+        setArena(await apiGet<ArenaEntry[]>('/arena/strategies'));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load arena data');
       } finally {

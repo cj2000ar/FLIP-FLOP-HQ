@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { MARKETS, type VaultItem, type StrategyFamily } from './labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet, toVaultItem, toStrategyFamily, type ApiVaultItem, type ApiStrategyFamily } from '../labApiClient';
 
 const ALL = 'ALL';
 
@@ -20,29 +20,13 @@ export default function StrategyVault() {
         setLoading(true);
         setError(null);
 
-        const [vaultRes, familiesRes] = await Promise.all([
-          fetch(`${API_BASE}/vault/items${family !== ALL ? `?family=${family}` : ''}`, { headers: API_HEADERS, signal: controller.signal }),
-          fetch(`${API_BASE}/vault/families`, { headers: API_HEADERS, signal: controller.signal }),
+        const [vaultData, familiesData] = await Promise.all([
+          apiGet<ApiVaultItem[]>('/vault/items', controller.signal),
+          apiGet<ApiStrategyFamily[]>('/vault/families', controller.signal),
         ]);
 
-        if (vaultRes.status === 401 || vaultRes.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!vaultRes.ok) {
-          throw new Error(`Failed to fetch vault items: ${vaultRes.statusText}`);
-        }
-
-        if (!familiesRes.ok) {
-          throw new Error(`Failed to fetch families: ${familiesRes.statusText}`);
-        }
-
-        const vaultData = await vaultRes.json();
-        const familiesData = await familiesRes.json();
-
-        setItems(vaultData.items || []);
-        setFamilies(familiesData.families || []);
+        setItems(vaultData.map(toVaultItem));
+        setFamilies(familiesData.map(toStrategyFamily));
       } catch (err) {
         if (err instanceof Error && err.name !== 'AbortError') {
           setError(err.message);
@@ -54,9 +38,10 @@ export default function StrategyVault() {
 
     fetchData();
     return () => controller.abort();
-  }, [family]);
+  }, []);
 
-  const familyList = families.map((f) => f.id).sort();
+  // Filter chips come from the family tags the items actually carry (API family ids are prefixed).
+  const familyList = Array.from(new Set(items.flatMap((v) => v.family))).sort();
   const filteredItems = family === ALL ? items : items.filter((v) => v.family.includes(family));
 
   return (

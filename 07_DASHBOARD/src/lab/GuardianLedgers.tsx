@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Badge from './Badge';
 import { GUARDIAN_CORE, type LedgerEntry } from './labData';
-import { API_BASE, API_HEADERS } from '../labApiClient';
+import { apiGet, toWoundEntry, toCalibrationEntry, type ApiWound, type ApiCalibrationEntry } from '../labApiClient';
 
 export default function GuardianLedgers() {
   const [wounds, setWounds] = useState<LedgerEntry[]>([]);
@@ -15,29 +15,13 @@ export default function GuardianLedgers() {
         setLoading(true);
         setError(null);
 
-        const [woundsRes, calibrationRes] = await Promise.all([
-          fetch(`${API_BASE}/guardian/wounds`, { headers: API_HEADERS }),
-          fetch(`${API_BASE}/guardian/calibration`, { headers: API_HEADERS }),
+        const [woundsData, calibrationData] = await Promise.all([
+          apiGet<ApiWound[]>('/guardian/wounds'),
+          apiGet<ApiCalibrationEntry[]>('/guardian/calibration'),
         ]);
 
-        if (woundsRes.status === 401 || woundsRes.status === 403 || calibrationRes.status === 401 || calibrationRes.status === 403) {
-          setError('Authentication required. Please refresh your session.');
-          return;
-        }
-
-        if (!woundsRes.ok) {
-          throw new Error(`Failed to fetch wounds: ${woundsRes.statusText}`);
-        }
-
-        if (!calibrationRes.ok) {
-          throw new Error(`Failed to fetch calibration: ${calibrationRes.statusText}`);
-        }
-
-        const woundsData = await woundsRes.json();
-        const calibrationData = await calibrationRes.json();
-
-        setWounds(woundsData.wounds || []);
-        setCalibration(calibrationData.calibration || []);
+        setWounds(woundsData.map(toWoundEntry));
+        setCalibration(calibrationData.map(toCalibrationEntry));
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load guardian data');
       } finally {
